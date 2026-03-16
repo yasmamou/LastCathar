@@ -3,24 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "cesium:copy": "rm -rf public/cesium && mkdir -p public/cesium && cp -r node_modules/cesium/Build/Cesium/Workers public/cesium/ && cp -r node_modules/cesium/Build/Cesium/ThirdParty public/cesium/ && cp -r node_modules/cesium/Build/Cesium/Assets public/cesium/ && cp -r node_modules/cesium/Build/Cesium/Widgets public/cesium/",
+    "postinstall": "npm run cesium:copy",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run cesium:copy && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio",
+    "seed:export": "npx tsx scripts/export-seed-json.ts",
+    "seed:cathar": "npx tsx scripts/seed-cathar.ts"
   },
   "dependencies": {
+    "@prisma/client": "^7.5.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-slot": "^1.2.4",
+    "cesium": "^1.139.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "copy-webpack-plugin": "^14.0.0",
+    "framer-motion": "^12.36.0",
+    "lucide-react": "^0.577.0",
+    "next": "14.2.35",
+    "prisma": "^7.5.0",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "resium": "^1.19.4",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "typescript": "^5"
   }
 }

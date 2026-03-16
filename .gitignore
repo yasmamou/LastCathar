@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cesium static assets (copied at build time)
+/public/cesium
+
+# data pipeline
+/data/raw
+/data/enriched

@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PlaceEntry {
+  id                  String   @id @default(cuid())
+  slug                String   @unique
+  title               String
+  alternateNames      String[] @map("alternate_names")
+  shortDescription    String   @map("short_description")
+  fullStory           String   @map("full_story") @db.Text
+  latitude            Float
+  longitude           Float
+  region              String?
+  country             String
+  continent           String
+  locationPrecision   LocationPrecision @default(APPROXIMATE) @map("location_precision")
+  geometryType        GeometryType @default(POINT) @map("geometry_type")
+  categoryPrimary     String   @map("category_primary")
+  categorySecondary   String[] @map("category_secondary")
+  tags                String[]
+  era                 String[]
+  statusBadge         String   @map("status_badge")
+  confidenceLevel     ConfidenceLevel @default(SPECULATIVE) @map("confidence_level")
+  evidenceType        String[] @map("evidence_type")
+  sourceSummary       String?  @map("source_summary") @db.Text
+  sourceLinks         String[] @map("source_links")
+  imageUrls           String[] @map("image_urls")
+  heroImageUrl        String?  @map("hero_image_url")
+  thumbnailUrl        String?  @map("thumbnail_url")
+  travelInterestScore Int      @default(0) @map("travel_interest_score")
+  mysteryScore        Int      @default(0) @map("mystery_score")
+  historicalScore     Int      @default(0) @map("historical_score")
+  architectureScore   Int      @default(0) @map("architecture_score")
+  tourismScore        Int      @default(0) @map("tourism_score")
+  localLegendScore    Int      @default(0) @map("local_legend_score")
+  isFeatured          Boolean  @default(false) @map("is_featured")
+  isVerified          Boolean  @default(false) @map("is_verified")
+  moderationState     ModerationState @default(REVIEW) @map("moderation_state")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  sources       Source[]
+  images        ImageAsset[]
+  relatedFrom   RelatedPlace[] @relation("relatedFrom")
+  relatedTo     RelatedPlace[] @relation("relatedTo")
+
+  @@map("place_entries")
+  @@index([latitude, longitude])
+  @@index([categoryPrimary])
+  @@index([confidenceLevel])
+  @@index([country])
+  @@index([moderationState])
+}
+
+model Source {
+  id               String   @id @default(cuid())
+  placeEntryId     String   @map("place_entry_id")
+  sourceType       String   @map("source_type")
+  title            String?
+  url              String?
+  publisher        String?
+  datePublished    String?  @map("date_published")
+  snippet          String?  @db.Text
+  reliabilityScore Int      @default(50) @map("reliability_score")
+  notes            String?  @db.Text
+
+  placeEntry PlaceEntry @relation(fields: [placeEntryId], references: [id], onDelete: Cascade)
+
+  @@map("sources")
+  @@index([placeEntryId])
+}
+
+model ImageAsset {
+  id              String  @id @default(cuid())
+  placeEntryId    String  @map("place_entry_id")
+  url             String
+  licenseType     String? @map("license_type")
+  attributionText String? @map("attribution_text")
+  sourceUrl       String? @map("source_url")
+  isHero          Boolean @default(false) @map("is_hero")
+  sortOrder       Int     @default(0) @map("sort_order")
+
+  placeEntry PlaceEntry @relation(fields: [placeEntryId], references: [id], onDelete: Cascade)
+
+  @@map("image_assets")
+  @@index([placeEntryId])
+}
+
+model RelatedPlace {
+  id          String @id @default(cuid())
+  fromPlaceId String @map("from_place_id")
+  toPlaceId   String @map("to_place_id")
+  relationship String?
+
+  fromPlace PlaceEntry @relation("relatedFrom", fields: [fromPlaceId], references: [id], onDelete: Cascade)
+  toPlace   PlaceEntry @relation("relatedTo", fields: [toPlaceId], references: [id], onDelete: Cascade)
+
+  @@unique([fromPlaceId, toPlaceId])
+  @@map("related_places")
+}
+
+enum LocationPrecision {
+  EXACT
+  APPROXIMATE
+  REGION_LEVEL
+  UNKNOWN
+}
+
+enum GeometryType {
+  POINT
+  AREA
+  ZONE
+}
+
+enum ConfidenceLevel {
+  LEGENDARY
+  SPECULATIVE
+  PLAUSIBLE
+  DOCUMENTED
+  CONFIRMED
+}
+
+enum ModerationState {
+  DRAFT
+  REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
