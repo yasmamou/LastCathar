@@ -5,7 +5,6 @@ import { Volume2, VolumeX, Music, ExternalLink, ChevronUp, ChevronDown } from 'l
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   MusicTrack,
-  MusicRegion,
   getRegionFromCountry,
   getTracksForRegion,
   getBestTrackForEra,
