@@ -74,8 +74,8 @@ export function CategoryFilters({
         </motion.div>
       )}
 
-      {/* Category chips */}
-      <div className="flex flex-wrap justify-center gap-1.5">
+      {/* Category chips — scrollable on mobile */}
+      <div className="flex md:flex-wrap md:justify-center gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {MAIN_CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat
           const color = getCategoryColor(cat)

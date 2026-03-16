@@ -33,11 +33,11 @@ export function PlaceDetailPanel({ place, onClose }: PlaceDetailPanelProps) {
 
   return (
     <motion.div
-      initial={{ x: 400, opacity: 0 }}
+      initial={{ x: '100%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 400, opacity: 0 }}
+      exit={{ x: '100%', opacity: 0 }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-      className="absolute top-0 right-0 bottom-0 z-30 w-full max-w-md"
+      className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-30"
     >
       <div className="h-full glass overflow-y-auto">
         {/* Hero section with Wikipedia image */}

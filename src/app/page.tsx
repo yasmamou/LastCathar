@@ -140,7 +140,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-4"
+              className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3 md:px-4"
             >
               <SearchBar
                 value={searchQuery}
@@ -155,7 +155,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="absolute top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-4"
+              className="absolute top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4"
             >
               <CategoryFilters
                 activeCategory={activeCategory}
@@ -181,7 +181,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-24 left-4 z-30"
+              className="absolute bottom-20 md:bottom-24 left-2 md:left-4 z-30"
             >
               <AmbientMusic
                 selectedCountry={selectedPlace?.country}
