@@ -92,15 +92,29 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           viewer.terrainProvider = terrain
         } catch { /* flat terrain */ }
 
-        // Initial camera: centered on Carcassonne
+        // Initial camera: cinematic arrival on Cité de Carcassonne
         viewer.camera.setView({
-          destination: Cesium.Cartesian3.fromDegrees(2.3634, 43.2065, 500000),
+          destination: Cesium.Cartesian3.fromDegrees(2.3634, 43.2065, 800000),
           orientation: {
-            heading: 0,
-            pitch: Cesium.Math.toRadians(-60),
+            heading: Cesium.Math.toRadians(10),
+            pitch: Cesium.Math.toRadians(-45),
             roll: 0,
           },
         })
+
+        // Cinematic fly-in to Carcassonne after intro
+        setTimeout(() => {
+          if (viewer.isDestroyed()) return
+          viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(2.3634, 43.2065, 120000),
+            orientation: {
+              heading: Cesium.Math.toRadians(-5),
+              pitch: Cesium.Math.toRadians(-55),
+              roll: 0,
+            },
+            duration: 4.0,
+          })
+        }, 3500)
 
         // Click handler
         const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas)
