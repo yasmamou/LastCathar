@@ -39,14 +39,54 @@ distinguish documented fact from pure legend, multi-dimensional scores (mystery,
 significance, tourism value), source citations, and long-form narratives written to balance
 scholarly rigor with storytelling.
 
-### Vision
+### Current State (March 2026)
 
-- **Phase 1 (current):** Cathar region seed with ~15-20 hand-curated entries, static data,
-  cinematic globe UI, admin panel for reviewing entries.
-- **Phase 2:** Activate the multi-agent pipeline to discover, classify, and enrich new
-  places automatically via LLM and web APIs. Connect to PostgreSQL via Prisma.
-- **Phase 3:** User contributions, community moderation, travel planning features,
-  mobile-optimized experience, and expansion to other legendary regions worldwide.
+- **807 places** across the world (France, Europe, Afrique, Amériques, Asie, Océanie)
+- **11 épopées** (Graal, Atlantide, Templiers, Vikings, Eldorado, Pharaons, Arthurien, Troubadours, Compostelle, Rome en Gaule, Mémoire de Pierre)
+- **Données statiques** en fichiers TypeScript (pas de DB) — performant, simple, suffisant pour le moment
+- **Pipeline séquentiel** (`scripts/pipeline.ts`) opérationnel pour ajouter du contenu
+- **Mobile responsive** avec touch events, filtres collapsibles, arrivée cinématique sur Carcassonne
+- **Images Wikipedia** récupérées dynamiquement via le hook `useWikipediaImages`
+
+### Vision & Roadmap
+
+- **Phase actuelle:** Enrichissement du contenu (épopées, lieux), amélioration mobile, UX globe
+- **Phase suivante:** Migration DB (Prisma/PostgreSQL) quand nécessaire (auth, contributions, marketplace)
+- **Phase future:** Auth utilisateurs, contributions communautaires, épopées créées par les users, affiliation/marketplace (Booking, produits locaux)
+
+### Méthodes de travail avec Claude Code
+
+> **IMPORTANT : règles anti-gaspillage de tokens**
+
+1. **Jamais d'agents en parallèle** — séquentiel strict (une session précédente a brûlé trop de tokens en parallèle)
+2. **Écrire directement les seed TS** pour du contenu connu (lieux touristiques, mythes célèbres) — pas besoin du pipeline complet
+3. **Pipeline séquentiel** (`scripts/pipeline.ts`) uniquement pour les lieux **obscurs** nécessitant recherche + vérification
+4. **Batches de 10-50 lieux max** par session
+5. **Build + commit + push** à chaque étape pour ne rien perdre
+6. **Node 20 requis** (`nvm use 20`)
+
+### Comment ajouter du contenu efficacement
+
+**Pour des lieux connus** (ex: 50 lieux touristiques du Sud de la France) :
+1. Créer un fichier `src/data/seed-<theme>.ts` avec les PlaceEntry[]
+2. L'importer dans `src/data/all-places.ts`
+3. Build + test
+
+**Pour des épopées** :
+1. Ajouter l'épopée dans `src/data/epics.ts` (titre, description, lieux liés par slug)
+2. S'assurer que les lieux référencés existent dans les seed files
+3. Créer les lieux manquants si nécessaire
+
+**Pour des lieux nécessitant recherche** :
+```bash
+npx tsx scripts/pipeline.ts discover --theme "nom" --region "region" --count 10
+# Remplir les candidats dans data/raw/<theme>.json
+npx tsx scripts/pipeline.ts enrich --batch data/raw/<theme>.json
+# Remplir les TODOs (coords, histoire, scores)
+npx tsx scripts/pipeline.ts qc --batch data/enriched/<theme>.json
+npx tsx scripts/pipeline.ts approve --batch data/enriched/<theme>.json
+npx tsx scripts/pipeline.ts seed --batch data/approved/<theme>.json
+```
 
 ---
 
@@ -693,21 +733,40 @@ All scores default to 0, `moderationState` defaults to `"review"`.
 
 ## 10. Content Strategy
 
-### 10.1 Initial Seed: Cathar Region
+### 10.1 Content Overview (807 places)
 
-The first content set focuses on the Cathar region of southern France (Occitanie),
-covering approximately 15-20 entries including:
+| Seed File | Theme | Count |
+|-----------|-------|-------|
+| `seed-cathar.ts` | Pays Cathare, châteaux, trésors | ~120 |
+| `seed-sud-france.ts` | Tourisme Sud de la France (Pont du Gard, Gordes, Gavarnie...) | 50 |
+| `seed-celtic-legends.ts` | Légendes celtes bretonnes (Brocéliande, Carnac, Ys...) | 10 |
+| `seed-atlantis.ts` | Lieux liés à l'Atlantide (Richat, Bimini, Pavlopetri...) | 10 |
+| `seed-epics-new.ts` | Lieux pour épopées (Templiers, Vikings, Pharaons, Eldorado) | 10 |
+| `seed-europe.ts` | Europe (Écosse, Scandinavie, Balkans...) | ~50 |
+| `seed-mediterranean.ts` | Méditerranée (Égypte, Grèce, Turquie...) | ~30 |
+| `seed-asia.ts` | Asie (Japon, Inde, Chine...) | ~50 |
+| `seed-americas.ts` | Amériques (Incas, Mayas, mystères...) | ~50 |
+| `seed-africa-extra.ts` | Afrique | ~50 |
+| `seed-world.ts` | Lieux mondiaux divers | ~25 |
+| + autres batches | Compléments thématiques | ~350 |
 
-- **Castles:** Montsegur, Carcassonne, Queribus, Peyrepertuse, Puivert, Lastours
-- **Treasures:** Montagne d'Alaric (Visigothic treasure), Rennes-le-Chateau (Sauniere
-  mystery), the Cathar treasure of Montsegur
-- **Caves:** Grotte de Lombrives, Grotte du Mas-d'Azil
-- **Religious sites:** Abbaye de Fontfroide, Prieure de Serrabona
-- **Routes:** Sentier Cathare (hiking trail)
-- **Legends:** Regional myths and oral traditions
+### 10.1b Épopées (11)
 
-All seed entries are hand-curated in `src/data/seed-cathar.ts` with detailed narratives,
-accurate coordinates, and multi-dimensional scores.
+| ID | Titre | Lieux | Tags de recherche |
+|----|-------|-------|-------------------|
+| `graal` | Le Saint Graal | 14 | graal, grail, calice |
+| `atlantide` | L'Atlantide | 18 | atlantide, atlantis, englouti |
+| `templiers` | Les Templiers | 12 | templier, temple, croisade |
+| `vikings` | Les Vikings | 6 | viking, norse, drakkar |
+| `eldorado` | L'Eldorado | 8 | eldorado, or, inca |
+| `pharaons` | Malédiction des Pharaons | 10 | pharaon, pyramide, égypte |
+| `arthurien` | Légende Arthurienne | 4 | arthur, merlin |
+| `troubadours` | Route des Troubadours | 5 | troubadour, occitan |
+| `compostelle-sud` | Chemins de Compostelle | 5 | compostelle, pèlerinage |
+| `rome-antique-gaule` | Rome en Gaule | 4 | romain, rome |
+| `prehistoire-sud` | Mémoire de Pierre | 5 | préhistoire, mégalithe |
+
+Les épopées sont définies dans `src/data/epics.ts`. Chaque épopée a un panel dédié (`EpicDetailPanel`) avec description, parcours chronologique et liens vers les lieux.
 
 ### 10.2 Confidence Levels in Practice
 
@@ -727,13 +786,14 @@ The confidence system is central to the editorial integrity of the project:
 
 ### 10.3 Expansion Plan
 
-Future content expansions (via the agent pipeline):
+Prochaines épopées et thèmes envisagés :
 
-1. Greater Occitanie and Pyrenees region
-2. Templar sites across France
-3. European medieval legends (Grail cycle, Nibelungen, etc.)
-4. Mediterranean lost cities and trade routes
-5. Global legendary sites (El Dorado, Shambhala, Atlantis candidates, etc.)
+1. Route de la Soie (de Xi'an à Venise)
+2. La malédiction de l'or (trésors maudits à travers le monde)
+3. Légendes celtes et nordiques (au-delà de Brocéliande)
+4. Les cités perdues (Angkor, Petra, Machu Picchu, Palmyre...)
+5. Les mystères de la mer (Triangle des Bermudes, vaisseaux fantômes...)
+6. Mythologies fondatrices (Odyssée, Énéide, Ramayana...)
 
 ---
 
@@ -1063,39 +1123,53 @@ open http://localhost:3000
 
 ## 16. Next Steps / Roadmap
 
-### Phase 2: Agent Pipeline Activation
+### ✅ Done
 
-- [ ] Implement DiscoveryAgent with a web search API (SerpAPI, Brave Search, or Tavily)
-- [ ] Implement GeolocationAgent with Nominatim and Wikidata SPARQL
-- [ ] Implement ClassificationAgent with LLM-based analysis (GPT-4o or Claude)
-- [ ] Implement HistorianAgent with structured LLM prompts and fact/legend separation
-- [ ] Implement SourceAgent with Wikipedia and Wikidata API integration
-- [ ] Wire SeederAgent to Prisma for database writes
-- [ ] Migrate API routes from static seed data to Prisma queries
-- [ ] Add image discovery and attribution pipeline
-- [ ] Build a CLI runner for the full pipeline
+- [x] 807 places across the world with rich metadata
+- [x] 11 épopées with dedicated panel, globe lines, and chronological navigation
+- [x] CesiumJS globe with cinematic arrival on Carcassonne
+- [x] Wikipedia images fetched dynamically
+- [x] Mobile responsive (touch events, collapsible filters, safe areas)
+- [x] "Près de moi" geolocation feature
+- [x] Sequential pipeline orchestrator (`scripts/pipeline.ts`)
+- [x] Search with epic results (type "Graal" → epic appears)
+- [x] Ambient music with region-based auto-switch
 
-### Phase 3: User Experience
+### Phase 2: Enrichissement & UX (en cours)
 
-- [ ] Place detail pages with full-page layouts and image galleries
-- [ ] User authentication and place submissions
-- [ ] Community moderation workflow in the admin panel
-- [ ] Related places graph visualization
-- [ ] Travel planning features (itinerary builder, nearby places)
-- [ ] Mobile-responsive globe experience
-- [ ] Offline caching with service workers
-- [ ] SEO optimization with SSG for place pages
+- [ ] Améliorer encore le mobile (test réel sur devices)
+- [ ] Plus d'épopées (Route de la Soie, Malédiction de l'or, Légendes celtes...)
+- [ ] Lignes d'épopée plus visibles sur le globe (animation, épaisseur)
+- [ ] Contribuer des épopées : interface pour que les users proposent des liens lieu-épopée
+- [ ] 1000+ places objectif
 
-### Phase 4: Scale and Polish
+### Phase 3: Base de données & Auth
 
-- [ ] Full-text search with PostgreSQL `tsvector` or Typesense
-- [ ] Multi-language support (French, English, Spanish, Occitan)
-- [ ] 3D terrain visualization for mountain and cave sites
-- [ ] Custom Cesium imagery layers (historical maps overlay)
-- [ ] Performance optimization: marker clustering at high zoom levels
-- [ ] Analytics and engagement tracking
-- [ ] API rate limiting and caching layer
-- [ ] Contribution leaderboards and reputation system
+- [ ] Migration DB : script `migrate-to-db.ts` (déjà préparé conceptuellement)
+- [ ] Provider DB : Vercel Postgres, Supabase ou Neon (tier gratuit)
+- [ ] `npx prisma db push` + seed des 807 places
+- [ ] Modifier page.tsx + API pour lire la DB au lieu des fichiers TS
+- [ ] Auth (NextAuth.js) : connexion Google/email
+- [ ] Rôles : visiteur, contributeur, commerçant, admin
+- [ ] Contributions : les users peuvent proposer des lieux (pipeline de modération)
+
+### Phase 4: Monétisation & Marketplace
+
+- [ ] Affiliation Booking/activités : 4-5 produits affichés quand on clique sur un lieu
+- [ ] Abonnement commerçant (50€/mois) pour placer ses produits sur un lieu
+- [ ] Dashboard commerçant pour gérer ses annonces
+- [ ] Paiement Stripe
+- [ ] Parcours/itinéraires créés par les commerçants ou les users
+
+### Phase 5: Scale & Polish
+
+- [ ] Full-text search avec PostgreSQL `tsvector` ou Typesense
+- [ ] Multi-langue (FR, EN, ES, OC)
+- [ ] Clustering de markers à haute altitude
+- [ ] Calques d'imagerie historique (cartes anciennes)
+- [ ] PWA / mode hors-ligne
+- [ ] SEO : pages statiques par lieu pour le référencement
+- [ ] Analytics et tracking d'engagement
 
 ---
 
