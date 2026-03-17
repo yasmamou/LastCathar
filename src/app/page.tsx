@@ -11,6 +11,7 @@ import { PlaceDetailPanel } from '@/components/panels/PlaceDetailPanel'
 import { CategoryFilters } from '@/components/layout/CategoryFilters'
 import { SearchBar } from '@/components/layout/SearchBar'
 import { FeaturedStrip } from '@/components/layout/FeaturedStrip'
+import { Epic } from '@/data/epics'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
   ssr: false,
@@ -34,6 +35,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showIntro, setShowIntro] = useState(true)
   const [uiVisible, setUiVisible] = useState(false)
+  const [activeEpic, setActiveEpic] = useState<Epic | null>(null)
+  const [nearbyMode, setNearbyMode] = useState(false)
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
 
   useEffect(() => {
     const introTimer = setTimeout(() => setShowIntro(false), 3500)
@@ -44,9 +48,23 @@ export default function Home() {
     }
   }, [])
 
+  // Epic mode: filter to only places in the active epic
+  const epicSlugs = activeEpic ? new Set(activeEpic.places.map(p => p.slug)) : null
+
   const filteredPlaces = allPlaces.filter((place) => {
+    // Epic filter takes priority
+    if (epicSlugs && !epicSlugs.has(place.slug)) return false
     if (activeCategory && place.categoryPrimary !== activeCategory) return false
     if (activeConfidence && place.confidenceLevel !== activeConfidence) return false
+    // Nearby mode: sort by distance (filter happens below)
+    if (nearbyMode && userLocation) {
+      const dist = Math.sqrt(
+        Math.pow(place.latitude - userLocation.lat, 2) +
+        Math.pow(place.longitude - userLocation.lng, 2)
+      )
+      // Show places within ~300km (~3 degrees)
+      if (dist > 3) return false
+    }
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
       return (
@@ -59,9 +77,22 @@ export default function Home() {
     return true
   })
 
-  const featuredPlaces = (activeCategory || activeConfidence || searchQuery)
-    ? filteredPlaces.slice(0, 20)
-    : allPlaces.filter((p) => p.isFeatured)
+  // Sort nearby places by distance
+  const sortedPlaces = (nearbyMode && userLocation)
+    ? [...filteredPlaces].sort((a, b) => {
+        const da = Math.sqrt(Math.pow(a.latitude - userLocation.lat, 2) + Math.pow(a.longitude - userLocation.lng, 2))
+        const db = Math.sqrt(Math.pow(b.latitude - userLocation.lat, 2) + Math.pow(b.longitude - userLocation.lng, 2))
+        return da - db
+      })
+    : filteredPlaces
+
+  const featuredPlaces = activeEpic
+    ? activeEpic.places
+        .map(ep => allPlaces.find(p => p.slug === ep.slug))
+        .filter((p): p is PlaceEntry => p !== undefined)
+    : (activeCategory || activeConfidence || searchQuery || nearbyMode)
+      ? sortedPlaces.slice(0, 20)
+      : allPlaces.filter((p) => p.isFeatured)
 
   const handlePlaceSelect = useCallback((place: PlaceEntry) => {
     setSelectedPlace(place)
@@ -73,6 +104,45 @@ export default function Home() {
     setSelectedPlace(null)
   }, [])
 
+  const handleEpicSelect = useCallback((epic: Epic) => {
+    setActiveEpic(epic)
+    setActiveCategory(null)
+    setActiveConfidence(null)
+    setSearchQuery('')
+    setNearbyMode(false)
+    // Fly to first place in epic
+    const firstSlug = epic.places[0]?.slug
+    const firstPlace = allPlaces.find(p => p.slug === firstSlug)
+    if (firstPlace) {
+      setSelectedPlace(firstPlace)
+      setFlyToTrigger(n => n + 1)
+    }
+  }, [])
+
+  const handleNearby = useCallback(() => {
+    if (nearbyMode) {
+      setNearbyMode(false)
+      setUserLocation(null)
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        setNearbyMode(true)
+        setActiveEpic(null)
+        setActiveCategory(null)
+        setSearchQuery('')
+      },
+      () => {
+        alert('Impossible d\'accéder à votre position. Vérifiez les permissions.')
+      }
+    )
+  }, [nearbyMode])
+
+  const handleClearEpic = useCallback(() => {
+    setActiveEpic(null)
+  }, [])
+
   const [showFilters, setShowFilters] = useState(false)
 
   return (
@@ -80,7 +150,7 @@ export default function Home() {
       {/* Globe — full screen, always interactive */}
       <div className="absolute inset-0 z-0">
         <GlobeView
-          places={filteredPlaces}
+          places={sortedPlaces}
           selectedPlace={selectedPlace}
           flyToTrigger={flyToTrigger}
           onPlaceSelect={handlePlaceSelect}
@@ -148,7 +218,44 @@ export default function Home() {
                 onChange={setSearchQuery}
                 allPlaces={allPlaces}
                 onPlaceSelect={handlePlaceSelect}
+                onEpicSelect={handleEpicSelect}
               />
+            </motion.div>
+
+            {/* Active epic banner + nearby button */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 z-25 flex items-center gap-2"
+            >
+              {activeEpic && (
+                <div
+                  className="glass rounded-full px-3 py-1.5 flex items-center gap-2 text-xs"
+                  style={{ color: activeEpic.color, borderColor: `${activeEpic.color}30`, borderWidth: 1 }}
+                >
+                  <span>{activeEpic.icon}</span>
+                  <span className="font-medium">{activeEpic.title}</span>
+                  <span className="text-white/30">· {activeEpic.places.length} lieux</span>
+                  <button onClick={handleClearEpic} className="text-white/30 hover:text-white/60 ml-1">✕</button>
+                </div>
+              )}
+              {nearbyMode && (
+                <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 text-xs text-emerald-400 border border-emerald-400/20">
+                  <span>📍</span>
+                  <span className="font-medium">Près de moi</span>
+                  <span className="text-white/30">· {sortedPlaces.length} lieux</span>
+                  <button onClick={handleNearby} className="text-white/30 hover:text-white/60 ml-1">✕</button>
+                </div>
+              )}
+              {!activeEpic && !nearbyMode && (
+                <button
+                  onClick={handleNearby}
+                  className="glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/30 hover:text-white/50 active:text-white/70 transition-colors"
+                >
+                  📍 Près de moi
+                </button>
+              )}
             </motion.div>
 
             {/* Mobile: filter toggle button */}
@@ -156,13 +263,13 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="md:hidden absolute top-[4.5rem] right-3 z-30"
+              className="md:hidden absolute top-[4.2rem] right-3 z-30"
             >
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className="glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/40 active:text-white/70"
               >
-                {showFilters ? 'Hide filters' : 'Filters'}
+                {showFilters ? 'Masquer' : 'Filtres'}
                 {(activeCategory || activeConfidence) && (
                   <span className="ml-1 w-1.5 h-1.5 rounded-full bg-gold-400 inline-block" />
                 )}
@@ -218,7 +325,7 @@ export default function Home() {
               className="absolute bottom-[3.5rem] sm:bottom-20 md:bottom-[6.5rem] right-2 md:right-4 z-10"
             >
               <p className="text-[9px] md:text-[10px] text-white/15 tracking-wider">
-                {filteredPlaces.length} places
+                {sortedPlaces.length} places
               </p>
             </motion.div>
           </>

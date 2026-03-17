@@ -19,7 +19,7 @@ interface AmbientMusicProps {
 export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusicProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
-  const [showPanel, setShowPanel] = useState(true) // Open by default
+  const [showPanel, setShowPanel] = useState(false) // Closed by default, especially on mobile
   const [currentTrack, setCurrentTrack] = useState<MusicTrack>(MUSIC_LIBRARY[1]) // Gloria default
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoStartedRef = useRef(false)
@@ -188,7 +188,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusi
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full mb-2 left-0 w-72 glass rounded-xl overflow-hidden shadow-2xl z-50"
+            className="absolute bottom-full mb-2 left-0 w-60 md:w-72 glass rounded-xl overflow-hidden shadow-2xl z-50 max-h-[50vh] overflow-y-auto"
           >
             {/* Now playing */}
             {isPlaying && (

@@ -102,14 +102,14 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           },
         })
 
-        // Cinematic fly-in to Carcassonne after intro
+        // Cinematic fly-in toward Carcassonne — stay high enough for global view
         setTimeout(() => {
           if (viewer.isDestroyed()) return
           viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(2.3634, 43.2065, 120000),
+            destination: Cesium.Cartesian3.fromDegrees(2.3634, 43.2065, 350000),
             orientation: {
               heading: Cesium.Math.toRadians(-5),
-              pitch: Cesium.Math.toRadians(-55),
+              pitch: Cesium.Math.toRadians(-50),
               roll: 0,
             },
             duration: 4.0,
