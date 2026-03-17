@@ -154,6 +154,7 @@ export default function Home() {
           selectedPlace={selectedPlace}
           flyToTrigger={flyToTrigger}
           onPlaceSelect={handlePlaceSelect}
+          epicLines={activeEpic ? { placeSlugs: activeEpic.places.map(p => p.slug), color: activeEpic.color } : null}
         />
       </div>
 
@@ -222,59 +223,56 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* Active epic banner + nearby button */}
+            {/* Quick action buttons — left side, below header */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 z-25 flex items-center gap-2"
+              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-2 md:left-4 z-25 flex flex-col gap-1.5"
             >
-              {activeEpic && (
+              {/* Nearby button */}
+              <button
+                onClick={handleNearby}
+                className={`glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase transition-colors flex items-center gap-1.5 ${
+                  nearbyMode
+                    ? 'text-emerald-400 border border-emerald-400/30'
+                    : 'text-white/30 hover:text-white/50 active:text-white/70'
+                }`}
+              >
+                📍 {nearbyMode ? `Près de moi · ${sortedPlaces.length}` : 'Près de moi'}
+                {nearbyMode && <span className="text-white/30 ml-1">✕</span>}
+              </button>
+
+              {/* Mobile: filter toggle */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="md:hidden glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/40 active:text-white/70 flex items-center gap-1.5"
+              >
+                {showFilters ? 'Masquer filtres' : 'Filtres'}
+                {(activeCategory || activeConfidence) && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold-400 inline-block" />
+                )}
+              </button>
+            </motion.div>
+
+            {/* Active epic banner — centered below search */}
+            {activeEpic && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 z-25"
+              >
                 <div
-                  className="glass rounded-full px-3 py-1.5 flex items-center gap-2 text-xs"
+                  className="glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs"
                   style={{ color: activeEpic.color, borderColor: `${activeEpic.color}30`, borderWidth: 1 }}
                 >
                   <span>{activeEpic.icon}</span>
                   <span className="font-medium">{activeEpic.title}</span>
-                  <span className="text-white/30">· {activeEpic.places.length} lieux</span>
+                  <span className="text-white/30 hidden sm:inline">· {activeEpic.places.length} lieux</span>
                   <button onClick={handleClearEpic} className="text-white/30 hover:text-white/60 ml-1">✕</button>
                 </div>
-              )}
-              {nearbyMode && (
-                <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 text-xs text-emerald-400 border border-emerald-400/20">
-                  <span>📍</span>
-                  <span className="font-medium">Près de moi</span>
-                  <span className="text-white/30">· {sortedPlaces.length} lieux</span>
-                  <button onClick={handleNearby} className="text-white/30 hover:text-white/60 ml-1">✕</button>
-                </div>
-              )}
-              {!activeEpic && !nearbyMode && (
-                <button
-                  onClick={handleNearby}
-                  className="glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/30 hover:text-white/50 active:text-white/70 transition-colors"
-                >
-                  📍 Près de moi
-                </button>
-              )}
-            </motion.div>
-
-            {/* Mobile: filter toggle button */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="md:hidden absolute top-[4.2rem] right-3 z-30"
-            >
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/40 active:text-white/70"
-              >
-                {showFilters ? 'Masquer' : 'Filtres'}
-                {(activeCategory || activeConfidence) && (
-                  <span className="ml-1 w-1.5 h-1.5 rounded-full bg-gold-400 inline-block" />
-                )}
-              </button>
-            </motion.div>
+              </motion.div>
+            )}
 
             {/* Category filters — hidden on mobile unless toggled, always visible on desktop */}
             <motion.div
@@ -340,6 +338,7 @@ export default function Home() {
             onClose={handleClosePanel}
             selectedCountry={selectedPlace.country}
             selectedEras={selectedPlace.era}
+            onEpicSelect={handleEpicSelect}
           />
         )}
       </AnimatePresence>

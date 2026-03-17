@@ -14,16 +14,19 @@ import {
   getConfidenceLabel,
   getStatusBadgeLabel,
 } from '@/lib/categories'
+import { Epic, getEpicsForPlace } from '@/data/epics'
 
 interface PlaceDetailPanelProps {
   place: PlaceEntry
   onClose: () => void
   selectedCountry?: string
   selectedEras?: string[]
+  onEpicSelect?: (epic: Epic) => void
 }
 
-export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras, onEpicSelect }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
+  const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
   const { images, loading: imagesLoading } = useWikipediaImages({
     sourceLinks: place.sourceLinks,
@@ -196,6 +199,37 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
               </div>
             )}
           </div>
+
+          {/* Épopées */}
+          {placeEpics.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {placeEpics.map((epic) => {
+                const epicPlace = epic.places.find(p => p.slug === place.slug)
+                return (
+                  <button
+                    key={epic.id}
+                    onClick={() => onEpicSelect?.(epic)}
+                    className="glass-light rounded-lg px-3 py-2 text-left transition-all hover:bg-white/10 active:bg-white/15 w-full"
+                    style={{ borderLeft: `3px solid ${epic.color}` }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">{epic.icon}</span>
+                      <span className="text-xs font-medium" style={{ color: epic.color }}>
+                        {epic.title}
+                      </span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/25">ÉPOPÉE</span>
+                    </div>
+                    {epicPlace?.role && (
+                      <p className="text-[10px] text-white/40 mt-1 ml-6 leading-relaxed">
+                        {epicPlace.role}
+                        {epicPlace.date && <span className="text-white/20"> · {epicPlace.date}</span>}
+                      </p>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          )}
 
           <p className="text-sm text-white/70 leading-relaxed">
             {place.shortDescription}

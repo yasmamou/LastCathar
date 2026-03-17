@@ -12,20 +12,27 @@ if (typeof window !== 'undefined') {
   if (token) Cesium.Ion.defaultAccessToken = token
 }
 
+interface EpicLine {
+  placeSlugs: string[]
+  color: string
+}
+
 interface GlobeViewProps {
   places: PlaceEntry[]
   selectedPlace: PlaceEntry | null
   flyToTrigger: number
   onPlaceSelect: (place: PlaceEntry) => void
+  epicLines?: EpicLine | null
 }
 
-export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect }: GlobeViewProps) {
+export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect, epicLines }: GlobeViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<Cesium.Viewer | null>(null)
   const readyRef = useRef(false)
   const callbacksRef = useRef({ onPlaceSelect, selectedPlace, flyToTrigger })
   callbacksRef.current = { onPlaceSelect, selectedPlace, flyToTrigger }
   const highlightRef = useRef<Cesium.Entity | null>(null)
+  const linesRef = useRef<Cesium.Entity[]>([])
 
   // ─── Init viewer once ───
   useEffect(() => {
@@ -237,6 +244,50 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       duration: 1.5,
     })
   }, [flyToTrigger, selectedPlace])
+
+  // ─── Draw epic connection lines ───
+  useEffect(() => {
+    const viewer = viewerRef.current
+    if (!viewer || viewer.isDestroyed()) return
+
+    // Remove previous lines
+    linesRef.current.forEach(e => {
+      if (!viewer.isDestroyed()) viewer.entities.remove(e)
+    })
+    linesRef.current = []
+
+    if (!epicLines || !epicLines.placeSlugs.length) return
+
+    // Find matching places in order
+    const epicPlaces = epicLines.placeSlugs
+      .map(slug => places.find(p => p.slug === slug))
+      .filter((p): p is PlaceEntry => p !== undefined)
+
+    if (epicPlaces.length < 2) return
+
+    const lineColor = Cesium.Color.fromCssColorString(epicLines.color).withAlpha(0.6)
+
+    // Draw lines between consecutive places
+    for (let i = 0; i < epicPlaces.length - 1; i++) {
+      const from = epicPlaces[i]
+      const to = epicPlaces[i + 1]
+      const entity = viewer.entities.add({
+        polyline: {
+          positions: Cesium.Cartesian3.fromDegreesArray([
+            from.longitude, from.latitude,
+            to.longitude, to.latitude,
+          ]),
+          width: 2,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: 0.3,
+            color: lineColor,
+          }),
+          clampToGround: true,
+        },
+      })
+      linesRef.current.push(entity)
+    }
+  }, [epicLines, places])
 
   return (
     <div ref={containerRef} className="w-full h-full" style={{ background: '#05060d' }} />
