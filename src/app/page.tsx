@@ -11,6 +11,7 @@ import { PlaceDetailPanel } from '@/components/panels/PlaceDetailPanel'
 import { CategoryFilters } from '@/components/layout/CategoryFilters'
 import { SearchBar } from '@/components/layout/SearchBar'
 import { FeaturedStrip } from '@/components/layout/FeaturedStrip'
+import { EpicDetailPanel } from '@/components/panels/EpicDetailPanel'
 import { Epic } from '@/data/epics'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
@@ -36,6 +37,7 @@ export default function Home() {
   const [showIntro, setShowIntro] = useState(true)
   const [uiVisible, setUiVisible] = useState(false)
   const [activeEpic, setActiveEpic] = useState<Epic | null>(null)
+  const [showEpicPanel, setShowEpicPanel] = useState(false)
   const [nearbyMode, setNearbyMode] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
 
@@ -102,10 +104,21 @@ export default function Home() {
 
   const handleClosePanel = useCallback(() => {
     setSelectedPlace(null)
+    // If we came from an epic, go back to epic panel
+    if (activeEpic) {
+      setShowEpicPanel(true)
+    }
+  }, [activeEpic])
+
+  const handleCloseEpicPanel = useCallback(() => {
+    setShowEpicPanel(false)
+    setActiveEpic(null)
   }, [])
 
   const handleEpicSelect = useCallback((epic: Epic) => {
     setActiveEpic(epic)
+    setShowEpicPanel(true)
+    setSelectedPlace(null)
     setActiveCategory(null)
     setActiveConfidence(null)
     setSearchQuery('')
@@ -114,7 +127,6 @@ export default function Home() {
     const firstSlug = epic.places[0]?.slug
     const firstPlace = allPlaces.find(p => p.slug === firstSlug)
     if (firstPlace) {
-      setSelectedPlace(firstPlace)
       setFlyToTrigger(n => n + 1)
     }
   }, [])
@@ -141,6 +153,13 @@ export default function Home() {
 
   const handleClearEpic = useCallback(() => {
     setActiveEpic(null)
+    setShowEpicPanel(false)
+  }, [])
+
+  const handleEpicPlaceSelect = useCallback((place: PlaceEntry) => {
+    setShowEpicPanel(false)
+    setSelectedPlace(place)
+    setFlyToTrigger(n => n + 1)
   }, [])
 
   const [showFilters, setShowFilters] = useState(false)
@@ -203,7 +222,7 @@ export default function Home() {
 
       {/* UI overlays — appear after intro */}
       <AnimatePresence>
-        {uiVisible && !selectedPlace && (
+        {uiVisible && !selectedPlace && !showEpicPanel && (
           <>
             <Header />
 
@@ -327,6 +346,18 @@ export default function Home() {
               </p>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Epic detail panel */}
+      <AnimatePresence>
+        {showEpicPanel && activeEpic && !selectedPlace && (
+          <EpicDetailPanel
+            epic={activeEpic}
+            allPlaces={allPlaces}
+            onClose={handleCloseEpicPanel}
+            onPlaceSelect={handleEpicPlaceSelect}
+          />
         )}
       </AnimatePresence>
 
