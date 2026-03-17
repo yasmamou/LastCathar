@@ -136,7 +136,7 @@ body.admin-body {
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glass {
-    background: rgba(10, 12, 26, 0.85);
+    background: rgba(10, 12, 26, 0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
@@ -144,9 +144,9 @@ body.admin-body {
   .vignette {
     background: radial-gradient(
       ellipse at center,
-      transparent 30%,
-      rgba(5, 6, 13, 0.3) 70%,
-      rgba(5, 6, 13, 0.6) 100%
+      transparent 50%,
+      rgba(5, 6, 13, 0.2) 80%,
+      rgba(5, 6, 13, 0.4) 100%
     );
   }
 }
@@ -166,4 +166,28 @@ body.admin-body {
   button, a {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Minimum touch targets on mobile */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline/chip buttons that are part of a row */
+  .glass-light button,
+  button.rounded-full {
+    min-height: auto;
+    min-width: auto;
+  }
+}
+
+/* Prevent pull-to-refresh and overscroll on mobile */
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* CesiumJS touch: ensure canvas receives all touch events */
+.cesium-widget canvas {
+  touch-action: manipulation;
 }

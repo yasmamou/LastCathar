@@ -73,10 +73,12 @@ export default function Home() {
     setSelectedPlace(null)
   }, [])
 
+  const [showFilters, setShowFilters] = useState(false)
+
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-midnight-950">
-      {/* Globe */}
-      <div className="absolute inset-0">
+      {/* Globe — full screen, always interactive */}
+      <div className="absolute inset-0 z-0">
         <GlobeView
           places={filteredPlaces}
           selectedPlace={selectedPlace}
@@ -85,8 +87,8 @@ export default function Home() {
         />
       </div>
 
-      {/* Cinematic vignette */}
-      <div className="vignette z-10" />
+      {/* Cinematic vignette — lighter on mobile so globe is more visible */}
+      <div className="vignette z-10 pointer-events-none" />
 
       {/* Cinematic intro overlay */}
       <AnimatePresence>
@@ -134,12 +136,12 @@ export default function Home() {
           <>
             <Header />
 
-            {/* Search bar */}
+            {/* Search bar — compact on mobile */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-12 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3"
+              className="absolute top-10 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3"
             >
               <SearchBar
                 value={searchQuery}
@@ -149,12 +151,32 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* Category filters — hidden on very small screens when not active */}
+            {/* Mobile: filter toggle button */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="absolute top-[5.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4"
+              className="md:hidden absolute top-[4.5rem] right-3 z-30"
+            >
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="glass rounded-full px-3 py-1.5 text-[10px] tracking-wider uppercase text-white/40 active:text-white/70"
+              >
+                {showFilters ? 'Hide filters' : 'Filters'}
+                {(activeCategory || activeConfidence) && (
+                  <span className="ml-1 w-1.5 h-1.5 rounded-full bg-gold-400 inline-block" />
+                )}
+              </button>
+            </motion.div>
+
+            {/* Category filters — hidden on mobile unless toggled, always visible on desktop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className={`absolute top-[6.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4 ${
+                showFilters ? 'block' : 'hidden md:block'
+              }`}
             >
               <CategoryFilters
                 activeCategory={activeCategory}
@@ -175,16 +197,16 @@ export default function Home() {
               <FeaturedStrip places={featuredPlaces} onSelect={handlePlaceSelect} />
             </motion.div>
 
-            {/* Music player — bottom left */}
+            {/* Music player — bottom left, above featured strip */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-[4.5rem] sm:bottom-20 md:bottom-24 left-2 md:left-4 z-30"
+              className="absolute bottom-[3.5rem] sm:bottom-20 md:bottom-24 left-2 md:left-4 z-30"
             >
               <AmbientMusic
-                selectedCountry={selectedPlace?.country}
-                selectedEras={selectedPlace?.era}
+                selectedCountry={undefined}
+                selectedEras={undefined}
               />
             </motion.div>
 
@@ -193,7 +215,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-[4.5rem] sm:bottom-20 md:bottom-[6.5rem] right-2 md:right-4 z-10"
+              className="absolute bottom-[3.5rem] sm:bottom-20 md:bottom-[6.5rem] right-2 md:right-4 z-10"
             >
               <p className="text-[9px] md:text-[10px] text-white/15 tracking-wider">
                 {filteredPlaces.length} places
@@ -203,7 +225,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Place detail panel — hides all other UI on mobile */}
+      {/* Place detail panel */}
       <AnimatePresence>
         {selectedPlace && (
           <PlaceDetailPanel
