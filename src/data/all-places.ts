@@ -21,6 +21,7 @@ import { seedBatch5Places } from './seed-batch5'
 import { seedCelticLegendsPlaces } from './seed-celtic-legends'
 import { seedSudFrancePlaces } from './seed-sud-france'
 import { seedAtlantisPlaces } from './seed-atlantis'
+import { seedEpicsNewPlaces } from './seed-epics-new'
 
 export const allPlaces: PlaceEntry[] = [
   ...seedCatharPlaces,
@@ -44,4 +45,5 @@ export const allPlaces: PlaceEntry[] = [
   ...seedCelticLegendsPlaces,
   ...seedSudFrancePlaces,
   ...seedAtlantisPlaces,
+  ...seedEpicsNewPlaces,
 ]
