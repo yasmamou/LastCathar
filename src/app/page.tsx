@@ -59,7 +59,6 @@ export default function Home() {
     return true
   })
 
-  // Featured strip shows filtered results when filters active, otherwise featured places
   const featuredPlaces = (activeCategory || activeConfidence || searchQuery)
     ? filteredPlaces.slice(0, 20)
     : allPlaces.filter((p) => p.isFeatured)
@@ -96,7 +95,7 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5, ease: 'easeInOut' }}
-            className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none px-4"
             style={{
               background: 'radial-gradient(ellipse at center, rgba(5,6,13,0.3) 0%, rgba(5,6,13,0.95) 70%)',
             }}
@@ -106,7 +105,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20, letterSpacing: '0.5em' }}
                 animate={{ opacity: 1, y: 0, letterSpacing: '0.3em' }}
                 transition={{ duration: 1.5, delay: 0.3, ease: 'easeOut' }}
-                className="font-display text-5xl md:text-7xl font-semibold text-white/95"
+                className="font-display text-4xl sm:text-5xl md:text-7xl font-semibold text-white/95"
               >
                 Last Cathar
               </motion.h1>
@@ -114,7 +113,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, delay: 1.2 }}
-                className="mt-4 text-sm md:text-base tracking-[0.25em] uppercase text-gold-400/50"
+                className="mt-3 text-xs sm:text-sm md:text-base tracking-[0.2em] sm:tracking-[0.25em] uppercase text-gold-400/50"
               >
                 Treasures &middot; Myths &middot; Hidden Stories
               </motion.p>
@@ -122,7 +121,7 @@ export default function Home() {
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 1.5, delay: 1.8, ease: 'easeInOut' }}
-                className="mt-6 mx-auto w-32 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent"
+                className="mt-4 mx-auto w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent"
               />
             </div>
           </motion.div>
@@ -131,16 +130,16 @@ export default function Home() {
 
       {/* UI overlays — appear after intro */}
       <AnimatePresence>
-        {uiVisible && (
+        {uiVisible && !selectedPlace && (
           <>
             <Header />
 
-            {/* Search bar with autocomplete */}
+            {/* Search bar */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3 md:px-4"
+              className="absolute top-12 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3"
             >
               <SearchBar
                 value={searchQuery}
@@ -150,12 +149,12 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* Category filters */}
+            {/* Category filters — hidden on very small screens when not active */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="absolute top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4"
+              className="absolute top-[5.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4"
             >
               <CategoryFilters
                 activeCategory={activeCategory}
@@ -176,12 +175,12 @@ export default function Home() {
               <FeaturedStrip places={featuredPlaces} onSelect={handlePlaceSelect} />
             </motion.div>
 
-            {/* Music player — bottom left, above featured strip */}
+            {/* Music player — bottom left */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-20 md:bottom-24 left-2 md:left-4 z-30"
+              className="absolute bottom-[4.5rem] sm:bottom-20 md:bottom-24 left-2 md:left-4 z-30"
             >
               <AmbientMusic
                 selectedCountry={selectedPlace?.country}
@@ -189,24 +188,30 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* Bottom left info */}
+            {/* Place count */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-[6.5rem] left-4 z-10"
+              className="absolute bottom-[4.5rem] sm:bottom-20 md:bottom-[6.5rem] right-2 md:right-4 z-10"
             >
-              <p className="text-[10px] text-white/15 tracking-wider">
-                {filteredPlaces.length} places</p>
+              <p className="text-[9px] md:text-[10px] text-white/15 tracking-wider">
+                {filteredPlaces.length} places
+              </p>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Place detail panel */}
+      {/* Place detail panel — hides all other UI on mobile */}
       <AnimatePresence>
         {selectedPlace && (
-          <PlaceDetailPanel place={selectedPlace} onClose={handleClosePanel} />
+          <PlaceDetailPanel
+            place={selectedPlace}
+            onClose={handleClosePanel}
+            selectedCountry={selectedPlace.country}
+            selectedEras={selectedPlace.era}
+          />
         )}
       </AnimatePresence>
     </main>

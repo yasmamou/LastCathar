@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
+import { AmbientMusic } from '@/components/layout/AmbientMusic'
 import { PlaceEntry } from '@/types/places'
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
@@ -17,9 +18,11 @@ import {
 interface PlaceDetailPanelProps {
   place: PlaceEntry
   onClose: () => void
+  selectedCountry?: string
+  selectedEras?: string[]
 }
 
-export function PlaceDetailPanel({ place, onClose }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
   const { images, loading: imagesLoading } = useWikipediaImages({
@@ -37,9 +40,20 @@ export function PlaceDetailPanel({ place, onClose }: PlaceDetailPanelProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: '100%', opacity: 0 }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-      className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-30"
+      className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-40"
     >
       <div className="h-full glass overflow-y-auto">
+        {/* Mobile back button + music */}
+        <div className="md:hidden flex items-center justify-between px-3 py-2 border-b border-white/5 sticky top-0 z-10 glass">
+          <button
+            onClick={onClose}
+            className="flex items-center gap-1.5 text-white/50 active:text-white/80"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs">Globe</span>
+          </button>
+          <AmbientMusic selectedCountry={selectedCountry} selectedEras={selectedEras} />
+        </div>
         {/* Hero section with Wikipedia image */}
         <div
           className="relative flex items-end p-6 overflow-hidden"
@@ -93,7 +107,7 @@ export function PlaceDetailPanel({ place, onClose }: PlaceDetailPanelProps) {
 
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white/60 hover:text-white/90 transition-colors z-10"
+            className="hidden md:flex absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 items-center justify-center text-white/60 hover:text-white/90 transition-colors z-10"
           >
             <X className="w-4 h-4" />
           </button>
