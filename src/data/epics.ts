@@ -234,6 +234,33 @@ export const EPICS: Epic[] = [
       { slug: 'pyramides-meroe-soudan', role: 'Les pyramides oubliées du Soudan — l\'héritage nubien des pharaons', order: 10, date: '300 av. J.-C.' },
     ],
   },
+  {
+    id: 'rois-berberes',
+    title: 'Rois & Reines Berbères',
+    subtitle: 'Massinissa, la Kahina, Tin Hinan — 10 000 ans de civilisation amazighe d\'Afrique du Nord',
+    description: "Avant les Romains, avant les Arabes, avant les Français — les Berbères (Imazighen, « les hommes libres ») ont forgé l'une des plus anciennes civilisations du monde. Des peintures du Tassili vieilles de 10 000 ans aux royaumes numides qui rivalisèrent avec Carthage et Rome, des reines guerrières comme Dihya (la Kahina) et Tin Hinan aux cités du désert et aux ksour de l'Atlas, cette épopée traverse l'Afrique du Nord sur les traces des rois et reines qui ont façonné le Maghreb. Une histoire souvent méconnue, écrite dans la pierre, le sable et la mémoire orale d'un peuple indomptable.",
+    icon: '🦁',
+    color: '#c2410c',
+    tags: ['berbère', 'amazigh', 'imazighen', 'numide', 'kahina', 'massinissa', 'touareg', 'maghreb', 'algérie', 'maroc', 'tunisie', 'afrique du nord'],
+    places: [
+      { slug: 'tassili-najjer-peintures-rupestres', role: 'Les origines : 15 000 peintures documentant 10 000 ans de vie berbère au Sahara vert', order: 1, date: '10 000 av. J.-C.' },
+      { slug: 'medracen-tombeau-numide', role: 'Plus ancien monument royal d\'Afrique du Nord — tombeau d\'un roi pré-Massinissa', order: 2, date: 'IIIe siècle av. J.-C.' },
+      { slug: 'massinissa-cirta-numidie', role: 'Cirta (Constantine) — capitale de Massinissa, unificateur de la Numidie', order: 3, date: '238-148 av. J.-C.' },
+      { slug: 'table-de-jugurtha-tunisie', role: 'Forteresse naturelle de Jugurtha — 7 ans de guerre contre Rome', order: 4, date: '112-105 av. J.-C.' },
+      { slug: 'juba-ii-caesarea-cherchell', role: 'Caesarea — Juba II et Cléopâtre Sélèné, la synthèse berbéro-romaine', order: 5, date: '25 av. J.-C.' },
+      { slug: 'tombeau-royal-mauretanie-tipaza', role: 'Le mausolée monumental de Juba II et Cléopâtre Sélèné', order: 6, date: 'Ier siècle' },
+      { slug: 'djemila-cuicul', role: 'Djemila — splendeur romaine en terre numide, la « belle » en arabe', order: 7, date: 'Ier siècle' },
+      { slug: 'timgad', role: 'Timgad — la « Pompéi d\'Afrique », fondée par Trajan en Numidie', order: 8, date: '100' },
+      { slug: 'dougga-tunisie', role: 'Dougga — mausolée libyco-punique, symbole de l\'identité numide', order: 9, date: 'IIe siècle av. J.-C.' },
+      { slug: 'tin-hinan-tombeau-hoggar', role: 'Tin Hinan — reine-ancêtre des Touaregs, retrouvée parée d\'or', order: 10, date: 'IVe siècle' },
+      { slug: 'kahina-aures-resistance', role: 'La Kahina — dernière reine berbère, vaincue mais jamais soumise', order: 11, date: '698-703' },
+      { slug: 'koumbi-saleh-empire-ghana', role: 'Koumbi Saleh — les Berbères Sanhadja, maîtres du commerce transsaharien', order: 12, date: 'IXe siècle' },
+      { slug: 'sigilmassa-porte-sahara', role: 'Sijilmassa — 700 ans de porte d\'entrée de l\'or africain', order: 13, date: '757' },
+      { slug: 'ghardaia-pentapole-mozabite', role: 'Le M\'Zab — cités ibadites qui inspirèrent Le Corbusier', order: 14, date: 'XIe siècle' },
+      { slug: 'ksar-ait-ben-haddou-maroc', role: 'Aït-Ben-Haddou — l\'architecture berbère en terre rouge, immortelle', order: 15, date: 'XIe siècle' },
+      { slug: 'volubilis-maroc', role: 'Volubilis — cité romano-berbère où Juba II avait un palais', order: 16 },
+    ],
+  },
 ]
 
 /** Find all epics that contain a given place slug */

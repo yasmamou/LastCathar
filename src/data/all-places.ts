@@ -22,6 +22,7 @@ import { seedCelticLegendsPlaces } from './seed-celtic-legends'
 import { seedSudFrancePlaces } from './seed-sud-france'
 import { seedAtlantisPlaces } from './seed-atlantis'
 import { seedEpicsNewPlaces } from './seed-epics-new'
+import { seedBerberesPlaces } from './seed-berberes'
 
 export const allPlaces: PlaceEntry[] = [
   ...seedCatharPlaces,
@@ -46,4 +47,5 @@ export const allPlaces: PlaceEntry[] = [
   ...seedSudFrancePlaces,
   ...seedAtlantisPlaces,
   ...seedEpicsNewPlaces,
+  ...seedBerberesPlaces,
 ]
