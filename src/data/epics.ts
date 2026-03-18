@@ -241,9 +241,11 @@ export function getEpicsForPlace(slug: string): Epic[] {
   return EPICS.filter(epic => epic.places.some(p => p.slug === slug))
 }
 
-/** Search epics by text query */
+/** Search epics by text query — "épopée" or "epopee" returns all */
 export function searchEpics(query: string): Epic[] {
-  const q = query.toLowerCase()
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  // "epopee", "épopée", "epopees", "épopées" → show all epics
+  if (q.startsWith('epop') || q.startsWith('epic')) return EPICS
   return EPICS.filter(epic =>
     epic.title.toLowerCase().includes(q) ||
     epic.subtitle.toLowerCase().includes(q) ||
