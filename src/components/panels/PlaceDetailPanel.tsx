@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
 import { AmbientMusic } from '@/components/layout/AmbientMusic'
 import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
+import { ProductCards } from '@/components/marketplace/ProductCards'
 import { PlaceEntry } from '@/types/places'
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
@@ -242,6 +243,9 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
           <p className="text-sm text-white/70 leading-relaxed">
             {place.shortDescription}
           </p>
+
+          {/* Marketplace — Découvertes locales */}
+          <ProductCards placeSlug={place.slug} />
 
           <div className="h-px bg-white/5" />
 

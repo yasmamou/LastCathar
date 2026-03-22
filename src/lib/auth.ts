@@ -1,11 +1,10 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as NextAuthOptions['adapter'],
+  // No adapter — credentials + JWT doesn't use DB sessions
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -48,8 +47,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role: string }).role
         token.id = user.id
+        token.role = (user as { role: string }).role
       }
       return token
     },
