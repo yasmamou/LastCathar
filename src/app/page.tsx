@@ -42,6 +42,22 @@ export default function Home() {
   const [nearbyMode, setNearbyMode] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [interactionFilter, setInteractionFilter] = useState<'VISITED' | 'WISHLIST' | 'FAVORITE' | null>(null)
+  const [interactionSlugs, setInteractionSlugs] = useState<string[]>([])
+
+  const handleFilterInteractions = useCallback((filter: 'VISITED' | 'WISHLIST' | 'FAVORITE' | null, slugs: string[]) => {
+    setInteractionFilter(filter)
+    setInteractionSlugs(slugs)
+    // Clear other filters
+    if (filter) {
+      setActiveCategory(null)
+      setActiveConfidence(null)
+      setSearchQuery('')
+      setActiveEpic(null)
+      setShowEpicPanel(false)
+      setNearbyMode(false)
+    }
+  }, [])
 
   useEffect(() => {
     const introTimer = setTimeout(() => setShowIntro(false), 3500)
@@ -55,7 +71,11 @@ export default function Home() {
   // Epic mode: filter to only places in the active epic
   const epicSlugs = activeEpic ? new Set(activeEpic.places.map(p => p.slug)) : null
 
+  const interactionSlugSet = interactionFilter ? new Set(interactionSlugs) : null
+
   const filteredPlaces = allPlaces.filter((place) => {
+    // Interaction filter (from user menu: visited/wishlist/favorite)
+    if (interactionSlugSet && !interactionSlugSet.has(place.slug)) return false
     // Epic filter takes priority
     if (epicSlugs && !epicSlugs.has(place.slug)) return false
     if (activeCategory && place.categoryPrimary !== activeCategory) return false
@@ -94,7 +114,7 @@ export default function Home() {
     ? activeEpic.places
         .map(ep => allPlaces.find(p => p.slug === ep.slug))
         .filter((p): p is PlaceEntry => p !== undefined)
-    : (activeCategory || activeConfidence || searchQuery || nearbyMode)
+    : (activeCategory || activeConfidence || searchQuery || nearbyMode || interactionFilter)
       ? sortedPlaces.slice(0, 20)
       : allPlaces.filter((p) => p.isFeatured)
 
@@ -230,7 +250,34 @@ export default function Home() {
       <AnimatePresence>
         {uiVisible && !selectedPlace && !showEpicPanel && (
           <>
-            <Header onOpenAuth={handleOpenAuth} />
+            <Header
+              onOpenAuth={handleOpenAuth}
+              onFilterInteractions={handleFilterInteractions}
+              activeInteractionFilter={interactionFilter}
+            />
+
+            {/* Interaction filter banner */}
+            {interactionFilter && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 z-25"
+              >
+                <div className={`glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs ${
+                  interactionFilter === 'VISITED' ? 'text-emerald-400 border-emerald-400/20' :
+                  interactionFilter === 'WISHLIST' ? 'text-blue-400 border-blue-400/20' :
+                  'text-pink-400 border-pink-400/20'
+                }`} style={{ borderWidth: 1 }}>
+                  <span>{
+                    interactionFilter === 'VISITED' ? '✓ Mes lieux visités' :
+                    interactionFilter === 'WISHLIST' ? '📌 Ma wishlist' :
+                    '❤️ Mes favoris'
+                  }</span>
+                  <span className="text-white/30">· {sortedPlaces.length} lieux</span>
+                  <button onClick={() => handleFilterInteractions(null, [])} className="text-white/30 hover:text-white/60 ml-1">✕</button>
+                </div>
+              </motion.div>
+            )}
 
             {/* Search bar — compact on mobile */}
             <motion.div

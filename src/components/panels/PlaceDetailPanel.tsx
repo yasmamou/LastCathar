@@ -245,7 +245,7 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
           </p>
 
           {/* Marketplace — Découvertes locales */}
-          <ProductCards placeSlug={place.slug} />
+          <ProductCards placeSlug={place.slug} placeTitle={place.title} onOpenAuth={onOpenAuth || (() => {})} />
 
           <div className="h-px bg-white/5" />
 

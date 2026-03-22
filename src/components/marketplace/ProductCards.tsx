@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick, Plus } from 'lucide-react'
+import { AddProductModal } from './AddProductModal'
 
 interface Product {
   id: string
@@ -17,12 +19,18 @@ interface Product {
 
 interface ProductCardsProps {
   placeSlug: string
+  placeTitle: string
+  onOpenAuth: () => void
 }
 
-export function ProductCards({ placeSlug }: ProductCardsProps) {
+export function ProductCards({ placeSlug, placeTitle, onOpenAuth }: ProductCardsProps) {
+  const { status } = useSession()
   const [products, setProducts] = useState<Product[]>([])
+  const [maxSlots, setMaxSlots] = useState(0)
+  const [availableSlots, setAvailableSlots] = useState(0)
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [showAddModal, setShowAddModal] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -30,6 +38,8 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
       .then(r => r.json())
       .then(data => {
         setProducts(data.products || [])
+        setMaxSlots(data.maxSlots || 0)
+        setAvailableSlots(data.availableSlots || 0)
       })
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -37,7 +47,6 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
 
   const handleProductClick = async (product: Product) => {
     setSelectedProduct(product)
-    // Track view
     await fetch('/api/products/click', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,65 +58,94 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  if (loading) return null
-  if (products.length === 0) return null
+  const handleAddProduct = () => {
+    if (status !== 'authenticated') {
+      onOpenAuth()
+      return
+    }
+    setShowAddModal(true)
+  }
 
+  if (loading) return null
+
+  // Always show the section — even with 0 products, show the "add" button
   return (
     <>
       <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <ShoppingBag className="w-3.5 h-3.5 text-gold-400/50" />
-          <h3 className="text-xs tracking-widest uppercase text-gold-400/50 font-medium">
-            Découvertes locales
-          </h3>
-          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gold-400/10 text-gold-400/40">
-            {products.length}
-          </span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-3.5 h-3.5 text-gold-400/50" />
+            <h3 className="text-xs tracking-widest uppercase text-gold-400/50 font-medium">
+              Découvertes locales
+            </h3>
+            {products.length > 0 && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gold-400/10 text-gold-400/40">
+                {products.length}{maxSlots > 0 ? `/${maxSlots}` : ''}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {products.map((product, index) => (
-            <motion.button
-              key={product.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => handleProductClick(product)}
-              className="group text-left rounded-xl overflow-hidden border border-white/5 hover:border-gold-400/20 transition-all bg-white/[0.03] hover:bg-white/[0.06]"
-            >
-              {/* Product image */}
-              {product.imageUrls[0] ? (
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={product.imageUrls[0]}
-                    alt={product.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-[4/3] bg-gradient-to-br from-gold-400/5 to-gold-400/10 flex items-center justify-center">
-                  <ShoppingBag className="w-6 h-6 text-gold-400/20" />
-                </div>
-              )}
-
-              {/* Product info */}
-              <div className="p-2.5">
-                <p className="text-[11px] font-medium text-white/70 leading-tight line-clamp-2">
-                  {product.title}
-                </p>
-                {product.price && (
-                  <p className="text-[11px] font-semibold text-gold-400/70 mt-1">
-                    {product.price}
-                  </p>
+        {/* Product grid */}
+        {products.length > 0 && (
+          <div className="grid grid-cols-2 gap-2">
+            {products.map((product, index) => (
+              <motion.button
+                key={product.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => handleProductClick(product)}
+                className="group text-left rounded-xl overflow-hidden border border-white/5 hover:border-gold-400/20 transition-all bg-white/[0.03] hover:bg-white/[0.06]"
+              >
+                {product.imageUrls[0] ? (
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={product.imageUrls[0]}
+                      alt={product.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[4/3] bg-gradient-to-br from-gold-400/5 to-gold-400/10 flex items-center justify-center">
+                    <ShoppingBag className="w-6 h-6 text-gold-400/20" />
+                  </div>
                 )}
-                <div className="flex items-center gap-1 mt-1.5 text-[9px] text-white/20">
-                  <ExternalLink className="w-2.5 h-2.5" />
-                  Voir
+                <div className="p-2.5">
+                  <p className="text-[11px] font-medium text-white/70 leading-tight line-clamp-2">
+                    {product.title}
+                  </p>
+                  {product.price && (
+                    <p className="text-[11px] font-semibold text-gold-400/70 mt-1">
+                      {product.price}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-1 mt-1.5 text-[9px] text-white/20">
+                    <ExternalLink className="w-2.5 h-2.5" />
+                    Voir
+                  </div>
                 </div>
-              </div>
-            </motion.button>
-          ))}
-        </div>
+              </motion.button>
+            ))}
+          </div>
+        )}
+
+        {/* Add product button */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: products.length * 0.1 + 0.2 }}
+          onClick={handleAddProduct}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-gold-400/15 hover:border-gold-400/30 text-gold-400/40 hover:text-gold-400/70 bg-gold-400/[0.02] hover:bg-gold-400/[0.05] transition-all text-xs"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Proposer un produit ici
+          {availableSlots > 0 && (
+            <span className="text-[9px] text-white/20">
+              · {availableSlots} emplacement{availableSlots > 1 ? 's' : ''} disponible{availableSlots > 1 ? 's' : ''}
+            </span>
+          )}
+        </motion.button>
       </div>
 
       {/* Product detail modal */}
@@ -128,7 +166,6 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="fixed inset-x-4 top-[10%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-sm z-[71] glass rounded-2xl overflow-hidden max-h-[80vh] overflow-y-auto"
             >
-              {/* Modal header image */}
               {selectedProduct.imageUrls[0] && (
                 <div className="relative aspect-video overflow-hidden">
                   <img
@@ -165,7 +202,6 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
                   </p>
                 )}
 
-                {/* Stats */}
                 <div className="flex gap-3 text-[10px] text-white/20">
                   <span className="flex items-center gap-1">
                     <Eye className="w-3 h-3" /> {selectedProduct.views} vues
@@ -175,7 +211,6 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
                   </span>
                 </div>
 
-                {/* CTA button */}
                 {selectedProduct.externalUrl && (
                   <button
                     onClick={() => handleVisitSite(selectedProduct.externalUrl!)}
@@ -186,7 +221,6 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
                   </button>
                 )}
 
-                {/* Additional images */}
                 {selectedProduct.imageUrls.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
                     {selectedProduct.imageUrls.slice(1).map((url, i) => (
@@ -204,6 +238,15 @@ export function ProductCards({ placeSlug }: ProductCardsProps) {
           </>
         )}
       </AnimatePresence>
+
+      {/* Add product modal */}
+      <AddProductModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        placeSlug={placeSlug}
+        placeTitle={placeTitle}
+        onOpenAuth={onOpenAuth}
+      />
     </>
   )
 }

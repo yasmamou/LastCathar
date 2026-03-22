@@ -3,15 +3,21 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signOut } from 'next-auth/react'
-import { User, LogOut, Map, Heart, Star } from 'lucide-react'
+import { User, LogOut, Map, Heart, Star, Loader2 } from 'lucide-react'
+
+type InteractionFilter = 'VISITED' | 'WISHLIST' | 'FAVORITE' | null
 
 interface UserMenuProps {
   onOpenAuth: () => void
+  onFilterInteractions: (filter: InteractionFilter, slugs: string[]) => void
+  activeInteractionFilter: InteractionFilter
 }
 
-export function UserMenu({ onOpenAuth }: UserMenuProps) {
+export function UserMenu({ onOpenAuth, onFilterInteractions, activeInteractionFilter }: UserMenuProps) {
   const { data: session, status } = useSession()
   const [open, setOpen] = useState(false)
+  const [interactions, setInteractions] = useState<{ placeSlug: string; type: string }[]>([])
+  const [loadingFilter, setLoadingFilter] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   // Close menu on outside click
@@ -24,6 +30,34 @@ export function UserMenu({ onOpenAuth }: UserMenuProps) {
     if (open) document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [open])
+
+  // Load interactions when menu opens
+  useEffect(() => {
+    if (!open || status !== 'authenticated') return
+    fetch('/api/interactions')
+      .then(r => r.json())
+      .then(data => setInteractions(data.interactions || []))
+      .catch(() => {})
+  }, [open, status])
+
+  const handleFilterClick = async (type: InteractionFilter) => {
+    if (activeInteractionFilter === type) {
+      // Toggle off
+      onFilterInteractions(null, [])
+      setOpen(false)
+      return
+    }
+    setLoadingFilter(true)
+    // If we already have interactions loaded, use them
+    const slugs = interactions
+      .filter(i => i.type === type)
+      .map(i => i.placeSlug)
+    onFilterInteractions(type, slugs)
+    setLoadingFilter(false)
+    setOpen(false)
+  }
+
+  const countFor = (type: string) => interactions.filter(i => i.type === type).length
 
   if (status === 'loading') {
     return (
@@ -54,7 +88,11 @@ export function UserMenu({ onOpenAuth }: UserMenuProps) {
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-gold-400/80 to-gold-600/80 flex items-center justify-center text-midnight-950 font-semibold text-xs transition-transform hover:scale-105"
+        className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-semibold text-xs transition-all hover:scale-105 ${
+          activeInteractionFilter
+            ? 'bg-gradient-to-br from-gold-400 to-gold-600 text-midnight-950 ring-2 ring-gold-400/40'
+            : 'bg-gradient-to-br from-gold-400/80 to-gold-600/80 text-midnight-950'
+        }`}
       >
         {initials}
       </button>
@@ -66,7 +104,7 @@ export function UserMenu({ onOpenAuth }: UserMenuProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-56 glass rounded-xl overflow-hidden"
+            className="absolute right-0 top-full mt-2 w-60 glass rounded-xl overflow-hidden"
           >
             {/* User info */}
             <div className="px-4 py-3 border-b border-white/5">
@@ -81,11 +119,40 @@ export function UserMenu({ onOpenAuth }: UserMenuProps) {
               </span>
             </div>
 
-            {/* Menu items */}
+            {/* Menu items with counts */}
             <div className="py-1">
-              <MenuButton icon={<Map className="w-3.5 h-3.5" />} label="Mes lieux visités" badge="VISITED" />
-              <MenuButton icon={<Star className="w-3.5 h-3.5" />} label="Ma wishlist" badge="WISHLIST" />
-              <MenuButton icon={<Heart className="w-3.5 h-3.5" />} label="Mes favoris" badge="FAVORITE" />
+              {loadingFilter ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="w-4 h-4 animate-spin text-white/30" />
+                </div>
+              ) : (
+                <>
+                  <MenuButton
+                    icon={<Map className="w-3.5 h-3.5" />}
+                    label="Mes lieux visités"
+                    count={countFor('VISITED')}
+                    isActive={activeInteractionFilter === 'VISITED'}
+                    activeColor="text-emerald-400"
+                    onClick={() => handleFilterClick('VISITED')}
+                  />
+                  <MenuButton
+                    icon={<Star className="w-3.5 h-3.5" />}
+                    label="Ma wishlist"
+                    count={countFor('WISHLIST')}
+                    isActive={activeInteractionFilter === 'WISHLIST'}
+                    activeColor="text-blue-400"
+                    onClick={() => handleFilterClick('WISHLIST')}
+                  />
+                  <MenuButton
+                    icon={<Heart className="w-3.5 h-3.5" />}
+                    label="Mes favoris"
+                    count={countFor('FAVORITE')}
+                    isActive={activeInteractionFilter === 'FAVORITE'}
+                    activeColor="text-pink-400"
+                    onClick={() => handleFilterClick('FAVORITE')}
+                  />
+                </>
+              )}
             </div>
 
             <div className="border-t border-white/5 py-1">
@@ -104,12 +171,30 @@ export function UserMenu({ onOpenAuth }: UserMenuProps) {
   )
 }
 
-function MenuButton({ icon, label, badge }: { icon: React.ReactNode; label: string; badge: string }) {
+function MenuButton({ icon, label, count, isActive, activeColor, onClick }: {
+  icon: React.ReactNode
+  label: string
+  count: number
+  isActive: boolean
+  activeColor: string
+  onClick: () => void
+}) {
   return (
-    <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-white/50 hover:text-white/80 hover:bg-white/5 transition-colors">
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-xs transition-colors ${
+        isActive
+          ? `${activeColor} bg-white/5`
+          : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+      }`}
+    >
       {icon}
       <span>{label}</span>
-      <span className="ml-auto text-[8px] tracking-wider text-white/15">{badge}</span>
+      <span className={`ml-auto text-[10px] font-medium ${
+        isActive ? activeColor : 'text-white/20'
+      }`}>
+        {count}
+      </span>
     </button>
   )
 }

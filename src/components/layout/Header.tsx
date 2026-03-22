@@ -4,11 +4,15 @@ import { motion } from 'framer-motion'
 import { Compass } from 'lucide-react'
 import { UserMenu } from '@/components/auth/UserMenu'
 
+type InteractionFilter = 'VISITED' | 'WISHLIST' | 'FAVORITE' | null
+
 interface HeaderProps {
   onOpenAuth: () => void
+  onFilterInteractions: (filter: InteractionFilter, slugs: string[]) => void
+  activeInteractionFilter: InteractionFilter
 }
 
-export function Header({ onOpenAuth }: HeaderProps) {
+export function Header({ onOpenAuth, onFilterInteractions, activeInteractionFilter }: HeaderProps) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -43,7 +47,11 @@ export function Header({ onOpenAuth }: HeaderProps) {
           >
             Admin
           </a>
-          <UserMenu onOpenAuth={onOpenAuth} />
+          <UserMenu
+            onOpenAuth={onOpenAuth}
+            onFilterInteractions={onFilterInteractions}
+            activeInteractionFilter={activeInteractionFilter}
+          />
         </div>
       </div>
     </motion.header>
