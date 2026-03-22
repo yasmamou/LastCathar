@@ -25,6 +25,27 @@
 | `src/components/auth/UserMenu.tsx` | Menu profil en haut à droite (initiales, dropdown) |
 | `src/types/next-auth.d.ts` | Extension des types NextAuth (ajout id, role sur session) |
 
+### Menu profil — Filtrage des lieux
+Cliquer sur "Mes lieux visités", "Ma wishlist" ou "Mes favoris" dans le menu profil :
+1. Charge les interactions de l'utilisateur depuis `/api/interactions`
+2. Filtre le globe pour n'afficher que les lieux marqués
+3. Affiche un banner coloré sous le header ("✓ Mes lieux visités · X lieux")
+4. Le bouton ✕ ou re-clic sur le même filtre désactive le filtre
+
+**Fichiers** : `UserMenu.tsx` (menu + fetch + compteurs), `Header.tsx` (passe les props),
+`page.tsx` (état `interactionFilter` + `interactionSlugs` + filtrage dans `filteredPlaces`)
+
+### Ajout de produit par un commerçant
+1. Le commerçant clique "Proposer un produit ici" dans la section Découvertes locales
+2. S'il n'est pas connecté → modal d'authentification
+3. Formulaire : titre, description, prix, URL site, photos (URLs)
+4. POST `/api/products/submit` → crée le Product en statut REVIEW
+5. L'admin valide → le produit passe en APPROVED et apparaît dans la sidebar
+6. Le rôle de l'utilisateur passe automatiquement à SELLER
+
+**Fichiers** : `AddProductModal.tsx` (formulaire), `ProductCards.tsx` (bouton + intégration),
+`/api/products/submit/route.ts` (API)
+
 ### Pourquoi pas de PrismaAdapter ?
 On utilise uniquement le Credentials provider avec JWT. Le PrismaAdapter crée des sessions en base
 de données, ce qui entre en conflit avec la stratégie JWT. Sans adapter, `getServerSession()`
@@ -102,6 +123,9 @@ un lieu, dans la section "Découvertes locales".
 │  ┌──────────┐  ┌──────────┐        │
 │  │ Produit 3│  │ Produit 4│        │     Clic → modal détail + bouton externe
 │  └──────────┘  └──────────┘        │
+│  ┌─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┐     │
+│  │ + Proposer un produit ici │     │  ← Bouton ajout commerçant (dashed)
+│  └─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┘     │     Ouvre le formulaire d'ajout
 │  ─────────────────────────────────  │
 │  The Story (texte complet)          │  ← Contenu éditorial après les produits
 │  Scores, Sources, Tags...           │
@@ -117,9 +141,11 @@ un lieu, dans la section "Découvertes locales".
 ### Fichiers clés
 | Fichier | Rôle |
 |---------|------|
-| `src/components/marketplace/ProductCards.tsx` | Grille produits + modal détail |
+| `src/components/marketplace/ProductCards.tsx` | Grille produits + modal détail + bouton ajout |
+| `src/components/marketplace/AddProductModal.tsx` | Formulaire ajout produit (commerçant) |
 | `src/app/api/products/route.ts` | API GET produits par placeSlug |
 | `src/app/api/products/click/route.ts` | API POST tracking clic produit |
+| `src/app/api/products/submit/route.ts` | API POST soumission nouveau produit |
 | `src/components/panels/PlaceDetailPanel.tsx` | Intègre `<ProductCards>` dans la sidebar |
 | `scripts/seed-marketplace.ts` | Script de seed données démo |
 
