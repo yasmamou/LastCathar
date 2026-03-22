@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "cesium:copy": "rm -rf public/cesium && mkdir -p public/cesium && cp -r node_modules/cesium/Build/Cesium/Workers public/cesium/ && cp -r node_modules/cesium/Build/Cesium/ThirdParty public/cesium/ && cp -r node_modules/cesium/Build/Cesium/Assets public/cesium/ && cp -r node_modules/cesium/Build/Cesium/Widgets public/cesium/",
-    "postinstall": "npm run cesium:copy",
+    "postinstall": "prisma generate && npm run cesium:copy",
     "dev": "next dev",
-    "build": "npm run cesium:copy && next build",
+    "build": "prisma generate && npm run cesium:copy && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "npx prisma generate",
@@ -16,10 +16,12 @@
     "seed:cathar": "npx tsx scripts/seed-cathar.ts"
   },
   "dependencies": {
-    "@prisma/client": "^7.5.0",
+    "@auth/prisma-adapter": "^1.6.0",
+    "@prisma/client": "^5.22.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-slot": "^1.2.4",
+    "bcryptjs": "^3.0.3",
     "cesium": "^1.139.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -27,7 +29,8 @@
     "framer-motion": "^12.36.0",
     "lucide-react": "^0.577.0",
     "next": "14.2.35",
-    "prisma": "^7.5.0",
+    "next-auth": "^4.24.13",
+    "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18",
     "resium": "^1.19.4",
@@ -35,6 +38,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

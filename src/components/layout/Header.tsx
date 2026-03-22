@@ -2,8 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { Compass } from 'lucide-react'
+import { UserMenu } from '@/components/auth/UserMenu'
 
-export function Header() {
+interface HeaderProps {
+  onOpenAuth: () => void
+}
+
+export function Header({ onOpenAuth }: HeaderProps) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -38,6 +43,7 @@ export function Header() {
           >
             Admin
           </a>
+          <UserMenu onOpenAuth={onOpenAuth} />
         </div>
       </div>
     </motion.header>

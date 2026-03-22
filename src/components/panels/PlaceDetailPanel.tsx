@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
 import { AmbientMusic } from '@/components/layout/AmbientMusic'
+import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
 import { PlaceEntry } from '@/types/places'
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
@@ -22,9 +23,10 @@ interface PlaceDetailPanelProps {
   selectedCountry?: string
   selectedEras?: string[]
   onEpicSelect?: (epic: Epic) => void
+  onOpenAuth?: () => void
 }
 
-export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras, onEpicSelect }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras, onEpicSelect, onOpenAuth }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -169,6 +171,12 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
 
         {/* Content */}
         <div className="p-6 space-y-6">
+          {/* Interaction buttons — Visité / À visiter / Favori */}
+          <PlaceInteractionButtons
+            placeSlug={place.slug}
+            onOpenAuth={onOpenAuth || (() => {})}
+          />
+
           {/* Meta row */}
           <div className="flex flex-wrap gap-3">
             <div

@@ -12,6 +12,7 @@ import { CategoryFilters } from '@/components/layout/CategoryFilters'
 import { SearchBar } from '@/components/layout/SearchBar'
 import { FeaturedStrip } from '@/components/layout/FeaturedStrip'
 import { EpicDetailPanel } from '@/components/panels/EpicDetailPanel'
+import { AuthModal } from '@/components/auth/AuthModal'
 import { Epic } from '@/data/epics'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
@@ -40,6 +41,7 @@ export default function Home() {
   const [showEpicPanel, setShowEpicPanel] = useState(false)
   const [nearbyMode, setNearbyMode] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   useEffect(() => {
     const introTimer = setTimeout(() => setShowIntro(false), 3500)
@@ -162,6 +164,10 @@ export default function Home() {
     setFlyToTrigger(n => n + 1)
   }, [])
 
+  const handleOpenAuth = useCallback(() => {
+    setShowAuthModal(true)
+  }, [])
+
   const [showFilters, setShowFilters] = useState(false)
 
   return (
@@ -224,7 +230,7 @@ export default function Home() {
       <AnimatePresence>
         {uiVisible && !selectedPlace && !showEpicPanel && (
           <>
-            <Header />
+            <Header onOpenAuth={handleOpenAuth} />
 
             {/* Search bar — compact on mobile */}
             <motion.div
@@ -370,9 +376,16 @@ export default function Home() {
             selectedCountry={selectedPlace.country}
             selectedEras={selectedPlace.era}
             onEpicSelect={handleEpicSelect}
+            onOpenAuth={handleOpenAuth}
           />
         )}
       </AnimatePresence>
+
+      {/* Auth modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </main>
   )
 }
