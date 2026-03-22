@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession } from 'next-auth/react'
-import { X, Plus, Loader2, ImagePlus, Link, Tag, FileText, DollarSign, CheckCircle } from 'lucide-react'
+import { X, Plus, Loader2, ImagePlus, Link, Tag, FileText, DollarSign, CheckCircle, Eye, TrendingUp, MousePointerClick } from 'lucide-react'
 
 interface AddProductModalProps {
   isOpen: boolean
@@ -23,6 +23,21 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [stats, setStats] = useState<{
+    totalViews: number
+    todayViews: number
+    totalProductClicks: number
+    todayProductClicks: number
+  } | null>(null)
+
+  // Fetch place stats when modal opens
+  useEffect(() => {
+    if (!isOpen) return
+    fetch(`/api/stats?placeSlug=${encodeURIComponent(placeSlug)}`)
+      .then(r => r.json())
+      .then(setStats)
+      .catch(() => {})
+  }, [isOpen, placeSlug])
 
   const resetForm = () => {
     setTitle('')
@@ -154,6 +169,40 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="px-5 pb-6 space-y-4 mt-2">
+                {/* Place stats — convince the merchant */}
+                {stats && stats.totalViews > 0 && (
+                  <div className="rounded-xl bg-gradient-to-r from-emerald-400/5 to-blue-400/5 border border-emerald-400/10 p-4">
+                    <p className="text-[10px] tracking-wider uppercase text-emerald-400/50 font-medium mb-3">
+                      Statistiques de cet emplacement
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1.5 text-white/60">
+                          <Eye className="w-3.5 h-3.5" />
+                          <span className="text-lg font-bold">{stats.totalViews.toLocaleString()}</span>
+                        </div>
+                        <p className="text-[10px] text-white/25 mt-0.5">visites totales</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1.5 text-emerald-400/70">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span className="text-lg font-bold">+{stats.todayViews}</span>
+                        </div>
+                        <p className="text-[10px] text-white/25 mt-0.5">aujourd&apos;hui</p>
+                      </div>
+                      {stats.totalProductClicks > 0 && (
+                        <div className="text-center col-span-2">
+                          <div className="flex items-center justify-center gap-1.5 text-blue-400/70">
+                            <MousePointerClick className="w-3.5 h-3.5" />
+                            <span className="text-base font-bold">{stats.totalProductClicks}</span>
+                            <span className="text-[10px] text-white/25">clics vers les sites vendeurs</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Title */}
                 <div>
                   <label className="flex items-center gap-1.5 text-[10px] tracking-wider uppercase text-white/30 mb-1.5">

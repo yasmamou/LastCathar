@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
+import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp } from 'lucide-react'
 import { AmbientMusic } from '@/components/layout/AmbientMusic'
 import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
 import { ProductCards } from '@/components/marketplace/ProductCards'
@@ -37,6 +37,23 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
     imageUrls: place.imageUrls,
   })
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
+
+  // Track place view + fetch stats
+  useEffect(() => {
+    // Track view (fire and forget)
+    fetch('/api/stats/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ placeSlug: place.slug }),
+    }).catch(() => {})
+
+    // Fetch stats
+    fetch(`/api/stats?placeSlug=${encodeURIComponent(place.slug)}`)
+      .then(r => r.json())
+      .then(data => setPlaceStats({ totalViews: data.totalViews, todayViews: data.todayViews }))
+      .catch(() => {})
+  }, [place.slug])
 
   const activeImage = images[activeImageIndex]
 
@@ -177,6 +194,23 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
             placeSlug={place.slug}
             onOpenAuth={onOpenAuth || (() => {})}
           />
+
+          {/* Place visit stats */}
+          {placeStats && (placeStats.totalViews > 0 || placeStats.todayViews > 0) && (
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5">
+              <div className="flex items-center gap-1.5 text-white/40">
+                <Eye className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">{placeStats.totalViews.toLocaleString()}</span>
+                <span className="text-[10px] text-white/25">visites</span>
+              </div>
+              {placeStats.todayViews > 0 && (
+                <div className="flex items-center gap-1.5 text-emerald-400/60">
+                  <TrendingUp className="w-3 h-3" />
+                  <span className="text-[10px] font-medium">+{placeStats.todayViews} aujourd&apos;hui</span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Meta row */}
           <div className="flex flex-wrap gap-3">
