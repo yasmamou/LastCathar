@@ -15,6 +15,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Le lieu et le titre sont requis' }, { status: 400 })
   }
 
+  // Normalize URL: add https:// if missing
+  const normalizedUrl = externalUrl && !externalUrl.startsWith('http')
+    ? 'https://' + externalUrl
+    : externalUrl
+
   // Find or create the place slot
   let placeSlot = await prisma.placeSlot.findUnique({
     where: { placeSlug },
@@ -54,7 +59,7 @@ export async function POST(request: Request) {
       title,
       description: description || null,
       price: price || null,
-      externalUrl: externalUrl || null,
+      externalUrl: normalizedUrl || null,
       imageUrls: imageUrls || [],
       status: 'REVIEW',
     },

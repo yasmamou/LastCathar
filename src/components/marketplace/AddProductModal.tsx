@@ -203,10 +203,15 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
                     <Link className="w-3 h-3" /> Lien vers votre site
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     value={externalUrl}
                     onChange={e => setExternalUrl(e.target.value)}
-                    placeholder="https://www.monsite.fr/produit"
+                    onBlur={() => {
+                      if (externalUrl && !externalUrl.startsWith('http://') && !externalUrl.startsWith('https://')) {
+                        setExternalUrl('https://' + externalUrl)
+                      }
+                    }}
+                    placeholder="www.monsite.fr ou https://monsite.fr"
                     className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-gold-400/40 transition-colors"
                   />
                 </div>
@@ -220,10 +225,10 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
                     {imageUrls.map((url, i) => (
                       <div key={i} className="flex gap-2">
                         <input
-                          type="url"
+                          type="text"
                           value={url}
                           onChange={e => updateImageUrl(i, e.target.value)}
-                          placeholder="https://... (URL de l'image)"
+                          placeholder="URL de l'image (ex: imgur, unsplash...)"
                           className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-gold-400/40 transition-colors"
                         />
                         {imageUrls.length > 1 && (
