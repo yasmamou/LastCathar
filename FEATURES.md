@@ -192,7 +192,35 @@ model PlaceView {
 
 ---
 
-## 4. Base de données
+## 4. Comptes & Accès
+
+### Compte administrateur
+| Champ | Valeur |
+|-------|--------|
+| **Email** | `admin@lastcathar.com` |
+| **Mot de passe** | `yassineMAMOU1` |
+| **Rôle** | `ADMIN` |
+| **Page admin** | https://last-cathar.vercel.app/admin |
+
+### Rôles
+| Rôle | Droits |
+|------|--------|
+| `EXPLORER` | Créer un compte, marquer des lieux (visité/wishlist/favori) |
+| `SELLER` | Tout Explorer + soumettre des produits (auto-attribué au 1er produit soumis) |
+| `ADMIN` | Tout Seller + accès `/admin`, modérer les produits (approuver/rejeter) |
+
+### Page admin — Modération produits
+- **URL** : `/admin` (protégée, rôle ADMIN requis)
+- **Onglet "Produits à modérer"** : liste tous les produits avec badge compteur REVIEW
+  - Image, titre, vendeur, lieu, prix, lien externe, date de soumission
+  - Bouton **Approuver** → statut APPROVED → visible dans la sidebar du lieu
+  - Bouton **Rejeter** → statut REJECTED → masqué
+- **Onglet "Places"** : liste existante des lieux du globe
+- **Fichiers** : `src/app/admin/page.tsx`, `src/app/api/admin/products/route.ts`
+
+---
+
+## 5. Base de données
 
 ### Provider
 **Neon Serverless Postgres** (gratuit, région Frankfurt)
@@ -220,7 +248,7 @@ npx tsx scripts/seed-marketplace.ts  # Seed données marketplace démo
 
 ---
 
-## 5. Déploiement
+## 6. Déploiement
 
 ### Stack
 - **Code** : GitHub → `yasmamou/LastCathar` (branche `main`)
@@ -243,7 +271,7 @@ npx tsx scripts/seed-marketplace.ts  # Seed données marketplace démo
 
 ---
 
-## 6. Ce qui reste à faire
+## 7. Ce qui reste à faire
 
 ### Phase 3 — Contributions utilisateur (UGC)
 - [ ] Formulaire d'ajout de photos/lieux dans la sidebar
