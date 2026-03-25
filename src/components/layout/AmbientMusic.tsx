@@ -20,7 +20,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusi
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [showPanel, setShowPanel] = useState(false) // Closed by default, especially on mobile
-  const [currentTrack, setCurrentTrack] = useState<MusicTrack>(MUSIC_LIBRARY[1]) // Gloria default
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack>(MUSIC_LIBRARY.find(t => t.id === 'gregorian') ?? MUSIC_LIBRARY[0]) // Gloria default
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoStartedRef = useRef(false)
   const playingRef = useRef(false)

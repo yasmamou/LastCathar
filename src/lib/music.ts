@@ -24,17 +24,6 @@ export const MUSIC_LIBRARY: MusicTrack[] = [
     wiki: 'https://fr.wikipedia.org/wiki/%C3%89pitaphe_de_Seikilos',
   },
   {
-    id: 'istikhbar',
-    title: 'Istikhbar Djarka',
-    artist: 'Improvisation au oud arabo-andalou',
-    era: 'Tradition andalouse',
-    year: '~XIIe-XVe siècle',
-    context: "L'Istikhbar est une improvisation au oud dans un mode (maqam) andalou. Cette tradition musicale née à Cordoue et Grenade a migré au Maghreb avec l'exil des Morisques, s'enracinant à Tlemcen, Alger, Constantine et Fès.",
-    file: '/music-maghreb-andalou.ogg',
-    region: 'maghreb',
-    wiki: 'https://fr.wikipedia.org/wiki/Musique_arabo-andalouse',
-  },
-  {
     id: 'husseyni',
     title: 'Hüseyni Saz Semâîsi',
     artist: 'Saz — musique classique ottomane',
