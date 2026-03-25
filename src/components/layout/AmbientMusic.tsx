@@ -8,15 +8,17 @@ import {
   getRegionFromCountry,
   getTracksForRegion,
   getBestTrackForEra,
+  getTrackForPlace,
   MUSIC_LIBRARY,
 } from '@/lib/music'
 
 interface AmbientMusicProps {
   selectedCountry?: string
   selectedEras?: string[]
+  placeSlug?: string
 }
 
-export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusicProps) {
+export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: AmbientMusicProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [showPanel, setShowPanel] = useState(false) // Closed by default, especially on mobile
@@ -61,14 +63,16 @@ export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusi
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-switch track when country changes
+  // Auto-switch track when country/place changes
   useEffect(() => {
     if (!playingRef.current || fadingRef.current) return
+    // Place-specific track takes priority
+    const placeTrack = getTrackForPlace(placeSlug)
     const region = getRegionFromCountry(selectedCountry)
-    const best = getBestTrackForEra(region, selectedEras)
+    const best = placeTrack ?? getBestTrackForEra(region, selectedEras)
     if (best.id === currentTrack.id) return
     switchTrack(best)
-  }, [selectedCountry, selectedEras]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedCountry, selectedEras, placeSlug]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchTrack = useCallback((track: MusicTrack) => {
     const audio = audioRef.current
@@ -85,6 +89,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusi
         audio.pause()
         audio.src = track.file
         audio.load()
+        if (track.startAt) audio.currentTime = track.startAt
         setCurrentTrack(track)
         if (playingRef.current) {
           audio.play().then(() => {
@@ -113,6 +118,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [] }: AmbientMusi
 
     audio.src = track.file
     audio.load()
+    if (track.startAt) audio.currentTime = track.startAt
     audio.volume = 0
     setCurrentTrack(track)
     audio.play().then(() => {

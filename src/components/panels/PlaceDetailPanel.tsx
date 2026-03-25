@@ -75,7 +75,7 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm font-medium">Globe</span>
           </button>
-          <AmbientMusic selectedCountry={selectedCountry} selectedEras={selectedEras} />
+          <AmbientMusic selectedCountry={selectedCountry} selectedEras={selectedEras} placeSlug={place.slug} />
         </div>
         {/* Hero section with Wikipedia image */}
         <div

@@ -8,6 +8,8 @@ export interface MusicTrack {
   file: string
   region: string
   wiki: string
+  startAt?: number // start playback at this offset (seconds)
+  placeSlug?: string // if set, this track is tied to a specific place
 }
 
 export const MUSIC_LIBRARY: MusicTrack[] = [
@@ -35,6 +37,19 @@ export const MUSIC_LIBRARY: MusicTrack[] = [
     wiki: 'https://fr.wikipedia.org/wiki/Musique_ottomane',
   },
   // ── FRANCE ──
+  {
+    id: 'montsegur',
+    title: 'Montségur',
+    artist: 'Iron Maiden',
+    era: 'Moyen Âge',
+    year: '2003',
+    context: "Morceau épique d'Iron Maiden dédié au siège de Montségur en 1244. La musique évoque la résistance des derniers cathares face à la croisade, leur sacrifice sur le bûcher et le mystère du trésor perdu.",
+    file: '/Montsegur.mp3',
+    region: 'france',
+    wiki: 'https://fr.wikipedia.org/wiki/Monts%C3%A9gur_(chanson)',
+    startAt: 43,
+    placeSlug: 'chateau-de-montsegur',
+  },
   {
     id: 'gregorian',
     title: 'Gloria (Chant grégorien)',
@@ -142,8 +157,13 @@ export function getTracksForRegion(region: MusicRegion): MusicTrack[] {
   return MUSIC_LIBRARY.filter((t) => t.region === region)
 }
 
+export function getTrackForPlace(slug: string | undefined): MusicTrack | null {
+  if (!slug) return null
+  return MUSIC_LIBRARY.find((t) => t.placeSlug === slug) ?? null
+}
+
 export function getBestTrackForEra(region: MusicRegion, eras: string[]): MusicTrack {
-  const tracks = getTracksForRegion(region)
+  const tracks = getTracksForRegion(region).filter((t) => !t.placeSlug)
   if (tracks.length === 0) return MUSIC_LIBRARY[0]
 
   // Try to match era keywords
