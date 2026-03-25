@@ -118,6 +118,21 @@ export default function Home() {
       ? sortedPlaces.slice(0, 20)
       : allPlaces.filter((p) => p.isFeatured)
 
+  // Nearby places for the selected place (for bottom strip)
+  const nearbyPlaces = selectedPlace
+    ? allPlaces
+        .filter(p => p.slug !== selectedPlace.slug)
+        .map(p => ({
+          ...p,
+          _dist: Math.sqrt(
+            Math.pow(p.latitude - selectedPlace.latitude, 2) +
+            Math.pow(p.longitude - selectedPlace.longitude, 2)
+          ),
+        }))
+        .sort((a, b) => a._dist - b._dist)
+        .slice(0, 15)
+    : []
+
   const handlePlaceSelect = useCallback((place: PlaceEntry) => {
     setSelectedPlace(place)
     setFlyToTrigger((n) => n + 1)
@@ -414,6 +429,13 @@ export default function Home() {
           />
         )}
       </AnimatePresence>
+
+      {/* Nearby places strip — shown when a place is selected */}
+      {selectedPlace && nearbyPlaces.length > 0 && (
+        <div className="absolute bottom-0 left-0 right-0 z-30">
+          <FeaturedStrip places={nearbyPlaces} onSelect={handlePlaceSelect} />
+        </div>
+      )}
 
       {/* Auth modal */}
       <AuthModal
