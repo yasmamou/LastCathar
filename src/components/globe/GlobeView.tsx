@@ -135,23 +135,22 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
         // Hide entities on the far side of the globe
-        // Use dot product: if angle between camera→center and camera→point > 90°, point is behind
-        const scratch = new Cesium.Cartesian3()
+        // A point is visible if it's on the same hemisphere as the camera
+        const scratchNormP = new Cesium.Cartesian3()
+        const scratchNormC = new Cesium.Cartesian3()
         scene.preRender.addEventListener(() => {
           if (viewer.isDestroyed()) return
           const cameraPos = viewer.camera.positionWC
+          Cesium.Cartesian3.normalize(cameraPos, scratchNormC)
           const entities = viewer.entities.values
           for (let i = 0; i < entities.length; i++) {
             const entity = entities[i]
             const pos = entity.position?.getValue(viewer.clock.currentTime)
             if (!pos) continue
-            // Vector from camera to globe center (origin)
-            const camToCenter = Cesium.Cartesian3.negate(cameraPos, scratch)
-            // Vector from camera to entity
-            const camToEntity = Cesium.Cartesian3.subtract(pos, cameraPos, new Cesium.Cartesian3())
-            // If dot product < 0, entity is behind the camera-to-center plane (other side)
-            const dot = Cesium.Cartesian3.dot(camToCenter, camToEntity)
-            entity.show = dot > 0
+            Cesium.Cartesian3.normalize(pos, scratchNormP)
+            // dot > 0 = same hemisphere, use -0.1 to include horizon edge
+            const dot = Cesium.Cartesian3.dot(scratchNormP, scratchNormC)
+            entity.show = dot > -0.1
           }
         })
 
