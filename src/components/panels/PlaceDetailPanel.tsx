@@ -20,13 +20,11 @@ import { Epic, getEpicsForPlace } from '@/data/epics'
 interface PlaceDetailPanelProps {
   place: PlaceEntry
   onClose: () => void
-  selectedCountry?: string
-  selectedEras?: string[]
   onEpicSelect?: (epic: Epic) => void
   onOpenAuth?: () => void
 }
 
-export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras, onEpicSelect, onOpenAuth }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)

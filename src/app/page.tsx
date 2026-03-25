@@ -407,8 +407,6 @@ export default function Home() {
           <PlaceDetailPanel
             place={selectedPlace}
             onClose={handleClosePanel}
-            selectedCountry={selectedPlace.country}
-            selectedEras={selectedPlace.era}
             onEpicSelect={handleEpicSelect}
             onOpenAuth={handleOpenAuth}
           />
