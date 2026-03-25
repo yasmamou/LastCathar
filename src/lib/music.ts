@@ -9,11 +9,32 @@ export interface MusicTrack {
   region: string
   wiki: string
   startAt?: number // start playback at this offset (seconds)
-  placeSlug?: string // if set, this track is tied to a specific place
+  placeSlugs?: string[] // if set, this track is tied to specific places
 }
 
 export const MUSIC_LIBRARY: MusicTrack[] = [
   // ── MAGHREB / ANTIQUE → ANDALOU → OTTOMAN ──
+  {
+    id: 'cherchell',
+    title: 'Cherchell',
+    artist: 'Musique traditionnelle',
+    era: 'Antiquité',
+    year: '',
+    context: "Musique évoquant Caesarea de Maurétanie — capitale de Juba II et Cléopâtre Séléné. La cité, ses mosaïques, son aqueduc et le tombeau royal témoignent de la grandeur berbéro-romaine.",
+    file: '/cherchell.mp3',
+    region: 'maghreb',
+    wiki: 'https://fr.wikipedia.org/wiki/Cherchell',
+    placeSlugs: [
+      'juba-ii-caesarea-cherchell',
+      'aqueduc-de-cherchell',
+      'musee-de-cherchell',
+      'ruines-romaines-tipaza',
+      'stele-albert-camus-tipaza',
+      'tophet-tipaza',
+      'tombeau-royal-mauretanie-tipaza',
+      'tipaza-ruines-camus',
+    ],
+  },
   {
     id: 'seikilos',
     title: 'Épitaphe de Seikilos',
@@ -48,7 +69,55 @@ export const MUSIC_LIBRARY: MusicTrack[] = [
     region: 'france',
     wiki: 'https://fr.wikipedia.org/wiki/Monts%C3%A9gur_(chanson)',
     startAt: 43,
-    placeSlug: 'chateau-de-montsegur',
+    placeSlugs: ['chateau-de-montsegur'],
+  },
+  {
+    id: 'carcassonne',
+    title: 'Ô Carcassonne',
+    artist: 'Chanson traditionnelle',
+    era: 'Moyen Âge',
+    year: '',
+    context: "Chanson évoquant la cité médiévale de Carcassonne, forteresse emblématique du pays cathare et joyau classé UNESCO.",
+    file: '/O Carcassonne (1).mp3',
+    region: 'france',
+    wiki: 'https://fr.wikipedia.org/wiki/Cit%C3%A9_de_Carcassonne',
+    placeSlugs: ['cite-de-carcassonne', 'carcassonne-souterraine', 'cathédrale-saint-nazaire'],
+  },
+  {
+    id: 'narbonne',
+    title: 'Narbonne',
+    artist: 'Musique traditionnelle',
+    era: 'Moyen Âge',
+    year: '',
+    context: "Musique pour Narbonne, ancienne capitale romaine (Narbo Martius) et wisigothe, carrefour des civilisations entre Via Domitia et cathédrale inachevée.",
+    file: '/Narbonne.mp3',
+    region: 'france',
+    wiki: 'https://fr.wikipedia.org/wiki/Narbonne',
+    placeSlugs: ['narbonne'],
+  },
+  {
+    id: 'bugarach',
+    title: 'Bugarach',
+    artist: 'Musique traditionnelle',
+    era: 'Moyen Âge',
+    year: '',
+    context: "Musique mystérieuse pour le Pic de Bugarach, montagne « inversée » des Corbières, réputée pour ses phénomènes étranges et ses légendes ésotériques.",
+    file: '/Nouvelle buggarach.mp3',
+    region: 'france',
+    wiki: 'https://fr.wikipedia.org/wiki/Bugarach',
+    placeSlugs: ['pic-de-bugarach'],
+  },
+  {
+    id: 'alaric',
+    title: 'Alaric',
+    artist: 'Musique traditionnelle',
+    era: 'Moyen Âge',
+    year: '',
+    context: "Musique pour la Montagne d'Alaric, où le trésor du roi wisigoth Alaric Ier serait enfoui depuis le Ve siècle — pillage de Rome incluant peut-être le Saint Graal.",
+    file: '/Alaric.mp3',
+    region: 'france',
+    wiki: 'https://fr.wikipedia.org/wiki/Montagne_d%27Alaric',
+    placeSlugs: ['montagne-alaric'],
   },
   {
     id: 'gregorian',
@@ -159,11 +228,11 @@ export function getTracksForRegion(region: MusicRegion): MusicTrack[] {
 
 export function getTrackForPlace(slug: string | undefined): MusicTrack | null {
   if (!slug) return null
-  return MUSIC_LIBRARY.find((t) => t.placeSlug === slug) ?? null
+  return MUSIC_LIBRARY.find((t) => t.placeSlugs?.includes(slug)) ?? null
 }
 
 export function getBestTrackForEra(region: MusicRegion, eras: string[]): MusicTrack {
-  const tracks = getTracksForRegion(region).filter((t) => !t.placeSlug)
+  const tracks = getTracksForRegion(region).filter((t) => !t.placeSlugs)
   if (tracks.length === 0) return MUSIC_LIBRARY[0]
 
   // Try to match era keywords
