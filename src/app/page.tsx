@@ -409,6 +409,8 @@ export default function Home() {
             onClose={handleClosePanel}
             onEpicSelect={handleEpicSelect}
             onOpenAuth={handleOpenAuth}
+            allPlaces={allPlaces}
+            onPlaceSelect={handlePlaceSelect}
           />
         )}
       </AnimatePresence>

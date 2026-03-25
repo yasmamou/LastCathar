@@ -22,9 +22,11 @@ interface PlaceDetailPanelProps {
   onClose: () => void
   onEpicSelect?: (epic: Epic) => void
   onOpenAuth?: () => void
+  allPlaces?: PlaceEntry[]
+  onPlaceSelect?: (place: PlaceEntry) => void
 }
 
-export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -352,6 +354,54 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth }: P
               </div>
             </div>
           )}
+
+          {/* Nearby places */}
+          {allPlaces.length > 0 && onPlaceSelect && (() => {
+            const nearby = allPlaces
+              .filter(p => p.slug !== place.slug)
+              .map(p => ({
+                ...p,
+                dist: Math.sqrt(
+                  Math.pow(p.latitude - place.latitude, 2) +
+                  Math.pow(p.longitude - place.longitude, 2)
+                ),
+              }))
+              .sort((a, b) => a.dist - b.dist)
+              .slice(0, 6)
+            if (nearby.length === 0) return null
+            return (
+              <div className="space-y-3">
+                <h3 className="text-xs tracking-widest uppercase text-gold-400/50 font-medium">
+                  À proximité
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {nearby.map(p => {
+                    const color = getCategoryColor(p.categoryPrimary)
+                    const icon = getCategoryIcon(p.categoryPrimary)
+                    const km = Math.round(p.dist * 111)
+                    return (
+                      <button
+                        key={p.slug}
+                        onClick={() => onPlaceSelect(p)}
+                        className="glass-light rounded-lg px-3 py-2.5 text-left transition-all hover:bg-white/10 active:bg-white/15"
+                      >
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className="text-xs">{icon}</span>
+                          <span className="text-[9px] text-white/25">{km} km</span>
+                        </div>
+                        <p className="text-[11px] text-white/70 font-medium leading-tight line-clamp-2">
+                          {p.title}
+                        </p>
+                        <p className="text-[9px] mt-0.5" style={{ color }}>
+                          {getCategoryLabel(p.categoryPrimary)}
+                        </p>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Coordinates */}
           <div className="flex items-center gap-2 text-[10px] text-white/20 pt-2">
