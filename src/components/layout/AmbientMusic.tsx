@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Volume2, VolumeX, Music, ExternalLink, X, ChevronRight } from 'lucide-react'
+import { Volume2, VolumeX, Music, ExternalLink, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   MusicTrack,
@@ -28,6 +28,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
   const playingRef = useRef(false)
   const fadingRef = useRef(false)
 
+  // Init audio + auto-start on first user interaction
   useEffect(() => {
     const audio = new Audio(currentTrack.file)
     audio.loop = true
@@ -62,14 +63,46 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-switch track when country/place changes
+  // If a place-specific track exists, auto-start even if not yet playing
   useEffect(() => {
-    if (!playingRef.current || fadingRef.current) return
+    if (fadingRef.current) return
     const placeTrack = getTrackForPlace(placeSlug)
     const region = getRegionFromCountry(selectedCountry)
     const best = placeTrack ?? getBestTrackForEra(region, selectedEras)
+
+    // If we have a place-specific track and music isn't playing yet, auto-start it
+    if (placeTrack && !playingRef.current && autoStartedRef.current) {
+      playTrackDirect(placeTrack)
+      return
+    }
+
+    if (!playingRef.current) return
     if (best.id === currentTrack.id) return
     switchTrack(best)
   }, [selectedCountry, selectedEras, placeSlug]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Direct play (no fade, used for auto-start on place select)
+  const playTrackDirect = useCallback((track: MusicTrack) => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.src = track.file
+    audio.load()
+    if (track.startAt) audio.currentTime = track.startAt
+    audio.volume = 0
+    setCurrentTrack(track)
+    audio.play().then(() => {
+      let vol = 0
+      const timer = setInterval(() => {
+        vol = Math.min(0.25, vol + 0.008)
+        audio.volume = vol
+        if (vol >= 0.25) clearInterval(timer)
+      }, 80)
+    }).catch(() => {})
+    setIsPlaying(true)
+    playingRef.current = true
+    setHasInteracted(true)
+  }, [])
 
   const switchTrack = useCallback((track: MusicTrack) => {
     const audio = audioRef.current
@@ -112,23 +145,8 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
       return
     }
 
-    audio.src = track.file
-    audio.load()
-    if (track.startAt) audio.currentTime = track.startAt
-    audio.volume = 0
-    setCurrentTrack(track)
-    audio.play().then(() => {
-      let vol = 0
-      const timer = setInterval(() => {
-        vol = Math.min(0.25, vol + 0.008)
-        audio.volume = vol
-        if (vol >= 0.25) clearInterval(timer)
-      }, 80)
-    }).catch(() => {})
-    setIsPlaying(true)
-    playingRef.current = true
-    setHasInteracted(true)
-  }, [currentTrack, switchTrack])
+    playTrackDirect(track)
+  }, [currentTrack, switchTrack, playTrackDirect])
 
   const toggleMusic = useCallback(() => {
     const audio = audioRef.current
@@ -153,68 +171,56 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
 
   return (
     <>
-      {/* ── Floating player button ── fixed bottom-right */}
-      <div className="fixed bottom-4 right-4 z-[60] pointer-events-auto flex flex-col items-end gap-2 safe-bottom">
-        {/* Mini player bar */}
-        <div className="flex items-center gap-2">
-          {/* Track list toggle */}
-          {hasInteracted && (
-            <button
-              onClick={() => setShowPanel(!showPanel)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full transition-all duration-300 shadow-lg backdrop-blur-md ${
-                showPanel
-                  ? 'bg-gold-400/20 text-gold-400 border border-gold-400/30'
-                  : 'bg-black/60 text-white/50 hover:text-white/80 border border-white/10 hover:border-white/20'
-              }`}
-            >
-              <Music className="w-4 h-4" />
-              <span className="text-[10px] tracking-wider uppercase max-w-[120px] truncate hidden sm:inline">
-                {currentTrack.title.split('(')[0].trim()}
-              </span>
-              <ChevronRight className={`w-3 h-3 transition-transform duration-200 ${showPanel ? 'rotate-90' : '-rotate-90'}`} />
-            </button>
+      {/* ── Player button — fixed left, vertically centered ── */}
+      <div className="fixed left-3 top-1/2 -translate-y-1/2 z-[60] pointer-events-auto flex flex-col items-start gap-2">
+        {/* Play/Pause + track name */}
+        <button
+          onClick={toggleMusic}
+          className={`flex items-center gap-2 pl-2.5 pr-3 py-2.5 rounded-full shadow-lg backdrop-blur-md transition-all duration-300 ${
+            isPlaying
+              ? 'bg-black/70 text-gold-400 border border-gold-400/30 shadow-gold-400/10'
+              : 'bg-black/60 text-white/40 hover:text-white/70 border border-white/10 hover:border-white/20'
+          }`}
+        >
+          {isPlaying ? (
+            <Volume2 className="w-5 h-5 flex-shrink-0" />
+          ) : (
+            <VolumeX className="w-5 h-5 flex-shrink-0" />
           )}
+          <span className={`text-[10px] tracking-wider uppercase max-w-[100px] truncate ${
+            isPlaying ? 'text-gold-400/80' : 'text-white/40'
+          }`}>
+            {isPlaying ? currentTrack.title.split('(')[0].trim() : 'Music'}
+          </span>
+        </button>
 
-          {/* Play/Pause */}
+        {/* Tracklist toggle */}
+        {hasInteracted && (
           <button
-            onClick={toggleMusic}
-            className={`w-11 h-11 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-300 ${
-              isPlaying
-                ? 'bg-gold-400/20 text-gold-400 border border-gold-400/30 shadow-gold-400/10'
+            onClick={() => setShowPanel(!showPanel)}
+            className={`flex items-center gap-1.5 pl-2.5 pr-3 py-2 rounded-full shadow-lg backdrop-blur-md transition-all duration-300 ${
+              showPanel
+                ? 'bg-gold-400/20 text-gold-400 border border-gold-400/30'
                 : 'bg-black/60 text-white/40 hover:text-white/70 border border-white/10 hover:border-white/20'
             }`}
           >
-            {isPlaying ? (
-              <Volume2 className="w-5 h-5" />
-            ) : (
-              <VolumeX className="w-5 h-5" />
-            )}
-          </button>
-        </div>
-
-        {/* Initial hint */}
-        {!hasInteracted && (
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="px-3 py-1.5 rounded-full bg-gold-400/10 border border-gold-400/20"
-          >
-            <span className="text-[10px] tracking-wider uppercase text-gold-400/60 animate-pulse">
-              Cliquez pour la musique
+            <Music className="w-4 h-4 flex-shrink-0" />
+            <span className="text-[10px] tracking-wider uppercase">
+              {regionTracks.length} pistes
             </span>
-          </motion.div>
+          </button>
         )}
       </div>
 
-      {/* ── Music Panel ── slides up from bottom-right */}
+      {/* ── Music Panel — slides out from left center ── */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, x: -20, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -20, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-20 right-4 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/80 border border-white/10 max-h-[65vh] flex flex-col safe-bottom pointer-events-auto"
+            className="fixed left-16 top-1/2 -translate-y-1/2 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/85 border border-white/10 max-h-[70vh] flex flex-col pointer-events-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
@@ -224,9 +230,9 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
               </div>
               <button
                 onClick={() => setShowPanel(false)}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 

@@ -175,14 +175,13 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       const icon = getCategoryIcon(place.categoryPrimary)
 
       const entity = viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude),
+        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 100),
         point: {
           pixelSize: place.isFeatured ? 14 : 9,
           color: cc.withAlpha(0.9),
           outlineColor: cc.withAlpha(0.3),
           outlineWidth: place.isFeatured ? 6 : 3,
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1.8, 8e6, 0.4),
-          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         },
         label: {
           text: `${icon} ${place.title}`,
@@ -196,7 +195,6 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           pixelOffset: new Cesium.Cartesian2(0, -18),
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1, 4e6, 0),
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 400000),
-          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         },
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
