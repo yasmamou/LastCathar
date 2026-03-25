@@ -73,7 +73,6 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
         scene.globe.showGroundAtmosphere = true
         scene.fog.enabled = true
         scene.fog.density = 0.0001
-        scene.globe.depthTestAgainstTerrain = true
 
         if (scene.skyAtmosphere) {
           scene.skyAtmosphere.hueShift = -0.01
@@ -134,6 +133,27 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
+        // Hide place markers on the far side of the globe
+        const scratchP = new Cesium.Cartesian3()
+        const scratchC = new Cesium.Cartesian3()
+        scene.preRender.addEventListener(() => {
+          if (viewer.isDestroyed()) return
+          const cam = viewer.camera.positionWC
+          Cesium.Cartesian3.normalize(cam, scratchC)
+          const ents = viewer.entities.values
+          for (let i = 0; i < ents.length; i++) {
+            const e = ents[i]
+            // Only affect place markers, not highlights/lines
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (!(e as any)._placeData) continue
+            const p = e.position?.getValue(viewer.clock.currentTime)
+            if (!p) continue
+            Cesium.Cartesian3.normalize(p, scratchP)
+            // Same hemisphere = visible (dot > 0), small margin for horizon
+            e.show = Cesium.Cartesian3.dot(scratchP, scratchC) > -0.2
+          }
+        })
+
         readyRef.current = true
 
         // Execute any pending flyTo
@@ -175,13 +195,14 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       const icon = getCategoryIcon(place.categoryPrimary)
 
       const entity = viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 500),
+        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude),
         point: {
           pixelSize: place.isFeatured ? 14 : 9,
           color: cc.withAlpha(0.9),
           outlineColor: cc.withAlpha(0.3),
           outlineWidth: place.isFeatured ? 6 : 3,
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1.8, 8e6, 0.4),
+          disableDepthTestDistance: Number.POSITIVE_INFINITY,
         },
         label: {
           text: `${icon} ${place.title}`,
@@ -195,6 +216,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           pixelOffset: new Cesium.Cartesian2(0, -18),
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1, 4e6, 0),
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 400000),
+          disableDepthTestDistance: Number.POSITIVE_INFINITY,
         },
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
