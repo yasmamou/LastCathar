@@ -73,6 +73,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
         scene.globe.showGroundAtmosphere = true
         scene.fog.enabled = true
         scene.fog.density = 0.0001
+        scene.globe.depthTestAgainstTerrain = true
 
         if (scene.skyAtmosphere) {
           scene.skyAtmosphere.hueShift = -0.01
@@ -181,7 +182,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           outlineColor: cc.withAlpha(0.3),
           outlineWidth: place.isFeatured ? 6 : 3,
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1.8, 8e6, 0.4),
-          disableDepthTestDistance: Number.POSITIVE_INFINITY,
+          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         },
         label: {
           text: `${icon} ${place.title}`,
@@ -195,7 +196,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           pixelOffset: new Cesium.Cartesian2(0, -18),
           scaleByDistance: new Cesium.NearFarScalar(1e3, 1, 4e6, 0),
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 400000),
-          disableDepthTestDistance: Number.POSITIVE_INFINITY,
+          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         },
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
