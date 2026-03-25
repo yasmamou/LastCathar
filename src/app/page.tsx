@@ -374,19 +374,6 @@ export default function Home() {
               <FeaturedStrip places={featuredPlaces} onSelect={handlePlaceSelect} />
             </motion.div>
 
-            {/* Music player — bottom left, above featured strip */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 1 }}
-              className="absolute bottom-[3.5rem] sm:bottom-20 md:bottom-24 left-2 md:left-4 z-30"
-            >
-              <AmbientMusic
-                selectedCountry={undefined}
-                selectedEras={undefined}
-              />
-            </motion.div>
-
             {/* Place count */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -432,6 +419,13 @@ export default function Home() {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+      />
+
+      {/* Music player — fixed bottom-right, always visible */}
+      <AmbientMusic
+        selectedCountry={selectedPlace?.country}
+        selectedEras={selectedPlace?.era}
+        placeSlug={selectedPlace?.slug}
       />
     </main>
   )

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp } from 'lucide-react'
-import { AmbientMusic } from '@/components/layout/AmbientMusic'
 import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
 import { ProductCards } from '@/components/marketplace/ProductCards'
 import { PlaceEntry } from '@/types/places'
@@ -66,8 +65,8 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
       className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-40"
     >
       <div className="h-full glass overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
-        {/* Mobile back button + music */}
-        <div className="md:hidden flex items-center justify-between px-3 py-3 border-b border-white/5 sticky top-0 z-10 glass safe-top">
+        {/* Mobile back button */}
+        <div className="md:hidden flex items-center px-3 py-3 border-b border-white/5 sticky top-0 z-10 glass safe-top">
           <button
             onClick={onClose}
             className="flex items-center gap-2 text-white/60 active:text-white/90 py-2 pr-4"
@@ -75,7 +74,6 @@ export function PlaceDetailPanel({ place, onClose, selectedCountry, selectedEras
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm font-medium">Globe</span>
           </button>
-          <AmbientMusic selectedCountry={selectedCountry} selectedEras={selectedEras} placeSlug={place.slug} />
         </div>
         {/* Hero section with Wikipedia image */}
         <div
