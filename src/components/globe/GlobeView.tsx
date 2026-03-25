@@ -133,27 +133,6 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
-        // Hide place markers on the far side of the globe
-        const scratchP = new Cesium.Cartesian3()
-        const scratchC = new Cesium.Cartesian3()
-        scene.preRender.addEventListener(() => {
-          if (viewer.isDestroyed()) return
-          const cam = viewer.camera.positionWC
-          Cesium.Cartesian3.normalize(cam, scratchC)
-          const ents = viewer.entities.values
-          for (let i = 0; i < ents.length; i++) {
-            const e = ents[i]
-            // Only affect place markers, not highlights/lines
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if (!(e as any)._placeData) continue
-            const p = e.position?.getValue(viewer.clock.currentTime)
-            if (!p) continue
-            Cesium.Cartesian3.normalize(p, scratchP)
-            // Same hemisphere = visible (dot > 0), small margin for horizon
-            e.show = Cesium.Cartesian3.dot(scratchP, scratchC) > -0.2
-          }
-        })
-
         readyRef.current = true
 
         // Execute any pending flyTo
