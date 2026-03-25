@@ -134,26 +134,6 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
-        // Hide entities on the far side of the globe
-        // A point is visible if it's on the same hemisphere as the camera
-        const scratchNormP = new Cesium.Cartesian3()
-        const scratchNormC = new Cesium.Cartesian3()
-        scene.preRender.addEventListener(() => {
-          if (viewer.isDestroyed()) return
-          const cameraPos = viewer.camera.positionWC
-          Cesium.Cartesian3.normalize(cameraPos, scratchNormC)
-          const entities = viewer.entities.values
-          for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i]
-            const pos = entity.position?.getValue(viewer.clock.currentTime)
-            if (!pos) continue
-            Cesium.Cartesian3.normalize(pos, scratchNormP)
-            // dot > 0 = same hemisphere, use -0.1 to include horizon edge
-            const dot = Cesium.Cartesian3.dot(scratchNormP, scratchNormC)
-            entity.show = dot > -0.1
-          }
-        })
-
         readyRef.current = true
 
         // Execute any pending flyTo
@@ -195,7 +175,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       const icon = getCategoryIcon(place.categoryPrimary)
 
       const entity = viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 100),
+        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 500),
         point: {
           pixelSize: place.isFeatured ? 14 : 9,
           color: cc.withAlpha(0.9),
