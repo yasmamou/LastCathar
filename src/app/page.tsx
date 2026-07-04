@@ -13,7 +13,11 @@ import { SearchBar } from '@/components/layout/SearchBar'
 import { FeaturedStrip } from '@/components/layout/FeaturedStrip'
 import { EpicDetailPanel } from '@/components/panels/EpicDetailPanel'
 import { AuthModal } from '@/components/auth/AuthModal'
-import { Epic } from '@/data/epics'
+import { Epic, EPICS } from '@/data/epics'
+import { useChercheur } from '@/components/chercheur/useChercheur'
+import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurModal'
+import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
+import { BadgeToast } from '@/components/chercheur/BadgeToast'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
   ssr: false,
@@ -44,6 +48,9 @@ export default function Home() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [interactionFilter, setInteractionFilter] = useState<'VISITED' | 'WISHLIST' | 'FAVORITE' | null>(null)
   const [interactionSlugs, setInteractionSlugs] = useState<string[]>([])
+
+  // Chercheur (gamified) mode
+  const chercheur = useChercheur()
 
   const handleFilterInteractions = useCallback((filter: 'VISITED' | 'WISHLIST' | 'FAVORITE' | null, slugs: string[]) => {
     setInteractionFilter(filter)
@@ -137,7 +144,14 @@ export default function Home() {
     setSelectedPlace(place)
     setFlyToTrigger((n) => n + 1)
     setSearchQuery('')
-  }, [])
+    // If in Chercheur mode and this place belongs to the active epic → record visit
+    if (chercheur.chercheurMode) {
+      const activeEpic = EPICS.find((e) => e.id === chercheur.activeEpicId)
+      if (activeEpic?.places.some((p) => p.slug === place.slug)) {
+        chercheur.recordVisit(chercheur.activeEpicId, place.slug)
+      }
+    }
+  }, [chercheur])
 
   const handleClosePanel = useCallback(() => {
     setSelectedPlace(null)
@@ -202,6 +216,37 @@ export default function Home() {
   const handleOpenAuth = useCallback(() => {
     setShowAuthModal(true)
   }, [])
+
+  const handleStartChercheur = useCallback(() => {
+    chercheur.startMode()
+    const catharEpic = EPICS.find((e) => e.id === chercheur.activeEpicId)
+    const carcassonne = allPlaces.find((p) => p.slug === 'cite-de-carcassonne')
+    if (catharEpic) {
+      setActiveEpic(catharEpic)
+      setActiveCategory(null)
+      setActiveConfidence(null)
+      setSearchQuery('')
+      setNearbyMode(false)
+      setInteractionFilter(null)
+    }
+    if (carcassonne) {
+      setSelectedPlace(carcassonne)
+      setShowEpicPanel(false)
+      setFlyToTrigger((n) => n + 1)
+      chercheur.recordVisit(chercheur.activeEpicId, carcassonne.slug)
+    }
+  }, [chercheur])
+
+  const handleChercheurNextStep = useCallback(() => {
+    const epic = EPICS.find((e) => e.id === chercheur.activeEpicId)
+    if (!epic) return
+    const progress = chercheur.state?.progress.find((p) => p.epicId === chercheur.activeEpicId)
+    const ordered = [...epic.places].sort((a, b) => a.order - b.order)
+    const next = ordered.find((p) => !progress?.visitedSlugs.includes(p.slug))
+    if (!next) return
+    const place = allPlaces.find((p) => p.slug === next.slug)
+    if (place) handlePlaceSelect(place)
+  }, [chercheur.activeEpicId, chercheur.state, handlePlaceSelect])
 
   const [showFilters, setShowFilters] = useState(false)
 
@@ -442,6 +487,28 @@ export default function Home() {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
       />
+
+      {/* Chercheur — Welcome modal on first landing */}
+      <WelcomeChercheurModal
+        isOpen={chercheur.showWelcome}
+        onStart={handleStartChercheur}
+        onDismiss={chercheur.dismissWelcome}
+      />
+
+      {/* Chercheur — persistent HUD */}
+      <AnimatePresence>
+        {chercheur.chercheurMode && uiVisible && (
+          <ChercheurHUD
+            state={chercheur.state}
+            activeEpicId={chercheur.activeEpicId}
+            onNextStep={handleChercheurNextStep}
+            onStop={chercheur.stopMode}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Chercheur — badge toast */}
+      <BadgeToast badges={chercheur.lastBadges} onDismiss={chercheur.clearBadges} />
 
       {/* Music player — fixed bottom-right, always visible */}
       <AmbientMusic
