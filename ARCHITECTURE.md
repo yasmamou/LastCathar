@@ -1,6 +1,6 @@
 # Last Cathar -- Architecture Reference
 
-> Version 0.1.0 | Last updated: March 2026
+> Version 0.1.0 | Last updated: July 2026
 
 ---
 
@@ -39,20 +39,32 @@ distinguish documented fact from pure legend, multi-dimensional scores (mystery,
 significance, tourism value), source citations, and long-form narratives written to balance
 scholarly rigor with storytelling.
 
-### Current State (March 2026)
+### Current State (May 2026)
 
-- **807 places** across the world (France, Europe, Afrique, Amériques, Asie, Océanie)
-- **11 épopées** (Graal, Atlantide, Templiers, Vikings, Eldorado, Pharaons, Arthurien, Troubadours, Compostelle, Rome en Gaule, Mémoire de Pierre)
-- **Données statiques** en fichiers TypeScript (pas de DB) — performant, simple, suffisant pour le moment
+- **~835 places** across the world (France, Europe, Afrique, Amériques, Asie, Océanie)
+- **16 épopées** : Graal, Atlantide, Templiers, Vikings, Eldorado, Pharaons, Arthurien, Troubadours, Compostelle, Rome en Gaule, Préhistoire, Rois Berbères, Croisade Cathare, Wisigoths, Génies scientifiques, Découverte de la gravité
+- **DB Neon Postgres** opérationnelle (Prisma) pour auth + interactions + marketplace ; les lieux/épopées restent en seed TS (performance + simplicité)
 - **Pipeline séquentiel** (`scripts/pipeline.ts`) opérationnel pour ajouter du contenu
 - **Mobile responsive** avec touch events, filtres collapsibles, arrivée cinématique sur Carcassonne
 - **Images Wikipedia** récupérées dynamiquement via le hook `useWikipediaImages`
+- **Lieux à proximité** : section dans la sidebar + bandeau bas d'écran (calcul haversine)
+- **Lecteur musical fixe** (bas gauche) avec musique par lieu (Gloria par défaut, Iron Maiden Montségur, etc.)
+- **Occlusion globe** : marqueurs côté caché masqués via depth test natif Cesium
+- **Stats** : vues lieux + vues/clics produits, stats détaillées dans le formulaire vendeur
+- **Remotion** : génération de vidéos cinématiques (1920×1080/60s) par épopée — `CroisadeCathare`, `RoisBerberes` rendues
+
+### Nouveautés juillet 2026
+- **Stripe Checkout** branché en test mode : 2 plans (SINGLE 50 € / PACK_10 400 €), page `/pricing`, webhook complet, billing portal
+- **Mode Chercheur** : modale d'accueil + HUD gamifié + XP/badges + progression persistée par épopée (DB)
+- **PWA installable** : manifest dynamique, icônes générées via `ImageResponse`, service worker minimal, prompt d'installation Android natif + modal instructions iOS
 
 ### Vision & Roadmap
 
-- **Phase actuelle:** Enrichissement du contenu (épopées, lieux), amélioration mobile, UX globe
-- **Phase suivante:** Migration DB (Prisma/PostgreSQL) quand nécessaire (auth, contributions, marketplace)
-- **Phase future:** Auth utilisateurs, contributions communautaires, épopées créées par les users, affiliation/marketplace (Booking, produits locaux)
+- **Phase actuelle:** Génération vidéos Remotion pour les 16 épopées + Stripe live-mode + dashboard vendeur
+- **Phase suivante:** Contributions communautaires UGC (photos, lieux, épopées créées par users), classement communautaire du Mode Chercheur
+- **Phase future:** Affiliation Booking, page `/epopees/[slug]` avec vidéos intégrées
+
+> Pour la liste détaillée des features récentes (auth, marketplace, lecteur musical, nearby, Remotion), voir `FEATURES.md`.
 
 ### Méthodes de travail avec Claude Code
 
