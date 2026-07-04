@@ -507,6 +507,7 @@ export default function Home() {
             activeEpicId={chercheur.activeEpicId}
             onNextStep={handleChercheurNextStep}
             onStop={chercheur.stopMode}
+            panelOpen={!!selectedPlace || showEpicPanel}
           />
         )}
       </AnimatePresence>

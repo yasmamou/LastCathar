@@ -10,9 +10,10 @@ interface Props {
   activeEpicId: string
   onNextStep: () => void
   onStop: () => void
+  panelOpen?: boolean
 }
 
-export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop }: Props) {
+export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpen }: Props) {
   const epic = getEpic(activeEpicId)
   if (!epic) return null
 
@@ -24,13 +25,20 @@ export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop }: Props)
   const orderedPlaces = [...epic.places].sort((a, b) => a.order - b.order)
   const nextStep = orderedPlaces.find((p) => !progress?.visitedSlugs.includes(p.slug))
 
+  // When a panel is open (right-side sidebar on desktop, full-screen on mobile):
+  // - Mobile: hide (panel takes whole screen)
+  // - Desktop: shift to the left so it doesn't collide with the panel
+  const positionClass = panelOpen
+    ? 'hidden md:block md:top-4 md:left-4'
+    : 'top-2 right-2 md:top-4 md:right-4'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
-      className="absolute top-2 right-2 md:top-4 md:right-4 z-30 pointer-events-auto"
+      className={`absolute ${positionClass} z-30 pointer-events-auto`}
     >
       <div className="glass rounded-2xl border border-amber-400/20 bg-black/40 backdrop-blur-md px-3 py-2 md:px-4 md:py-3 shadow-lg min-w-[220px] md:min-w-[280px]">
         <div className="flex items-center justify-between mb-2">
