@@ -26,6 +26,9 @@ model User {
   contributions  UserContribution[]
   products       Product[]
   subscriptions  Subscription[]
+  epicProgress   UserEpicProgress[]
+  badges         UserBadge[]
+  xp             UserXP?
 
   @@map("users")
 }
@@ -166,20 +169,23 @@ model Product {
 }
 
 model Subscription {
-  id              String             @id @default(cuid())
-  userId          String             @map("user_id")
-  plan            SubscriptionPlan
-  status          SubscriptionStatus @default(ACTIVE)
-  slotsIncluded   Int                @map("slots_included")
-  stripeSubId     String?            @map("stripe_sub_id")
-  currentPeriodEnd DateTime?         @map("current_period_end")
-  createdAt       DateTime           @default(now()) @map("created_at")
-  updatedAt       DateTime           @updatedAt @map("updated_at")
+  id               String             @id @default(cuid())
+  userId           String             @map("user_id")
+  plan             SubscriptionPlan
+  status           SubscriptionStatus @default(ACTIVE)
+  slotsIncluded    Int                @map("slots_included")
+  stripeCustomerId String?            @map("stripe_customer_id")
+  stripeSubId      String?            @unique @map("stripe_sub_id")
+  stripePriceId    String?            @map("stripe_price_id")
+  currentPeriodEnd DateTime?          @map("current_period_end")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
   @@index([userId])
+  @@index([stripeCustomerId])
 }
 
 enum SubscriptionPlan {
@@ -342,4 +348,48 @@ enum ModerationState {
   APPROVED
   REJECTED
   ARCHIVED
+}
+
+// ─── Chercheur Mode (gamification) ──────────────────────────────
+
+model UserEpicProgress {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  epicId         String    @map("epic_id")
+  currentOrder   Int       @default(1) @map("current_order")
+  visitedSlugs   String[]  @map("visited_slugs")
+  completedAt    DateTime? @map("completed_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, epicId])
+  @@map("user_epic_progress")
+  @@index([userId])
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  badgeSlug String   @map("badge_slug")
+  earnedAt  DateTime @default(now()) @map("earned_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeSlug])
+  @@map("user_badges")
+  @@index([userId])
+}
+
+model UserXP {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  xp        Int      @default(0)
+  level     Int      @default(1)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_xp")
 }
