@@ -1,10 +1,29 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { AuthProvider } from '@/components/auth/AuthProvider'
+import { PwaProvider } from '@/components/pwa/PwaProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Last Cathar — Treasures, Myths & Hidden Stories',
   description: 'Explore treasures, myths and hidden stories across the world on an immersive 3D globe.',
+  applicationName: 'Last Cathar',
+  appleWebApp: {
+    capable: true,
+    title: 'Last Cathar',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#05060d',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -15,19 +34,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="theme-color" content="#05060d" />
         <link
           rel="stylesheet"
           href="/cesium/Widgets/widgets.css"
         />
       </head>
       <body className="antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <PwaProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </PwaProvider>
       </body>
     </html>
   )

@@ -18,6 +18,7 @@ import { useChercheur } from '@/components/chercheur/useChercheur'
 import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurModal'
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
+import { InstallPrompt } from '@/components/pwa/InstallPrompt'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
   ssr: false,
@@ -385,6 +386,9 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-gold-400 inline-block" />
                 )}
               </button>
+
+              {/* PWA install prompt */}
+              <InstallPrompt />
             </motion.div>
 
             {/* Active epic banner — centered below search */}
