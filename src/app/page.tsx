@@ -18,6 +18,7 @@ import { useChercheur } from '@/components/chercheur/useChercheur'
 import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurModal'
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
+import { QuestBanner } from '@/components/chercheur/QuestBanner'
 import { InstallPrompt } from '@/components/pwa/InstallPrompt'
 import { VitrineStrip } from '@/components/marketplace/VitrineStrip'
 
@@ -537,6 +538,13 @@ export default function Home() {
             onStop={chercheur.stopMode}
             panelOpen={!!selectedPlace || showEpicPanel}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Chercheur — invitation banner top-left (only when mode inactive + no panel) */}
+      <AnimatePresence>
+        {uiVisible && !chercheur.chercheurMode && !selectedPlace && !showEpicPanel && (
+          <QuestBanner onStart={handleStartChercheur} />
         )}
       </AnimatePresence>
 

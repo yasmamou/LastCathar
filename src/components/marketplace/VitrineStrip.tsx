@@ -266,7 +266,7 @@ function DesktopEmptySlot({ label }: { label: string }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-[11px] font-medium text-amber-300 truncate">{label}</div>
-        <div className="text-[9px] text-white/50 truncate">Louer cet emplacement — 50 €/mois</div>
+        <div className="text-[9px] text-white/50 truncate">Réserver cet emplacement →</div>
       </div>
     </Link>
   )
@@ -319,9 +319,7 @@ function MobileEmptySlot({ label }: { label: string }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold text-amber-300 truncate">{label}</div>
-        <div className="text-[11px] text-white/60 truncate">
-          Louer cet emplacement — dès 50 €/mois
-        </div>
+        <div className="text-[11px] text-white/60 truncate">Réserver cet emplacement →</div>
       </div>
     </Link>
   )
