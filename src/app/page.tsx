@@ -15,6 +15,7 @@ import { EpicDetailPanel } from '@/components/panels/EpicDetailPanel'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { Epic, EPICS } from '@/data/epics'
 import { useChercheur } from '@/components/chercheur/useChercheur'
+import { STARTER_EPIC_ID } from '@/lib/game'
 import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurModal'
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
@@ -40,6 +41,7 @@ const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
 export default function Home() {
   const [selectedPlace, setSelectedPlace] = useState<PlaceEntry | null>(null)
   const [flyToTrigger, setFlyToTrigger] = useState(0)
+  const [flyToCoords, setFlyToCoords] = useState<{ latitude: number; longitude: number } | null>(null)
   const [activeCategory, setActiveCategory] = useState<CategoryPrimary | null>(null)
   const [activeConfidence, setActiveConfidence] = useState<ConfidenceLevel | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -193,10 +195,12 @@ export default function Home() {
     setActiveConfidence(null)
     setSearchQuery('')
     setNearbyMode(false)
-    // Fly to first place in epic
+    // Fly to first place in epic. selectedPlace is null here (we show the epic
+    // panel, not a place panel), so hand GlobeView explicit coords to fly to.
     const firstSlug = epic.places[0]?.slug
     const firstPlace = allPlaces.find(p => p.slug === firstSlug)
     if (firstPlace) {
+      setFlyToCoords({ latitude: firstPlace.latitude, longitude: firstPlace.longitude })
       setFlyToTrigger(n => n + 1)
     }
   }, [])
@@ -237,8 +241,11 @@ export default function Home() {
   }, [])
 
   const handleStartChercheur = useCallback(() => {
+    // startMode() resets the active epic to STARTER_EPIC_ID; reference the
+    // constant directly rather than chercheur.activeEpicId, which still holds
+    // the (possibly different, persisted) render-time value in this closure.
     chercheur.startMode()
-    const catharEpic = EPICS.find((e) => e.id === chercheur.activeEpicId)
+    const catharEpic = EPICS.find((e) => e.id === STARTER_EPIC_ID)
     const carcassonne = allPlaces.find((p) => p.slug === 'cite-de-carcassonne')
     if (catharEpic) {
       setActiveEpic(catharEpic)
@@ -252,7 +259,7 @@ export default function Home() {
       setSelectedPlace(carcassonne)
       setShowEpicPanel(false)
       setFlyToTrigger((n) => n + 1)
-      chercheur.recordVisit(chercheur.activeEpicId, carcassonne.slug)
+      chercheur.recordVisit(STARTER_EPIC_ID, carcassonne.slug)
     }
   }, [chercheur])
 
@@ -305,6 +312,7 @@ export default function Home() {
           onPlaceSelect={handlePlaceSelect}
           onCameraMove={handleCameraMove}
           epicLines={activeEpic ? { placeSlugs: activeEpic.places.map(p => p.slug), color: activeEpic.color } : null}
+          flyToCoords={flyToCoords}
         />
       </div>
 
@@ -366,7 +374,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-25"
+                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-[25]"
               >
                 <div className={`glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs ${
                   interactionFilter === 'VISITED' ? 'text-emerald-400 border-emerald-400/20' :
@@ -405,7 +413,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-2 md:left-4 z-25 flex flex-col gap-1.5"
+              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-2 md:left-4 z-[25] flex flex-col gap-1.5"
             >
               {/* Nearby button */}
               <button
@@ -440,7 +448,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-25"
+                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-[25]"
               >
                 <div
                   className="glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs"

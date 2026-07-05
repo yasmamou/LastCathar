@@ -27,6 +27,9 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
   const autoStartedRef = useRef(false)
   const playingRef = useRef(false)
   const fadingRef = useRef(false)
+  // True once the user has explicitly paused — prevents the country/place effect
+  // from silently restarting the music behind their back on the next re-render.
+  const userPausedRef = useRef(false)
 
   // Init audio + auto-start on first user interaction
   useEffect(() => {
@@ -90,10 +93,11 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
       return
     }
 
-    // Interaction already happened → switch or start
+    // Interaction already happened → switch (if playing) or start.
+    // Never auto-(re)start if the user paused on purpose.
     if (playingRef.current) {
       switchTrack(best)
-    } else {
+    } else if (!userPausedRef.current) {
       playTrackDirect(best)
     }
   }, [selectedCountry, selectedEras, placeSlug]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -102,6 +106,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
   const playTrackDirect = useCallback((track: MusicTrack) => {
     const audio = audioRef.current
     if (!audio) return
+    userPausedRef.current = false
     audio.src = track.file
     audio.load()
     if (track.startAt) audio.currentTime = track.startAt
@@ -123,6 +128,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
   const switchTrack = useCallback((track: MusicTrack) => {
     const audio = audioRef.current
     if (!audio) return
+    userPausedRef.current = false
     fadingRef.current = true
 
     let vol = audio.volume
@@ -168,8 +174,10 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
     if (!audio) return
 
     if (!isPlaying) {
+      userPausedRef.current = false
       playTrack(currentTrack)
     } else {
+      userPausedRef.current = true
       let vol = audio.volume
       const timer = setInterval(() => {
         vol = Math.max(0, vol - 0.02)

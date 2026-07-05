@@ -120,6 +120,15 @@ export function useChercheur() {
     [status, refresh],
   )
 
+  // Switch the active epic and persist it, so a reload keeps the chosen epic
+  // (plain setActiveEpicId does not touch localStorage).
+  const selectEpic = useCallback((epicId: string) => {
+    setActiveEpicId(epicId)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LS_ACTIVE_EPIC, epicId)
+    }
+  }, [])
+
   const clearBadges = useCallback(() => setLastBadges([]), [])
   const clearXpDelta = useCallback(() => setLastXpDelta(0), [])
 
@@ -136,6 +145,6 @@ export function useChercheur() {
     recordVisit,
     clearBadges,
     clearXpDelta,
-    setActiveEpicId,
+    setActiveEpicId: selectEpic,
   }
 }

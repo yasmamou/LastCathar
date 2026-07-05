@@ -22,6 +22,9 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
   const [imageUrls, setImageUrls] = useState<string[]>([''])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // When the server reports a missing subscription / no free slot (HTTP 402),
+  // show a CTA to the pricing page rather than a dead-end error.
+  const [needsSubscription, setNeedsSubscription] = useState(false)
   const [success, setSuccess] = useState(false)
   const [stats, setStats] = useState<{
     totalViews: number
@@ -46,6 +49,7 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
     setExternalUrl('')
     setImageUrls([''])
     setError('')
+    setNeedsSubscription(false)
     setSuccess(false)
   }
 
@@ -87,6 +91,7 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
 
     setLoading(true)
     setError('')
+    setNeedsSubscription(false)
 
     try {
       const res = await fetch('/api/products/submit', {
@@ -104,6 +109,9 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
 
       const data = await res.json()
       if (!res.ok) {
+        if (res.status === 402 || data.code === 'NO_SUBSCRIPTION' || data.code === 'NO_SLOTS') {
+          setNeedsSubscription(true)
+        }
         setError(data.error || 'Erreur lors de la soumission')
         return
       }
@@ -313,6 +321,15 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
 
                 {error && (
                   <p className="text-xs text-red-400/80 text-center">{error}</p>
+                )}
+
+                {needsSubscription && (
+                  <a
+                    href="/pricing"
+                    className="block w-full py-2.5 rounded-xl bg-white/5 border border-gold-400/20 text-center text-sm text-gold-400/80 hover:bg-white/10 transition-colors"
+                  >
+                    Voir les abonnements →
+                  </a>
                 )}
 
                 <button

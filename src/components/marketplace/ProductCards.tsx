@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession } from 'next-auth/react'
 import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick, Plus } from 'lucide-react'
@@ -32,6 +32,9 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [showAddModal, setShowAddModal] = useState(false)
+  // Track which highlighted products we already counted a click for, so a
+  // products refetch (deps change) doesn't re-fire the same analytics click.
+  const trackedClicks = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     setLoading(true)
@@ -59,12 +62,15 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
       )
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     })
-    // Fire-and-forget analytics click
-    fetch('/api/products/click', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId: highlightedProductId, placeSlug }),
-    }).catch(() => {})
+    // Fire-and-forget analytics click — only once per highlighted product
+    if (!trackedClicks.current.has(highlightedProductId)) {
+      trackedClicks.current.add(highlightedProductId)
+      fetch('/api/products/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: highlightedProductId, placeSlug }),
+      }).catch(() => {})
+    }
   }, [highlightedProductId, products, placeSlug])
 
   const handleProductClick = async (product: Product) => {

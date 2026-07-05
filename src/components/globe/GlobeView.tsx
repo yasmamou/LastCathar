@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as Cesium from 'cesium'
 import { PlaceEntry } from '@/types/places'
 import { getCategoryColor, getCategoryIcon } from '@/lib/categories'
@@ -24,9 +24,12 @@ interface GlobeViewProps {
   onPlaceSelect: (place: PlaceEntry) => void
   onCameraMove?: (lat: number, lng: number) => void
   epicLines?: EpicLine | null
+  // Optional explicit fly target used when no place is selected (e.g. flying to
+  // an epic's first place while showing the epic overview panel).
+  flyToCoords?: { latitude: number; longitude: number } | null
 }
 
-export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect, onCameraMove, epicLines }: GlobeViewProps) {
+export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect, onCameraMove, epicLines, flyToCoords }: GlobeViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<Cesium.Viewer | null>(null)
   const readyRef = useRef(false)
@@ -34,6 +37,10 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
   callbacksRef.current = { onPlaceSelect, selectedPlace, flyToTrigger, onCameraMove }
   const highlightRef = useRef<Cesium.Entity | null>(null)
   const linesRef = useRef<Cesium.Entity[]>([])
+  // Flips true once the async viewer init completes, so the marker/line effects
+  // re-run and populate the globe even if `places` never changes identity after
+  // mount (otherwise markers only appeared on a fortuitous later re-render).
+  const [viewerReady, setViewerReady] = useState(false)
 
   // ─── Init viewer once ───
   useEffect(() => {
@@ -149,6 +156,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
         })
 
         readyRef.current = true
+        setViewerReady(true)
 
         // Execute any pending flyTo
         const pending = callbacksRef.current.selectedPlace
@@ -168,6 +176,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
     return () => {
       destroyed = true
       readyRef.current = false
+      setViewerReady(false)
       if (viewerRef.current && !viewerRef.current.isDestroyed()) {
         viewerRef.current.destroy()
         viewerRef.current = null
@@ -216,13 +225,17 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(entity as any)._placeData = place
     })
-  }, [places])
+  }, [places, viewerReady])
 
-  // ─── Fly to selected place ───
+  // ─── Fly to selected place (or an explicit epic target) ───
   useEffect(() => {
-    if (flyToTrigger === 0 || !selectedPlace) return
+    if (flyToTrigger === 0) return
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed()) return
+
+    // Prefer the selected place; otherwise use the explicit fly target.
+    const target = selectedPlace ?? flyToCoords
+    if (!target) return
 
     // Remove previous highlight
     if (highlightRef.current) {
@@ -230,25 +243,27 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       highlightRef.current = null
     }
 
-    // Add highlight circle
-    const color = Cesium.Color.fromCssColorString(getCategoryColor(selectedPlace.categoryPrimary))
-    highlightRef.current = viewer.entities.add({
-      position: Cesium.Cartesian3.fromDegrees(selectedPlace.longitude, selectedPlace.latitude),
-      ellipse: {
-        semiMinorAxis: 2000,
-        semiMajorAxis: 2000,
-        material: color.withAlpha(0.2),
-        outline: true,
-        outlineColor: color.withAlpha(0.5),
-        outlineWidth: 2,
-      },
-    })
+    // Add highlight circle only for an actual selected place
+    if (selectedPlace) {
+      const color = Cesium.Color.fromCssColorString(getCategoryColor(selectedPlace.categoryPrimary))
+      highlightRef.current = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(selectedPlace.longitude, selectedPlace.latitude),
+        ellipse: {
+          semiMinorAxis: 2000,
+          semiMajorAxis: 2000,
+          material: color.withAlpha(0.2),
+          outline: true,
+          outlineColor: color.withAlpha(0.5),
+          outlineWidth: 2,
+        },
+      })
+    }
 
     // Fly directly above the point
     viewer.camera.flyTo({
       destination: Cesium.Cartesian3.fromDegrees(
-        selectedPlace.longitude,
-        selectedPlace.latitude,
+        target.longitude,
+        target.latitude,
         25000,
       ),
       orientation: {
@@ -258,7 +273,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       },
       duration: 1.5,
     })
-  }, [flyToTrigger, selectedPlace])
+  }, [flyToTrigger, selectedPlace, flyToCoords])
 
   // ─── Draw epic connection lines ───
   useEffect(() => {
@@ -302,7 +317,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
       })
       linesRef.current.push(entity)
     }
-  }, [epicLines, places])
+  }, [epicLines, places, viewerReady])
 
   return (
     <div ref={containerRef} className="w-full h-full" style={{ background: '#05060d' }} />

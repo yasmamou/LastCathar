@@ -39,6 +39,13 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
 
+  // Reset to the first image when switching place (component is reused, not
+  // remounted, when navigating via "À proximité") — otherwise a stale index can
+  // exceed the new place's image count and leave the hero blank.
+  useEffect(() => {
+    setActiveImageIndex(0)
+  }, [place.slug])
+
   // Track place view + fetch stats
   useEffect(() => {
     // Track view (fire and forget)

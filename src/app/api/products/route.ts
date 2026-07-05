@@ -25,15 +25,19 @@ export async function GET(request: Request) {
     return NextResponse.json({ products: [], maxSlots: 0, availableSlots: 0 })
   }
 
-  // Track place view for analytics
-  await prisma.placeView.create({
-    data: { placeSlug, event: 'PLACE_OPEN' },
-  }).catch(() => {}) // non-blocking
+  // NOTE: view tracking lives in POST /api/stats/track (fired once by the panel).
+  // Counting it here too double-counted every place open in the merchant-facing stats.
+
+  // Occupied slots must match the submit endpoint's rule (APPROVED + REVIEW),
+  // otherwise the UI shows a free slot that the POST then rejects with a 409.
+  const occupied = await prisma.product.count({
+    where: { placeSlotId: placeSlot.id, status: { in: ['APPROVED', 'REVIEW'] } },
+  })
 
   return NextResponse.json({
     products: placeSlot.products,
     maxSlots: placeSlot.maxSlots,
-    availableSlots: placeSlot.maxSlots - placeSlot.products.length,
+    availableSlots: Math.max(0, placeSlot.maxSlots - occupied),
     pricePerMonth: placeSlot.pricePerMonth,
   })
 }

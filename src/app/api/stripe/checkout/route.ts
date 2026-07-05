@@ -12,11 +12,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Non connecté' }, { status: 401 })
   }
 
-  const { plan } = (await request.json()) as { plan: PlanKey }
-  const planConfig = PLANS[plan]
-  if (!planConfig || !planConfig.priceId) {
+  const body = (await request.json().catch(() => null)) as { plan?: PlanKey } | null
+  const plan = body?.plan
+  if (!plan || !PLANS[plan] || !PLANS[plan].priceId) {
     return NextResponse.json({ error: 'Plan inconnu ou non configuré' }, { status: 400 })
   }
+  const planConfig = PLANS[plan]
 
   const origin = request.headers.get('origin') ?? process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
 

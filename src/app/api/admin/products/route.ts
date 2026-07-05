@@ -42,9 +42,11 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
   }
 
-  const { productId, status } = await request.json()
+  const body = await request.json().catch(() => null)
+  const productId = body?.productId
+  const status = body?.status
 
-  if (!productId || !['APPROVED', 'REJECTED'].includes(status)) {
+  if (!productId || typeof productId !== 'string' || !['APPROVED', 'REJECTED'].includes(status)) {
     return NextResponse.json({ error: 'Données invalides' }, { status: 400 })
   }
 

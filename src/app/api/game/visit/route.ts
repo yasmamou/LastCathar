@@ -17,7 +17,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Non connecté' }, { status: 401 })
   }
 
-  const { epicId, placeSlug } = (await request.json()) as { epicId: string; placeSlug: string }
+  const body = (await request.json().catch(() => null)) as { epicId?: string; placeSlug?: string } | null
+  const epicId = body?.epicId
+  const placeSlug = body?.placeSlug
   if (!epicId || !placeSlug) {
     return NextResponse.json({ error: 'epicId et placeSlug requis' }, { status: 400 })
   }
@@ -82,12 +84,21 @@ export async function POST(request: Request) {
     if (completed && !wasCompleted) awardedXp += XP_EPIC_COMPLETE
   }
 
-  const newXp = xpRow.xp + awardedXp
-  const newLevel = levelForXp(newXp)
-  await prisma.userXP.update({
-    where: { userId },
-    data: { xp: newXp, level: newLevel },
-  })
+  // Atomic increment avoids a read-modify-write race when two visits land
+  // concurrently (double-click / two tabs) and one overwrites the other.
+  let newXp = xpRow.xp
+  let newLevel = levelForXp(newXp)
+  if (awardedXp > 0) {
+    const updated = await prisma.userXP.update({
+      where: { userId },
+      data: { xp: { increment: awardedXp } },
+    })
+    newXp = updated.xp
+    newLevel = levelForXp(newXp)
+    if (updated.level !== newLevel) {
+      await prisma.userXP.update({ where: { userId }, data: { level: newLevel } })
+    }
+  }
 
   // Badges
   const [totalInteractions, completedEpicsCount, existingBadges] = await Promise.all([

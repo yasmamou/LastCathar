@@ -23,7 +23,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Non connecté' }, { status: 401 })
   }
 
-  const { placeSlug, type } = await request.json()
+  const body = await request.json().catch(() => null)
+  const placeSlug = body?.placeSlug
+  const type = body?.type
 
   if (!placeSlug || !type) {
     return NextResponse.json({ error: 'Données manquantes' }, { status: 400 })
@@ -50,13 +52,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ action: 'removed', placeSlug, type })
   }
 
-  await prisma.userPlaceInteraction.create({
-    data: {
-      userId: session.user.id,
-      placeSlug,
-      type,
-    },
-  })
+  try {
+    await prisma.userPlaceInteraction.create({
+      data: {
+        userId: session.user.id,
+        placeSlug,
+        type,
+      },
+    })
+  } catch {
+    // Concurrent double-click can race past the findUnique above and hit the
+    // unique constraint (P2002) — treat it as already added rather than a 500.
+    return NextResponse.json({ action: 'added', placeSlug, type })
+  }
 
   return NextResponse.json({ action: 'added', placeSlug, type })
 }

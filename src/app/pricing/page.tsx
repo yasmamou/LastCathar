@@ -208,10 +208,14 @@ export default function PricingPage() {
             Déjà abonné ?{' '}
             <button
               onClick={async () => {
-                const res = await fetch('/api/stripe/portal', { method: 'POST' })
-                const data = await res.json()
-                if (data.url) window.location.href = data.url
-                else setError(data.error ?? 'Erreur portail')
+                try {
+                  const res = await fetch('/api/stripe/portal', { method: 'POST' })
+                  const data = await res.json()
+                  if (data.url) window.location.href = data.url
+                  else setError(data.error ?? 'Erreur portail')
+                } catch {
+                  setError('Erreur réseau — réessayez.')
+                }
               }}
               className="text-amber-300 underline hover:text-amber-200"
             >
