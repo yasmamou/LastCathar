@@ -87,69 +87,83 @@ export function VitrineStrip({
 
   const hasProducts = enrichedSorted.length > 0
 
-  // Desktop positioning — always LEFT side, vertical offset depends on what's above:
-  // - Panel open + Chercheur active   → HUD is at top-4 left-4 (~14rem tall) → products below at top-[18rem]
-  // - Panel open + Chercheur inactive → nothing on left → top-4
-  // - No panel + Chercheur active     → Pills column (~4.5rem tall from top-[4.2rem]) → products at top-[10rem]
-  // - No panel + Chercheur inactive   → Pills + QuestBanner will sit below products → products at top-[10rem]
+  // Desktop = vertical column on the RIGHT side (music player is on the LEFT).
+  // Vertical offset depends on what's above:
+  // - No panel + Chercheur active   → HUD at top-20 right-4 (~13rem tall) → products below at top-[19rem]
+  // - No panel + Chercheur inactive → products take the HUD slot at top-20 (right, below header)
+  // - Panel open (right side taken by panel) → move to LEFT
+  //   - Chercheur active   → HUD at top-4 left-4 (~13rem tall) → products at top-[16rem] left-4
+  //   - Chercheur inactive → products at top-4 left-4
   const desktopPosClass = panelOpen
     ? chercheurActive
-      ? 'md:top-[18rem] md:left-4'
+      ? 'md:top-[16rem] md:left-4'
       : 'md:top-4 md:left-4'
-    : 'md:top-[10rem] md:left-4'
+    : chercheurActive
+      ? 'md:top-[19rem] md:right-4'
+      : 'md:top-20 md:right-4'
 
   return (
     <>
-      {/* ────────────── DESKTOP: horizontal thin strip at top-left ────────────── */}
+      {/* ────────────── DESKTOP: vertical column ────────────── */}
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
+        initial={{ opacity: 0, x: 12 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 12 }}
         transition={{ duration: 0.4, delay: 0.4 }}
-        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 pointer-events-auto`}
+        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 w-[210px] pointer-events-auto`}
       >
         <div className="flex items-center gap-1.5 px-1 text-[10px] uppercase tracking-widest text-amber-300/80">
           <Store className="w-3 h-3" />
           <span>Produits locaux</span>
         </div>
 
-        <div className="flex gap-1.5 items-stretch max-w-[560px] overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
-          {enrichedSorted.map(({ product, place }) => (
-            <DesktopProductCard
-              key={product.id}
-              product={product}
-              place={place}
-              onClick={() => onSelectPlace(place, product.id)}
-            />
-          ))}
-          <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
-        </div>
+        {enrichedSorted.map(({ product, place }) => (
+          <DesktopProductCard
+            key={product.id}
+            product={product}
+            place={place}
+            onClick={() => onSelectPlace(place, product.id)}
+          />
+        ))}
+
+        <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
       </motion.div>
 
-      {/* ────────────── MOBILE: pill bottom-right when no panel; hidden when panel open ────────────── */}
+      {/* ────────────── MOBILE: top horizontal strip, hidden when panel is open ────────────── */}
       {!panelOpen && (
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
+          exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.4, delay: 0.5 }}
-          onClick={() => setMobileOpen(true)}
-          className="md:hidden absolute bottom-[6.5rem] right-2 z-20 pointer-events-auto glass rounded-full border border-amber-400/25 bg-black/50 backdrop-blur-md pl-2 pr-3 py-1.5 flex items-center gap-1.5 shadow-lg"
-          aria-label="Voir les produits locaux"
+          className="md:hidden absolute top-[8.5rem] left-0 right-0 z-20 pointer-events-auto"
         >
-          <Store className="w-3 h-3 text-amber-300" />
-          <span className="text-[10px] text-white/80 font-medium">
-            {hasProducts ? (
-              <>
-                <b className="text-amber-300">{enrichedSorted.length}</b> produit
-                {enrichedSorted.length > 1 ? 's' : ''} local
-                {enrichedSorted.length > 1 ? 'aux' : ''}
-              </>
-            ) : (
-              'Devenez marchand'
+          <div className="flex items-center gap-1.5 px-3 pb-1 text-[9px] uppercase tracking-widest text-amber-300/80">
+            <Store className="w-2.5 h-2.5" />
+            <span>Produits locaux</span>
+          </div>
+          <div className="flex gap-1.5 px-3 overflow-x-auto pb-1 scroll-smooth snap-x">
+            {enrichedSorted.map(({ product, place }) => (
+              <MobileProductCard
+                key={product.id}
+                product={product}
+                place={place}
+                onClick={() => onSelectPlace(place, product.id)}
+              />
+            ))}
+            <MobileEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le 1er ici'} />
+            {hasProducts && enrichedSorted.length >= 2 && (
+              <button
+                onClick={() => setMobileOpen(true)}
+                className="snap-start flex-shrink-0 w-[46px] rounded-xl border border-amber-400/20 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center gap-0.5"
+                aria-label="Voir tous les produits"
+              >
+                <span className="text-[10px] text-white/70 font-semibold">Tout</span>
+                <span className="text-[9px] text-amber-300">→</span>
+              </button>
             )}
-          </span>
-        </motion.button>
+          </div>
+        </motion.div>
       )}
 
       <AnimatePresence>
@@ -168,7 +182,7 @@ export function VitrineStrip({
               exit={{ y: 60 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-h-[70vh] rounded-t-2xl border-t border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-4 pb-6 overflow-y-auto"
+              className="w-full max-h-[75vh] rounded-t-2xl border-t border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-4 pb-6 overflow-y-auto"
             >
               <div className="flex justify-center mb-3">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
@@ -192,7 +206,7 @@ export function VitrineStrip({
 
               <div className="space-y-2">
                 {enrichedSorted.map(({ product, place }) => (
-                  <MobileProductCard
+                  <MobileProductCardExpanded
                     key={product.id}
                     product={product}
                     place={place}
@@ -202,7 +216,7 @@ export function VitrineStrip({
                     }}
                   />
                 ))}
-                <MobileEmptySlot
+                <MobileEmptySlotExpanded
                   label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'}
                 />
               </div>
@@ -228,8 +242,62 @@ function DesktopProductCard({
   return (
     <button
       onClick={onClick}
-      className="group flex flex-col flex-shrink-0 w-[130px] rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md p-1.5 transition-colors text-left"
+      className="group flex items-center gap-2 glass rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left"
       title={`${product.title} — ${place.title}`}
+    >
+      <div className="w-8 h-8 rounded overflow-hidden bg-white/5 flex-shrink-0">
+        {product.thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.thumbnail} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-amber-300/40 text-sm">
+            🛍️
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">
+          {product.title}
+        </div>
+        <div className="text-[9px] text-white/40 truncate">
+          {product.price ? <span className="text-amber-300/80">{product.price}</span> : place.title}
+        </div>
+      </div>
+      <ExternalLink className="w-2.5 h-2.5 text-white/30 flex-shrink-0" />
+    </button>
+  )
+}
+
+function DesktopEmptySlot({ label }: { label: string }) {
+  return (
+    <Link
+      href="/pricing"
+      className="group flex items-center gap-2 rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 px-2 py-1.5 transition-colors"
+    >
+      <div className="w-8 h-8 rounded flex items-center justify-center bg-amber-400/10 flex-shrink-0">
+        <Plus className="w-4 h-4 text-amber-300" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-medium text-amber-300 truncate">{label}</div>
+        <div className="text-[9px] text-white/50 truncate">Réserver cet emplacement →</div>
+      </div>
+    </Link>
+  )
+}
+
+function MobileProductCard({
+  product,
+  place,
+  onClick,
+}: {
+  product: VitrineProduct
+  place: PlaceEntry
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="snap-start flex-shrink-0 w-[110px] rounded-xl border border-amber-400/15 bg-black/40 backdrop-blur-md p-1.5 flex flex-col text-left"
     >
       <div className="w-full aspect-square rounded overflow-hidden bg-white/5 mb-1">
         {product.thumbnail ? (
@@ -241,21 +309,21 @@ function DesktopProductCard({
           </div>
         )}
       </div>
-      <div className="text-[10px] font-medium text-white leading-tight line-clamp-2 group-hover:text-amber-200 transition-colors">
+      <div className="text-[10px] font-medium text-white leading-tight line-clamp-2">
         {product.title}
       </div>
-      <div className="text-[9px] text-white/40 truncate mt-0.5">
-        {product.price ? <span className="text-amber-300/80">{product.price}</span> : place.title}
+      <div className="text-[9px] text-amber-300/70 truncate mt-0.5">
+        {product.price ?? place.title}
       </div>
     </button>
   )
 }
 
-function DesktopEmptySlot({ label }: { label: string }) {
+function MobileEmptySlot({ label }: { label: string }) {
   return (
     <Link
       href="/pricing"
-      className="group flex flex-col flex-shrink-0 w-[130px] rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 p-1.5 transition-colors"
+      className="snap-start flex-shrink-0 w-[110px] rounded-xl border border-dashed border-amber-400/30 bg-amber-400/5 p-1.5 flex flex-col text-left"
     >
       <div className="w-full aspect-square rounded flex items-center justify-center bg-amber-400/10 mb-1">
         <Plus className="w-5 h-5 text-amber-300" />
@@ -268,7 +336,7 @@ function DesktopEmptySlot({ label }: { label: string }) {
   )
 }
 
-function MobileProductCard({
+function MobileProductCardExpanded({
   product,
   place,
   onClick,
@@ -304,7 +372,7 @@ function MobileProductCard({
   )
 }
 
-function MobileEmptySlot({ label }: { label: string }) {
+function MobileEmptySlotExpanded({ label }: { label: string }) {
   return (
     <Link
       href="/pricing"

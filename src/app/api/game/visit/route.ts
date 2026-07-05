@@ -104,6 +104,7 @@ export async function POST(request: Request) {
     totalPlacesVisited: Math.max(totalInteractions, visitedSlugs.length),
     visitedSlug: placeSlug,
     isFirstEpicCompleted,
+    totalCompletedEpics: completedEpicsCount,
   })
 
   const alreadyBadgeSlugs = new Set(existingBadges.map((b) => b.badgeSlug))

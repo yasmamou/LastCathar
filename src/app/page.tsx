@@ -19,6 +19,7 @@ import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurMo
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
 import { QuestBanner } from '@/components/chercheur/QuestBanner'
+import { EpicPicker } from '@/components/chercheur/EpicPicker'
 import { InstallPrompt } from '@/components/pwa/InstallPrompt'
 import { VitrineStrip } from '@/components/marketplace/VitrineStrip'
 
@@ -65,6 +66,9 @@ export default function Home() {
 
   // When a Vitrine card is clicked, highlight the product inside the place panel
   const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null)
+
+  // Epic picker modal
+  const [epicPickerOpen, setEpicPickerOpen] = useState(false)
 
   const handleFilterInteractions = useCallback((filter: 'VISITED' | 'WISHLIST' | 'FAVORITE' | null, slugs: string[]) => {
     setInteractionFilter(filter)
@@ -262,6 +266,31 @@ export default function Home() {
     const place = allPlaces.find((p) => p.slug === next.slug)
     if (place) handlePlaceSelect(place)
   }, [chercheur.activeEpicId, chercheur.state, handlePlaceSelect])
+
+  // Select a new epic from the picker → activate + fly to first unvisited place
+  const handleSelectEpic = useCallback((newEpicId: string) => {
+    const newEpic = EPICS.find((e) => e.id === newEpicId)
+    if (!newEpic) return
+    chercheur.setActiveEpicId(newEpicId)
+    setActiveEpic(newEpic)
+    setActiveCategory(null)
+    setActiveConfidence(null)
+    setSearchQuery('')
+    setNearbyMode(false)
+    setInteractionFilter(null)
+
+    const progress = chercheur.state?.progress.find((p) => p.epicId === newEpicId)
+    const ordered = [...newEpic.places].sort((a, b) => a.order - b.order)
+    const nextEpicPlace =
+      ordered.find((p) => !progress?.visitedSlugs.includes(p.slug)) ?? ordered[0]
+    const target = allPlaces.find((p) => p.slug === nextEpicPlace?.slug)
+    if (target) {
+      setSelectedPlace(target)
+      setShowEpicPanel(false)
+      setFlyToTrigger((n) => n + 1)
+      chercheur.recordVisit(newEpicId, target.slug)
+    }
+  }, [chercheur])
 
   const [showFilters, setShowFilters] = useState(false)
 
@@ -535,11 +564,21 @@ export default function Home() {
             state={chercheur.state}
             activeEpicId={chercheur.activeEpicId}
             onNextStep={handleChercheurNextStep}
+            onOpenPicker={() => setEpicPickerOpen(true)}
             onStop={chercheur.stopMode}
             panelOpen={!!selectedPlace || showEpicPanel}
           />
         )}
       </AnimatePresence>
+
+      {/* Chercheur — epic picker modal */}
+      <EpicPicker
+        isOpen={epicPickerOpen}
+        onClose={() => setEpicPickerOpen(false)}
+        onSelectEpic={handleSelectEpic}
+        activeEpicId={chercheur.activeEpicId}
+        state={chercheur.state}
+      />
 
       {/* Chercheur — invitation banner top-left (only when mode inactive + no panel) */}
       <AnimatePresence>

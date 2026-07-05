@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Compass, Trophy, X, ChevronUp } from 'lucide-react'
+import { Compass, Trophy, X, ChevronUp, LayoutGrid } from 'lucide-react'
 import { useState } from 'react'
 import type { GameState } from './useChercheur'
 import { getEpic } from '@/lib/game'
@@ -11,11 +11,12 @@ interface Props {
   state: GameState | null
   activeEpicId: string
   onNextStep: () => void
+  onOpenPicker: () => void
   onStop: () => void
   panelOpen?: boolean
 }
 
-export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpen }: Props) {
+export function ChercheurHUD({ state, activeEpicId, onNextStep, onOpenPicker, onStop, panelOpen }: Props) {
   const [mobileExpanded, setMobileExpanded] = useState(false)
   const epic = getEpic(activeEpicId)
   if (!epic) return null
@@ -29,8 +30,10 @@ export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpe
   const nextStep = orderedPlaces.find((p) => !progress?.visitedSlugs.includes(p.slug))
 
   // Mobile: compact pill at bottom-left when no panel, hidden when panel is open (which is full-screen)
-  // Desktop: full HUD top-right (or top-left when a panel is open)
-  const desktopPositionClass = panelOpen ? 'md:top-4 md:left-4' : 'md:top-4 md:right-4'
+  // Desktop position:
+  // - panel closed: right side BELOW the header (top-20) — avoids UserMenu overlap
+  // - panel open: header is hidden, so we can go higher (top-4) on the left
+  const desktopPositionClass = panelOpen ? 'md:top-4 md:left-4' : 'md:top-20 md:right-4'
 
   if (panelOpen) {
     // Mobile hidden (panel full-screen) + desktop full HUD
@@ -50,6 +53,7 @@ export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpe
           ratio={ratio}
           nextStep={nextStep}
           onNextStep={onNextStep}
+          onOpenPicker={onOpenPicker}
           onStop={onStop}
         />
       </motion.div>
@@ -122,6 +126,10 @@ export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpe
                   setMobileExpanded(false)
                   onNextStep()
                 }}
+                onOpenPicker={() => {
+                  setMobileExpanded(false)
+                  onOpenPicker()
+                }}
                 onStop={() => {
                   setMobileExpanded(false)
                   onStop()
@@ -149,6 +157,7 @@ export function ChercheurHUD({ state, activeEpicId, onNextStep, onStop, panelOpe
           ratio={ratio}
           nextStep={nextStep}
           onNextStep={onNextStep}
+          onOpenPicker={onOpenPicker}
           onStop={onStop}
         />
       </motion.div>
@@ -164,6 +173,7 @@ interface FullHudCardProps {
   ratio: number
   nextStep: EpicPlace | undefined
   onNextStep: () => void
+  onOpenPicker: () => void
   onStop: () => void
   fullWidth?: boolean
 }
@@ -176,6 +186,7 @@ function FullHudCard({
   ratio,
   nextStep,
   onNextStep,
+  onOpenPicker,
   onStop,
   fullWidth,
 }: FullHudCardProps) {
@@ -223,10 +234,15 @@ function FullHudCard({
         </div>
       )}
 
-      <div className="flex items-center gap-2 mb-1.5">
+      <button
+        onClick={onOpenPicker}
+        className="w-full flex items-center gap-2 mb-1.5 rounded hover:bg-white/5 transition-colors p-1 -mx-1 group/epic"
+        title="Changer d'épopée"
+      >
         <span className="text-base">{epic.icon}</span>
-        <span className="text-xs text-white font-medium truncate">{epic.title}</span>
-      </div>
+        <span className="text-xs text-white font-medium truncate flex-1 text-left">{epic.title}</span>
+        <LayoutGrid className="w-3 h-3 text-white/40 group-hover/epic:text-amber-300 transition-colors flex-shrink-0" />
+      </button>
 
       <div className="flex items-center justify-between mb-1 text-[10px] text-white/50">
         <span>Progression</span>
@@ -258,9 +274,13 @@ function FullHudCard({
           <ChevronUp className="w-3.5 h-3.5 text-amber-300 rotate-90 flex-shrink-0" />
         </button>
       ) : (
-        <div className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-2 text-center text-xs text-amber-300">
-          Épopée terminée — bravo, chercheur !
-        </div>
+        <button
+          onClick={onOpenPicker}
+          className="w-full rounded-lg border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/15 transition p-2 text-center text-xs text-amber-300 flex items-center justify-center gap-1.5"
+        >
+          <LayoutGrid className="w-3 h-3" />
+          Épopée terminée — choisir la suivante
+        </button>
       )}
     </div>
   )
