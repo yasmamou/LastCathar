@@ -3,7 +3,7 @@
 // The main app requires network (Cesium terrain tiles, Wikipedia images, API routes),
 // so we deliberately keep caching light.
 
-const CACHE_VERSION = 'lc-v8'
+const CACHE_VERSION = 'lc-v9'
 const APP_SHELL = ['/', '/pricing', '/manifest.webmanifest']
 
 self.addEventListener('install', (event) => {

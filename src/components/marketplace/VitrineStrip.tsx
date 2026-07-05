@@ -36,7 +36,7 @@ export function VitrineStrip({
   onSelectPlace,
   chercheurActive,
   panelOpen,
-  limit = 4,
+  limit = 3,
 }: Props) {
   const [products, setProducts] = useState<VitrineProduct[] | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -87,44 +87,43 @@ export function VitrineStrip({
 
   const hasProducts = enrichedSorted.length > 0
 
-  // Desktop positioning:
-  // - No panel + Chercheur active   → below the HUD on the right
-  // - No panel + Chercheur inactive → right side, below Header (top-20)
-  // - Panel open + Chercheur active → below the HUD on the LEFT (HUD is at top-4 left-4 when panel open)
-  // - Panel open + Chercheur inactive → LEFT side, top-20
+  // Desktop positioning — always LEFT side, vertical offset depends on what's above:
+  // - Panel open + Chercheur active   → HUD is at top-4 left-4 (~14rem tall) → products below at top-[18rem]
+  // - Panel open + Chercheur inactive → nothing on left → top-4
+  // - No panel + Chercheur active     → Pills column (~4.5rem tall from top-[4.2rem]) → products at top-[10rem]
+  // - No panel + Chercheur inactive   → Pills + QuestBanner will sit below products → products at top-[10rem]
   const desktopPosClass = panelOpen
     ? chercheurActive
-      ? 'md:top-[16rem] md:left-4'
-      : 'md:top-20 md:left-4'
-    : chercheurActive
-      ? 'md:top-[16rem] md:right-4'
-      : 'md:top-20 md:right-4'
+      ? 'md:top-[18rem] md:left-4'
+      : 'md:top-4 md:left-4'
+    : 'md:top-[10rem] md:left-4'
 
   return (
     <>
-      {/* ────────────── DESKTOP: vertical column, side switches with panel state ────────────── */}
+      {/* ────────────── DESKTOP: horizontal thin strip at top-left ────────────── */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.4, delay: 0.4 }}
-        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 w-[220px] pointer-events-auto`}
+        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 pointer-events-auto`}
       >
         <div className="flex items-center gap-1.5 px-1 text-[10px] uppercase tracking-widest text-amber-300/80">
           <Store className="w-3 h-3" />
           <span>Produits locaux</span>
         </div>
 
-        {enrichedSorted.map(({ product, place }) => (
-          <DesktopProductCard
-            key={product.id}
-            product={product}
-            place={place}
-            onClick={() => onSelectPlace(place, product.id)}
-          />
-        ))}
-
-        <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
+        <div className="flex gap-1.5 items-stretch max-w-[560px] overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
+          {enrichedSorted.map(({ product, place }) => (
+            <DesktopProductCard
+              key={product.id}
+              product={product}
+              place={place}
+              onClick={() => onSelectPlace(place, product.id)}
+            />
+          ))}
+          <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
+        </div>
       </motion.div>
 
       {/* ────────────── MOBILE: pill bottom-right when no panel; hidden when panel open ────────────── */}
@@ -229,28 +228,25 @@ function DesktopProductCard({
   return (
     <button
       onClick={onClick}
-      className="group flex items-center gap-2 glass rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left"
+      className="group flex flex-col flex-shrink-0 w-[130px] rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md p-1.5 transition-colors text-left"
       title={`${product.title} — ${place.title}`}
     >
-      <div className="w-8 h-8 rounded overflow-hidden bg-white/5 flex-shrink-0">
+      <div className="w-full aspect-square rounded overflow-hidden bg-white/5 mb-1">
         {product.thumbnail ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={product.thumbnail} alt="" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-amber-300/40 text-sm">
+          <div className="w-full h-full flex items-center justify-center text-amber-300/40 text-lg">
             🛍️
           </div>
         )}
       </div>
-      <div className="min-w-0 flex-1">
-        <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">
-          {product.title}
-        </div>
-        <div className="text-[9px] text-white/40 truncate">
-          {product.price ? <span className="text-amber-300/80">{product.price}</span> : place.title}
-        </div>
+      <div className="text-[10px] font-medium text-white leading-tight line-clamp-2 group-hover:text-amber-200 transition-colors">
+        {product.title}
       </div>
-      <ExternalLink className="w-2.5 h-2.5 text-white/30 flex-shrink-0" />
+      <div className="text-[9px] text-white/40 truncate mt-0.5">
+        {product.price ? <span className="text-amber-300/80">{product.price}</span> : place.title}
+      </div>
     </button>
   )
 }
@@ -259,15 +255,15 @@ function DesktopEmptySlot({ label }: { label: string }) {
   return (
     <Link
       href="/pricing"
-      className="group flex items-center gap-2 rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 px-2 py-1.5 transition-colors"
+      className="group flex flex-col flex-shrink-0 w-[130px] rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 p-1.5 transition-colors"
     >
-      <div className="w-8 h-8 rounded flex items-center justify-center bg-amber-400/10 flex-shrink-0">
-        <Plus className="w-4 h-4 text-amber-300" />
+      <div className="w-full aspect-square rounded flex items-center justify-center bg-amber-400/10 mb-1">
+        <Plus className="w-5 h-5 text-amber-300" />
       </div>
-      <div className="min-w-0 flex-1">
-        <div className="text-[11px] font-medium text-amber-300 truncate">{label}</div>
-        <div className="text-[9px] text-white/50 truncate">Réserver cet emplacement →</div>
+      <div className="text-[10px] font-medium text-amber-300 leading-tight line-clamp-2">
+        {label}
       </div>
+      <div className="text-[9px] text-white/50 mt-0.5">Réserver →</div>
     </Link>
   )
 }

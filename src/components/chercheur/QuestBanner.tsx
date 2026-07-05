@@ -22,7 +22,7 @@ export function QuestBanner({ onStart }: Props) {
       exit={{ opacity: 0, x: -12 }}
       transition={{ duration: 0.6, delay: 0.6 }}
       onClick={onStart}
-      className="hidden md:flex absolute top-[10rem] left-2 md:left-4 z-20 pointer-events-auto flex-col gap-2 w-[240px] glass rounded-2xl border border-amber-400/25 bg-gradient-to-br from-amber-400/10 to-transparent backdrop-blur-md p-3 shadow-lg hover:border-amber-400/50 transition-colors text-left group"
+      className="hidden md:flex absolute top-[19rem] left-2 md:left-4 z-20 pointer-events-auto flex-col gap-2 w-[240px] glass rounded-2xl border border-amber-400/25 bg-gradient-to-br from-amber-400/10 to-transparent backdrop-blur-md p-3 shadow-lg hover:border-amber-400/50 transition-colors text-left group"
       aria-label="Commencer l'épopée cathare"
     >
       <div className="flex items-center gap-1.5">

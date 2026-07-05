@@ -3,11 +3,17 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Check, Sparkles, ArrowLeft, Loader2 } from 'lucide-react'
+import { Check, Sparkles, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react'
 import { PLANS, type PlanKey } from '@/lib/stripe'
 import { AuthModal } from '@/components/auth/AuthModal'
 
 const PLAN_ORDER: PlanKey[] = ['SINGLE', 'PACK_10']
+
+interface ConfigStatus {
+  single: boolean
+  pack10: boolean
+  hasSecret: boolean
+}
 
 export default function PricingPage() {
   const { status } = useSession()
@@ -15,6 +21,14 @@ export default function PricingPage() {
   const [error, setError] = useState<string | null>(null)
   const [authOpen, setAuthOpen] = useState(false)
   const [pendingPlan, setPendingPlan] = useState<PlanKey | null>(null)
+  const [config, setConfig] = useState<ConfigStatus | null>(null)
+
+  useEffect(() => {
+    fetch('/api/stripe/config-check')
+      .then((r) => r.json())
+      .then(setConfig)
+      .catch(() => {})
+  }, [])
 
   const startCheckout = async (plan: PlanKey) => {
     setLoading(plan)
@@ -35,7 +49,6 @@ export default function PricingPage() {
     }
   }
 
-  // When the user just authenticated with a pending plan, resume checkout
   useEffect(() => {
     if (status === 'authenticated' && pendingPlan && !loading) {
       const plan = pendingPlan
@@ -54,6 +67,13 @@ export default function PricingPage() {
     }
     await startCheckout(plan)
   }
+
+  const isPlanReady = (key: PlanKey) => {
+    if (!config) return true // optimistic while loading
+    return key === 'SINGLE' ? config.single : config.pack10
+  }
+
+  const stripeNotConfigured = config && (!config.single || !config.pack10 || !config.hasSecret)
 
   return (
     <div className="min-h-screen w-full overflow-y-auto bg-gradient-to-b from-[#05060d] via-[#0a0d1a] to-[#05060d] text-white">
@@ -82,13 +102,31 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {stripeNotConfigured && (
+          <div className="mx-auto max-w-2xl mb-8 rounded-lg border border-orange-500/30 bg-orange-500/10 p-4 text-sm text-orange-200/90">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div>
+                <div className="font-semibold mb-1">Paiements non encore configurés</div>
+                <div className="text-orange-200/70 text-xs leading-relaxed">
+                  Les identifiants Stripe des plans ne sont pas encore renseignés dans les
+                  variables d&apos;environnement. Un administrateur doit ajouter{' '}
+                  <code className="bg-black/40 px-1 rounded">STRIPE_PRICE_SINGLE</code>,{' '}
+                  <code className="bg-black/40 px-1 rounded">STRIPE_PRICE_PACK_10</code> et{' '}
+                  <code className="bg-black/40 px-1 rounded">STRIPE_SECRET_KEY</code> dans Vercel.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="mx-auto max-w-md mb-8 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
             {error}
           </div>
         )}
 
-        {status === 'unauthenticated' && (
+        {status === 'unauthenticated' && !stripeNotConfigured && (
           <div className="mx-auto max-w-md mb-8 rounded-lg border border-amber-400/25 bg-amber-400/5 p-4 text-sm text-amber-200/90">
             💡 Pas encore de compte ? Cliquez sur un plan — nous créerons votre compte marchand,
             puis vous redirigerons vers Stripe pour le paiement.
@@ -99,13 +137,19 @@ export default function PricingPage() {
           {PLAN_ORDER.map((key, idx) => {
             const plan = PLANS[key]
             const highlighted = idx === 1
+            const isLoading = loading === key
+            const disabled = loading !== null || status === 'loading' || !isPlanReady(key)
+            const onClick = () => (disabled ? null : handleCheckout(key))
             return (
-              <div
+              <button
                 key={key}
-                className={`relative rounded-2xl border p-8 backdrop-blur-sm transition ${
+                type="button"
+                onClick={onClick}
+                disabled={disabled}
+                className={`group relative rounded-2xl border p-8 backdrop-blur-sm transition text-left focus:outline-none focus:ring-2 focus:ring-amber-400/40 disabled:cursor-not-allowed disabled:opacity-60 ${
                   highlighted
-                    ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_60px_-15px_rgba(251,191,36,0.3)]'
-                    : 'border-white/10 bg-white/5 hover:border-white/20'
+                    ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_60px_-15px_rgba(251,191,36,0.3)] hover:border-amber-400/80 hover:shadow-[0_0_80px_-10px_rgba(251,191,36,0.45)]'
+                    : 'border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/[0.08]'
                 }`}
               >
                 {highlighted && (
@@ -131,27 +175,27 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => handleCheckout(key)}
-                  disabled={loading !== null || status === 'loading'}
-                  className={`w-full rounded-lg py-3 text-sm font-semibold transition ${
+                <div
+                  className={`w-full rounded-lg py-3 text-sm font-semibold text-center transition ${
                     highlighted
-                      ? 'bg-amber-400 text-black hover:bg-amber-300'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      ? 'bg-amber-400 text-black group-hover:bg-amber-300'
+                      : 'bg-white/10 text-white group-hover:bg-white/20'
+                  }`}
                 >
-                  {loading === key ? (
+                  {isLoading ? (
                     <span className="inline-flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       Redirection…
                     </span>
+                  ) : !isPlanReady(key) ? (
+                    'Bientôt disponible'
                   ) : status !== 'authenticated' ? (
                     `Créer un compte — ${plan.priceMonthly} €/mois`
                   ) : (
                     `Souscrire — ${plan.priceMonthly} €/mois`
                   )}
-                </button>
-              </div>
+                </div>
+              </button>
             )
           })}
         </div>

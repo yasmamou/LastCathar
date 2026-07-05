@@ -63,23 +63,39 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-switch track when country/place changes
-  // If a place-specific track exists, auto-start even if not yet playing
+  // Auto-switch track when country/place changes.
+  // Priority: place-specific track > region/era match.
+  // - If user hasn't interacted yet: just prime the audio.src so the first
+  //   play() uses the right track.
+  // - If interaction happened: switch to the desired track (fade if playing,
+  //   direct play if not).
   useEffect(() => {
     if (fadingRef.current) return
     const placeTrack = getTrackForPlace(placeSlug)
     const region = getRegionFromCountry(selectedCountry)
     const best = placeTrack ?? getBestTrackForEra(region, selectedEras)
 
-    // If we have a place-specific track and music isn't playing yet, auto-start it
-    if (placeTrack && !playingRef.current && autoStartedRef.current) {
-      playTrackDirect(placeTrack)
+    // Nothing to do if the desired track is already active + playing
+    if (best.id === currentTrack.id && playingRef.current) return
+
+    // No user interaction yet → just prime the src so the first play uses it
+    if (!autoStartedRef.current) {
+      const audio = audioRef.current
+      if (audio && best.id !== currentTrack.id) {
+        audio.src = best.file
+        audio.load()
+        if (best.startAt) audio.currentTime = best.startAt
+        setCurrentTrack(best)
+      }
       return
     }
 
-    if (!playingRef.current) return
-    if (best.id === currentTrack.id) return
-    switchTrack(best)
+    // Interaction already happened → switch or start
+    if (playingRef.current) {
+      switchTrack(best)
+    } else {
+      playTrackDirect(best)
+    }
   }, [selectedCountry, selectedEras, placeSlug]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Direct play (no fade, used for auto-start on place select)
@@ -120,18 +136,17 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
         audio.load()
         if (track.startAt) audio.currentTime = track.startAt
         setCurrentTrack(track)
-        if (playingRef.current) {
-          audio.play().then(() => {
-            let v = 0
-            const inp = setInterval(() => {
-              v = Math.min(0.25, v + 0.008)
-              audio.volume = v
-              if (v >= 0.25) { clearInterval(inp); fadingRef.current = false }
-            }, 60)
-          }).catch(() => { fadingRef.current = false })
-        } else {
-          fadingRef.current = false
-        }
+        // Always attempt play — autoStartedRef being true guarantees browser will allow it
+        audio.play().then(() => {
+          playingRef.current = true
+          setIsPlaying(true)
+          let v = 0
+          const inp = setInterval(() => {
+            v = Math.min(0.25, v + 0.008)
+            audio.volume = v
+            if (v >= 0.25) { clearInterval(inp); fadingRef.current = false }
+          }, 60)
+        }).catch(() => { fadingRef.current = false })
       }
     }, 40)
   }, [])
