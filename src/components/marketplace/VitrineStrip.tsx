@@ -90,46 +90,59 @@ export function VitrineStrip({
 
   const hasProducts = enrichedSorted.length > 0
 
-  // Desktop = vertical column on the RIGHT side (music player is on the LEFT).
-  // Vertical offset depends on what's above:
-  // - No panel + Chercheur active   → HUD at top-20 right-4 (~13rem tall) → products below at top-[19rem]
-  // - No panel + Chercheur inactive → products take the HUD slot at top-20 (right, below header)
-  // - Panel open (right side taken by panel) → move to LEFT
-  //   - Chercheur active   → HUD at top-4 left-4 (~13rem tall) → products at top-[16rem] left-4
-  //   - Chercheur inactive → products at top-4 left-4
+  // Desktop:
+  // - No panel → vertical column on the RIGHT side (music player is bottom-LEFT)
+  //   - Chercheur active   → HUD at top-20 right-4 (~13rem tall) → products below at top-[19rem]
+  //   - Chercheur inactive → products take the HUD slot at top-20
+  // - Panel open → horizontal strip along the TOP, between the Chercheur HUD
+  //   (top-left, 320px wide) and the place panel (right, max-w-md). Keeps the
+  //   bottom-left music player area completely clear.
   const desktopPosClass = panelOpen
     ? chercheurActive
-      ? 'md:top-[16rem] md:left-4'
-      : 'md:top-4 md:left-4'
+      ? 'md:top-4 md:left-[22.5rem] md:right-[29.5rem]'
+      : 'md:top-4 md:left-4 md:right-[29.5rem]'
     : chercheurActive
-      ? 'md:top-[19rem] md:right-4'
-      : 'md:top-20 md:right-4'
+      ? 'md:top-[19rem] md:right-4 md:w-[210px]'
+      : 'md:top-20 md:right-4 md:w-[210px]'
 
   return (
     <>
-      {/* ────────────── DESKTOP: vertical column ────────────── */}
+      {/* ────────────── DESKTOP: right column (no panel) / top strip (panel open) ────────────── */}
       <motion.div
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 12 }}
         transition={{ duration: 0.4, delay: 0.4 }}
-        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 w-[210px] pointer-events-auto`}
+        className={`hidden md:block absolute ${desktopPosClass} z-20 pointer-events-auto`}
       >
-        <div className="flex items-center gap-1.5 px-1 text-[10px] uppercase tracking-widest text-amber-300/80">
+        <div className="flex items-center gap-1.5 px-1 mb-1.5 text-[10px] uppercase tracking-widest text-amber-300/80">
           <Store className="w-3 h-3" />
           <span>Produits locaux</span>
         </div>
 
-        {enrichedSorted.map(({ product, place }) => (
-          <DesktopProductCard
-            key={product.id}
-            product={product}
-            place={place}
-            onClick={() => onSelectPlace(place, product.id)}
-          />
-        ))}
+        <div
+          className={
+            panelOpen
+              ? 'flex flex-row gap-1.5 overflow-x-auto pb-1'
+              : 'flex flex-col gap-1.5'
+          }
+          style={panelOpen ? { scrollbarWidth: 'none' } : undefined}
+        >
+          {enrichedSorted.map(({ product, place }) => (
+            <DesktopProductCard
+              key={product.id}
+              product={product}
+              place={place}
+              rowMode={!!panelOpen}
+              onClick={() => onSelectPlace(place, product.id)}
+            />
+          ))}
 
-        <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
+          <DesktopEmptySlot
+            rowMode={!!panelOpen}
+            label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'}
+          />
+        </div>
       </motion.div>
 
       {/* ────────────── MOBILE: top horizontal strip, hidden when panel is open
@@ -238,15 +251,19 @@ function DesktopProductCard({
   product,
   place,
   onClick,
+  rowMode,
 }: {
   product: VitrineProduct
   place: PlaceEntry
   onClick: () => void
+  rowMode?: boolean
 }) {
   return (
     <button
       onClick={onClick}
-      className="group flex items-center gap-2 glass rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left"
+      className={`group flex items-center gap-2 glass rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left ${
+        rowMode ? 'flex-shrink-0 w-[200px]' : ''
+      }`}
       title={`${product.title} — ${place.title}`}
     >
       <div className="w-8 h-8 rounded overflow-hidden bg-white/5 flex-shrink-0">
@@ -272,11 +289,13 @@ function DesktopProductCard({
   )
 }
 
-function DesktopEmptySlot({ label }: { label: string }) {
+function DesktopEmptySlot({ label, rowMode }: { label: string; rowMode?: boolean }) {
   return (
     <Link
       href="/pricing"
-      className="group flex items-center gap-2 rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 px-2 py-1.5 transition-colors"
+      className={`group flex items-center gap-2 rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 px-2 py-1.5 transition-colors ${
+        rowMode ? 'flex-shrink-0 w-[200px]' : ''
+      }`}
     >
       <div className="w-8 h-8 rounded flex items-center justify-center bg-amber-400/10 flex-shrink-0">
         <Plus className="w-4 h-4 text-amber-300" />
