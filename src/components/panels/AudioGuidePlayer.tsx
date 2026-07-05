@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Headphones, Play, Pause, RotateCcw } from 'lucide-react'
+import { Headphones, Play, Pause, RotateCcw, FileText, ChevronUp } from 'lucide-react'
 import { getAudioGuide } from '@/data/audio-guides'
 
 interface Props {
@@ -27,6 +27,7 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(guide?.duration ?? 0)
+  const [showTranscript, setShowTranscript] = useState(false)
 
   // (Re)create the audio element when the place changes
   useEffect(() => {
@@ -49,6 +50,7 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
     setPlaying(false)
     setProgress(0)
     setDuration(guide.duration)
+    setShowTranscript(false)
 
     return () => {
       audio.removeEventListener('timeupdate', onTime)
@@ -149,6 +151,26 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
           </button>
         </div>
       </div>
+
+      {/* Paroles / transcription de la narration */}
+      <button
+        onClick={() => setShowTranscript(!showTranscript)}
+        className="mt-2 flex items-center gap-1.5 text-[10px] tracking-wider uppercase text-gold-400/50 hover:text-gold-400/90 transition-colors"
+        aria-expanded={showTranscript}
+      >
+        {showTranscript ? <ChevronUp className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+        {showTranscript ? 'Masquer les paroles' : 'Lire les paroles'}
+      </button>
+
+      {showTranscript && (
+        <div className="mt-2 max-h-48 overflow-y-auto rounded-lg bg-black/30 border border-white/5 px-3 py-2.5">
+          {guide.transcript.split('\n\n').map((para, i) => (
+            <p key={i} className="text-xs text-white/60 leading-relaxed mb-2 last:mb-0">
+              {para}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
