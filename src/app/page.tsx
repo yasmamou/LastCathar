@@ -19,6 +19,7 @@ import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurMo
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
 import { InstallPrompt } from '@/components/pwa/InstallPrompt'
+import { VitrineStrip } from '@/components/marketplace/VitrineStrip'
 
 const GlobeView = dynamic(() => import('@/components/globe/GlobeView'), {
   ssr: false,
@@ -52,6 +53,14 @@ export default function Home() {
 
   // Chercheur (gamified) mode
   const chercheur = useChercheur()
+
+  // Camera center — used by VitrineStrip to sort products by proximity
+  const [cameraLat, setCameraLat] = useState<number | null>(null)
+  const [cameraLng, setCameraLng] = useState<number | null>(null)
+  const handleCameraMove = useCallback((lat: number, lng: number) => {
+    setCameraLat(lat)
+    setCameraLng(lng)
+  }, [])
 
   const handleFilterInteractions = useCallback((filter: 'VISITED' | 'WISHLIST' | 'FAVORITE' | null, slugs: string[]) => {
     setInteractionFilter(filter)
@@ -260,6 +269,7 @@ export default function Home() {
           selectedPlace={selectedPlace}
           flyToTrigger={flyToTrigger}
           onPlaceSelect={handlePlaceSelect}
+          onCameraMove={handleCameraMove}
           epicLines={activeEpic ? { placeSlugs: activeEpic.places.map(p => p.slug), color: activeEpic.color } : null}
         />
       </div>
@@ -449,6 +459,14 @@ export default function Home() {
                 {sortedPlaces.length} places
               </p>
             </motion.div>
+
+            {/* Marketplace vitrines — geo-aware strip that adapts to camera position */}
+            <VitrineStrip
+              allPlaces={allPlaces}
+              cameraLat={cameraLat}
+              cameraLng={cameraLng}
+              onSelectPlace={handlePlaceSelect}
+            />
           </>
         )}
       </AnimatePresence>

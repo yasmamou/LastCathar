@@ -22,15 +22,16 @@ interface GlobeViewProps {
   selectedPlace: PlaceEntry | null
   flyToTrigger: number
   onPlaceSelect: (place: PlaceEntry) => void
+  onCameraMove?: (lat: number, lng: number) => void
   epicLines?: EpicLine | null
 }
 
-export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect, epicLines }: GlobeViewProps) {
+export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlaceSelect, onCameraMove, epicLines }: GlobeViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<Cesium.Viewer | null>(null)
   const readyRef = useRef(false)
-  const callbacksRef = useRef({ onPlaceSelect, selectedPlace, flyToTrigger })
-  callbacksRef.current = { onPlaceSelect, selectedPlace, flyToTrigger }
+  const callbacksRef = useRef({ onPlaceSelect, selectedPlace, flyToTrigger, onCameraMove })
+  callbacksRef.current = { onPlaceSelect, selectedPlace, flyToTrigger, onCameraMove }
   const highlightRef = useRef<Cesium.Entity | null>(null)
   const linesRef = useRef<Cesium.Entity[]>([])
 
@@ -132,6 +133,20 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
             callbacksRef.current.onPlaceSelect(picked.id._placeData)
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+
+        // Camera-center lat/lng emitted on moveEnd (fires when panning/zoom settles)
+        viewer.camera.moveEnd.addEventListener(() => {
+          if (!callbacksRef.current.onCameraMove) return
+          const canvas = scene.canvas
+          const center = new Cesium.Cartesian2(canvas.clientWidth / 2, canvas.clientHeight / 2)
+          const cartesian = viewer.camera.pickEllipsoid(center, scene.globe.ellipsoid)
+          if (!cartesian) return
+          const carto = Cesium.Cartographic.fromCartesian(cartesian)
+          callbacksRef.current.onCameraMove(
+            Cesium.Math.toDegrees(carto.latitude),
+            Cesium.Math.toDegrees(carto.longitude),
+          )
+        })
 
         readyRef.current = true
 
