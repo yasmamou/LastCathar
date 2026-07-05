@@ -62,6 +62,9 @@ export default function Home() {
     setCameraLng(lng)
   }, [])
 
+  // When a Vitrine card is clicked, highlight the product inside the place panel
+  const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null)
+
   const handleFilterInteractions = useCallback((filter: 'VISITED' | 'WISHLIST' | 'FAVORITE' | null, slugs: string[]) => {
     setInteractionFilter(filter)
     setInteractionSlugs(slugs)
@@ -150,8 +153,9 @@ export default function Home() {
         .slice(0, 15)
     : []
 
-  const handlePlaceSelect = useCallback((place: PlaceEntry) => {
+  const handlePlaceSelect = useCallback((place: PlaceEntry, productId?: string) => {
     setSelectedPlace(place)
+    setHighlightedProductId(productId ?? null)
     setFlyToTrigger((n) => n + 1)
     setSearchQuery('')
     // If in Chercheur mode and this place belongs to the active epic → record visit
@@ -460,14 +464,6 @@ export default function Home() {
               </p>
             </motion.div>
 
-            {/* Marketplace vitrines — geo-aware strip that adapts to camera position */}
-            <VitrineStrip
-              allPlaces={allPlaces}
-              cameraLat={cameraLat}
-              cameraLng={cameraLng}
-              onSelectPlace={handlePlaceSelect}
-              chercheurActive={chercheur.chercheurMode}
-            />
           </>
         )}
       </AnimatePresence>
@@ -494,9 +490,22 @@ export default function Home() {
             onOpenAuth={handleOpenAuth}
             allPlaces={allPlaces}
             onPlaceSelect={handlePlaceSelect}
+            highlightedProductId={highlightedProductId}
           />
         )}
       </AnimatePresence>
+
+      {/* Marketplace vitrines — outside the UI overlay block, always visible except during intro */}
+      {uiVisible && (
+        <VitrineStrip
+          allPlaces={allPlaces}
+          referenceLat={selectedPlace ? selectedPlace.latitude : cameraLat}
+          referenceLng={selectedPlace ? selectedPlace.longitude : cameraLng}
+          onSelectPlace={handlePlaceSelect}
+          chercheurActive={chercheur.chercheurMode}
+          panelOpen={!!selectedPlace || showEpicPanel}
+        />
+      )}
 
       {/* Nearby places strip — shown when a place is selected */}
       {selectedPlace && nearbyPlaces.length > 0 && (

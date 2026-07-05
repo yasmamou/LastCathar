@@ -21,9 +21,10 @@ interface ProductCardsProps {
   placeSlug: string
   placeTitle: string
   onOpenAuth: () => void
+  highlightedProductId?: string | null
 }
 
-export function ProductCards({ placeSlug, placeTitle, onOpenAuth }: ProductCardsProps) {
+export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedProductId }: ProductCardsProps) {
   const { status } = useSession()
   const [products, setProducts] = useState<Product[]>([])
   const [maxSlots, setMaxSlots] = useState(0)
@@ -44,6 +45,27 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth }: ProductCards
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [placeSlug])
+
+  // Auto-open the highlighted product's detail modal once products are loaded
+  useEffect(() => {
+    if (!highlightedProductId || products.length === 0) return
+    const target = products.find((p) => p.id === highlightedProductId)
+    if (!target) return
+    setSelectedProduct(target)
+    // Also scroll the card into view (inside the panel's scroll container)
+    requestAnimationFrame(() => {
+      const el = document.querySelector<HTMLElement>(
+        `[data-product-card="${highlightedProductId}"]`,
+      )
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+    // Fire-and-forget analytics click
+    fetch('/api/products/click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: highlightedProductId, placeSlug }),
+    }).catch(() => {})
+  }, [highlightedProductId, products, placeSlug])
 
   const handleProductClick = async (product: Product) => {
     setSelectedProduct(product)
@@ -89,14 +111,21 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth }: ProductCards
         {/* Product grid */}
         {products.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
-            {products.map((product, index) => (
+            {products.map((product, index) => {
+              const isHighlighted = highlightedProductId === product.id
+              return (
               <motion.button
                 key={product.id}
+                data-product-card={product.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleProductClick(product)}
-                className="group text-left rounded-xl overflow-hidden border border-white/5 hover:border-gold-400/20 transition-all bg-white/[0.03] hover:bg-white/[0.06]"
+                className={`group text-left rounded-xl overflow-hidden border transition-all bg-white/[0.03] hover:bg-white/[0.06] ${
+                  isHighlighted
+                    ? 'border-amber-400/60 ring-2 ring-amber-400/30 bg-amber-400/[0.05]'
+                    : 'border-white/5 hover:border-gold-400/20'
+                }`}
               >
                 {product.imageUrls[0] ? (
                   <div className="aspect-[4/3] overflow-hidden">
@@ -126,7 +155,8 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth }: ProductCards
                   </div>
                 </div>
               </motion.button>
-            ))}
+              )
+            })}
           </div>
         )}
 

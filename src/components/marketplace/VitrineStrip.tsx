@@ -17,10 +17,11 @@ export interface VitrineProduct {
 
 interface Props {
   allPlaces: PlaceEntry[]
-  cameraLat: number | null
-  cameraLng: number | null
-  onSelectPlace: (place: PlaceEntry) => void
+  referenceLat: number | null
+  referenceLng: number | null
+  onSelectPlace: (place: PlaceEntry, productId?: string) => void
   chercheurActive?: boolean
+  panelOpen?: boolean
   limit?: number
 }
 
@@ -30,10 +31,11 @@ function distSq(a: { lat: number; lng: number }, b: { lat: number; lng: number }
 
 export function VitrineStrip({
   allPlaces,
-  cameraLat,
-  cameraLng,
+  referenceLat,
+  referenceLng,
   onSelectPlace,
   chercheurActive,
+  panelOpen,
   limit = 4,
 }: Props) {
   const [products, setProducts] = useState<VitrineProduct[] | null>(null)
@@ -64,32 +66,49 @@ export function VitrineStrip({
       })
       .filter((x): x is { product: VitrineProduct; place: PlaceEntry } => x !== null)
 
-    if (cameraLat !== null && cameraLng !== null) {
+    if (referenceLat !== null && referenceLng !== null) {
       withPlace.sort(
         (a, b) =>
-          distSq({ lat: a.place.latitude, lng: a.place.longitude }, { lat: cameraLat, lng: cameraLng }) -
-          distSq({ lat: b.place.latitude, lng: b.place.longitude }, { lat: cameraLat, lng: cameraLng }),
+          distSq(
+            { lat: a.place.latitude, lng: a.place.longitude },
+            { lat: referenceLat, lng: referenceLng },
+          ) -
+          distSq(
+            { lat: b.place.latitude, lng: b.place.longitude },
+            { lat: referenceLat, lng: referenceLng },
+          ),
       )
     }
 
     return withPlace.slice(0, limit)
-  }, [products, allPlaces, cameraLat, cameraLng, limit])
+  }, [products, allPlaces, referenceLat, referenceLng, limit])
 
   if (products === null) return null
 
   const hasProducts = enrichedSorted.length > 0
-  // Desktop starts below the Chercheur HUD if active, otherwise near top-right
-  const desktopTopClass = chercheurActive ? 'top-[16rem]' : 'top-4'
+
+  // Desktop positioning:
+  // - No panel + Chercheur active   → below the HUD on the right
+  // - No panel + Chercheur inactive → right side, below Header (top-20)
+  // - Panel open + Chercheur active → below the HUD on the LEFT (HUD is at top-4 left-4 when panel open)
+  // - Panel open + Chercheur inactive → LEFT side, top-20
+  const desktopPosClass = panelOpen
+    ? chercheurActive
+      ? 'md:top-[16rem] md:left-4'
+      : 'md:top-20 md:left-4'
+    : chercheurActive
+      ? 'md:top-[16rem] md:right-4'
+      : 'md:top-20 md:right-4'
 
   return (
     <>
-      {/* ────────────── DESKTOP: vertical column on the right side ────────────── */}
+      {/* ────────────── DESKTOP: vertical column, side switches with panel state ────────────── */}
       <motion.div
-        initial={{ opacity: 0, x: 12 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 12 }}
-        transition={{ duration: 0.4, delay: 0.5 }}
-        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopTopClass} right-4 z-20 w-[220px] pointer-events-auto`}
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+        className={`hidden md:flex flex-col gap-1.5 absolute ${desktopPosClass} z-20 w-[220px] pointer-events-auto`}
       >
         <div className="flex items-center gap-1.5 px-1 text-[10px] uppercase tracking-widest text-amber-300/80">
           <Store className="w-3 h-3" />
@@ -101,37 +120,38 @@ export function VitrineStrip({
             key={product.id}
             product={product}
             place={place}
-            onClick={() => onSelectPlace(place)}
+            onClick={() => onSelectPlace(place, product.id)}
           />
         ))}
 
-        {/* Empty slot CTA — always visible to grow the marketplace */}
         <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
       </motion.div>
 
-      {/* ────────────── MOBILE: collapsed pill + expandable bottom sheet ────────────── */}
-      <motion.button
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 10 }}
-        transition={{ duration: 0.4, delay: 0.5 }}
-        onClick={() => setMobileOpen(true)}
-        className="md:hidden absolute bottom-[6.5rem] right-2 z-20 pointer-events-auto glass rounded-full border border-amber-400/25 bg-black/50 backdrop-blur-md pl-2 pr-3 py-1.5 flex items-center gap-1.5 shadow-lg"
-        aria-label="Voir les produits locaux"
-      >
-        <Store className="w-3 h-3 text-amber-300" />
-        <span className="text-[10px] text-white/80 font-medium">
-          {hasProducts ? (
-            <>
-              <b className="text-amber-300">{enrichedSorted.length}</b> produit
-              {enrichedSorted.length > 1 ? 's' : ''} local
-              {enrichedSorted.length > 1 ? 'aux' : ''}
-            </>
-          ) : (
-            'Devenez marchand'
-          )}
-        </span>
-      </motion.button>
+      {/* ────────────── MOBILE: pill bottom-right when no panel; hidden when panel open ────────────── */}
+      {!panelOpen && (
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+          onClick={() => setMobileOpen(true)}
+          className="md:hidden absolute bottom-[6.5rem] right-2 z-20 pointer-events-auto glass rounded-full border border-amber-400/25 bg-black/50 backdrop-blur-md pl-2 pr-3 py-1.5 flex items-center gap-1.5 shadow-lg"
+          aria-label="Voir les produits locaux"
+        >
+          <Store className="w-3 h-3 text-amber-300" />
+          <span className="text-[10px] text-white/80 font-medium">
+            {hasProducts ? (
+              <>
+                <b className="text-amber-300">{enrichedSorted.length}</b> produit
+                {enrichedSorted.length > 1 ? 's' : ''} local
+                {enrichedSorted.length > 1 ? 'aux' : ''}
+              </>
+            ) : (
+              'Devenez marchand'
+            )}
+          </span>
+        </motion.button>
+      )}
 
       <AnimatePresence>
         {mobileOpen && (
@@ -179,7 +199,7 @@ export function VitrineStrip({
                     place={place}
                     onClick={() => {
                       setMobileOpen(false)
-                      onSelectPlace(place)
+                      onSelectPlace(place, product.id)
                     }}
                   />
                 ))}

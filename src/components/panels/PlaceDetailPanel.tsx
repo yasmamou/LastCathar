@@ -24,9 +24,10 @@ interface PlaceDetailPanelProps {
   onOpenAuth?: () => void
   allPlaces?: PlaceEntry[]
   onPlaceSelect?: (place: PlaceEntry) => void
+  highlightedProductId?: string | null
 }
 
-export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -277,7 +278,12 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
           </p>
 
           {/* Marketplace — Découvertes locales */}
-          <ProductCards placeSlug={place.slug} placeTitle={place.title} onOpenAuth={onOpenAuth || (() => {})} />
+          <ProductCards
+            placeSlug={place.slug}
+            placeTitle={place.title}
+            onOpenAuth={onOpenAuth || (() => {})}
+            highlightedProductId={highlightedProductId}
+          />
 
           <div className="h-px bg-white/5" />
 
