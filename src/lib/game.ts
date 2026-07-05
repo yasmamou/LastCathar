@@ -85,7 +85,7 @@ const STATIC_BADGES: BadgeDef[] = [
   {
     slug: 'grand-chercheur',
     label: 'Grand Chercheur',
-    description: 'Vous avez terminé les 16 épopées de Last Cathar.',
+    description: `Vous avez terminé les ${EPICS.length} épopées de Last Cathar.`,
     icon: '👑',
     color: '#f59e0b',
   },

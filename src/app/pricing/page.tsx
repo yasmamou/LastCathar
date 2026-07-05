@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Check, Sparkles, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react'
-import { PLANS, type PlanKey } from '@/lib/stripe'
+import { PLAN_INFO as PLANS, type PlanKey } from '@/lib/plans'
 import { AuthModal } from '@/components/auth/AuthModal'
 
 const PLAN_ORDER: PlanKey[] = ['SINGLE', 'PACK_10']

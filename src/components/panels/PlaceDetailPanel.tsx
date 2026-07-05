@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp } from 'lucide-react'
 import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
 import { ProductCards } from '@/components/marketplace/ProductCards'
+import { AudioGuidePlayer } from '@/components/panels/AudioGuidePlayer'
 import { PlaceEntry } from '@/types/places'
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
@@ -192,6 +193,11 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
             </p>
           </div>
         )}
+
+        {/* Audio guide — narrated tour when available for this place */}
+        <div className="mt-3">
+          <AudioGuidePlayer placeSlug={place.slug} />
+        </div>
 
         {/* Content */}
         <div className="p-6 space-y-6">

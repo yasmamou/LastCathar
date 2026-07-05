@@ -191,3 +191,8 @@ html, body {
 .cesium-widget canvas {
   touch-action: manipulation;
 }
+
+/* Hide Cesium's raw error panel — GlobeView renders a styled fallback instead */
+.cesium-widget-errorPanel {
+  display: none !important;
+}

@@ -16,9 +16,12 @@ interface AmbientMusicProps {
   selectedCountry?: string
   selectedEras?: string[]
   placeSlug?: string
+  // True when a detail panel covers the screen — hides the player on mobile
+  // (the panel is full-screen there) instead of floating on top of its content.
+  panelOpen?: boolean
 }
 
-export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: AmbientMusicProps) {
+export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, panelOpen }: AmbientMusicProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [showPanel, setShowPanel] = useState(false)
@@ -30,6 +33,21 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
   // True once the user has explicitly paused — prevents the country/place effect
   // from silently restarting the music behind their back on the next re-render.
   const userPausedRef = useRef(false)
+  // Audio-guide narration in progress → duck the ambient volume.
+  const duckedRef = useRef(false)
+
+  // Duck ambient volume while an audio guide narrates (event from AudioGuidePlayer)
+  useEffect(() => {
+    const onGuideState = (e: Event) => {
+      const playing = (e as CustomEvent<{ playing: boolean }>).detail?.playing
+      duckedRef.current = !!playing
+      const audio = audioRef.current
+      if (!audio) return
+      audio.volume = playing ? 0.04 : (playingRef.current ? 0.25 : audio.volume)
+    }
+    window.addEventListener('audioguide:state', onGuideState)
+    return () => window.removeEventListener('audioguide:state', onGuideState)
+  }, [])
 
   // Init audio + auto-start on first user interaction
   useEffect(() => {
@@ -115,9 +133,10 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
     audio.play().then(() => {
       let vol = 0
       const timer = setInterval(() => {
-        vol = Math.min(0.25, vol + 0.008)
+        const target = duckedRef.current ? 0.04 : 0.25
+        vol = Math.min(target, vol + 0.008)
         audio.volume = vol
-        if (vol >= 0.25) clearInterval(timer)
+        if (vol >= target) clearInterval(timer)
       }, 80)
     }).catch(() => {})
     setIsPlaying(true)
@@ -148,9 +167,10 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
           setIsPlaying(true)
           let v = 0
           const inp = setInterval(() => {
-            v = Math.min(0.25, v + 0.008)
+            const target = duckedRef.current ? 0.04 : 0.25
+            v = Math.min(target, v + 0.008)
             audio.volume = v
-            if (v >= 0.25) { clearInterval(inp); fadingRef.current = false }
+            if (v >= target) { clearInterval(inp); fadingRef.current = false }
           }, 60)
         }).catch(() => { fadingRef.current = false })
       }
@@ -194,8 +214,10 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
 
   return (
     <>
-      {/* ── Player button — fixed left, vertically centered ── */}
-      <div className="fixed left-3 top-1/2 -translate-y-1/2 z-[60] pointer-events-auto flex flex-col items-start gap-2">
+      {/* ── Player button — fixed bottom-left, above the featured strip.
+             (The old center-left spot collided with the vitrine column when a
+             panel was open, and floated over the full-screen panel on mobile.) ── */}
+      <div className={`fixed left-2 md:left-3 bottom-[11.5rem] md:bottom-40 z-[60] pointer-events-auto flex-col items-start gap-2 ${panelOpen ? 'hidden md:flex' : 'flex'}`}>
         {/* Play/Pause + track name */}
         <button
           onClick={toggleMusic}
@@ -243,7 +265,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug }: 
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -20, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="fixed left-16 top-1/2 -translate-y-1/2 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/85 border border-white/10 max-h-[70vh] flex flex-col pointer-events-auto"
+            className="fixed left-2 md:left-3 bottom-[15rem] md:bottom-64 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/85 border border-white/10 max-h-[55vh] flex flex-col pointer-events-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">

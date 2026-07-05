@@ -194,7 +194,7 @@ function FullHudCard({
   return (
     <div
       className={`glass rounded-2xl border border-amber-400/20 bg-black/40 backdrop-blur-md px-4 py-3 shadow-lg ${
-        fullWidth ? 'w-full' : 'min-w-[280px]'
+        fullWidth ? 'w-full' : 'w-[320px] max-w-[90vw]'
       }`}
     >
       <div className="flex items-center justify-between mb-2">

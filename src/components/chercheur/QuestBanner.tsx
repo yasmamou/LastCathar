@@ -9,8 +9,8 @@ interface Props {
 }
 
 // Compact motivational widget shown on desktop, top-left below the pills column,
-// only when Mode Chercheur is INACTIVE. Height ~5.5rem so it sits above the
-// vertically-centered music player without overlapping.
+// only when Mode Chercheur is INACTIVE. top-[13rem] clears the category filter
+// row even when it wraps onto two lines (≤1100px viewports).
 export function QuestBanner({ onStart }: Props) {
   const epic = getEpic(STARTER_EPIC_ID)
   if (!epic) return null
@@ -22,7 +22,7 @@ export function QuestBanner({ onStart }: Props) {
       exit={{ opacity: 0, x: -12 }}
       transition={{ duration: 0.6, delay: 0.6 }}
       onClick={onStart}
-      className="hidden md:flex absolute top-[10rem] left-4 z-20 pointer-events-auto items-center gap-2.5 w-[210px] glass rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-400/12 to-transparent backdrop-blur-md pl-2 pr-3 py-2 shadow-lg hover:border-amber-400/60 hover:from-amber-400/20 transition-colors text-left group"
+      className="hidden md:flex absolute top-[13rem] left-4 z-20 pointer-events-auto items-center gap-2.5 w-[210px] glass rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-400/12 to-transparent backdrop-blur-md pl-2 pr-3 py-2 shadow-lg hover:border-amber-400/60 hover:from-amber-400/20 transition-colors text-left group"
       aria-label="Commencer l'épopée cathare"
     >
       <div

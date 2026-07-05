@@ -20,6 +20,7 @@ import { WelcomeChercheurModal } from '@/components/chercheur/WelcomeChercheurMo
 import { ChercheurHUD } from '@/components/chercheur/ChercheurHUD'
 import { BadgeToast } from '@/components/chercheur/BadgeToast'
 import { QuestBanner } from '@/components/chercheur/QuestBanner'
+import { XpToast } from '@/components/chercheur/XpToast'
 import { EpicPicker } from '@/components/chercheur/EpicPicker'
 import { InstallPrompt } from '@/components/pwa/InstallPrompt'
 import { VitrineStrip } from '@/components/marketplace/VitrineStrip'
@@ -165,11 +166,13 @@ export default function Home() {
     setHighlightedProductId(productId ?? null)
     setFlyToTrigger((n) => n + 1)
     setSearchQuery('')
-    // If in Chercheur mode and this place belongs to the active epic → record visit
+    // If in Chercheur mode: epic place → full visit; any other place → bonus XP
     if (chercheur.chercheurMode) {
       const activeEpic = EPICS.find((e) => e.id === chercheur.activeEpicId)
       if (activeEpic?.places.some((p) => p.slug === place.slug)) {
         chercheur.recordVisit(chercheur.activeEpicId, place.slug)
+      } else {
+        chercheur.recordVisit('bonus', place.slug)
       }
     }
   }, [chercheur])
@@ -195,6 +198,10 @@ export default function Home() {
     setActiveConfidence(null)
     setSearchQuery('')
     setNearbyMode(false)
+    // Clear the interaction filter too — otherwise its filtering stays applied
+    // (hiding epic places) and both banners fight for the same spot.
+    setInteractionFilter(null)
+    setInteractionSlugs([])
     // Fly to first place in epic. selectedPlace is null here (we show the epic
     // panel, not a place panel), so hand GlobeView explicit coords to fly to.
     const firstSlug = epic.places[0]?.slug
@@ -218,6 +225,8 @@ export default function Home() {
         setActiveEpic(null)
         setActiveCategory(null)
         setSearchQuery('')
+        setInteractionFilter(null)
+        setInteractionSlugs([])
       },
       () => {
         alert('Impossible d\'accéder à votre position. Vérifiez les permissions.')
@@ -369,12 +378,15 @@ export default function Home() {
               activeInteractionFilter={interactionFilter}
             />
 
-            {/* Interaction filter banner */}
+            {/* Interaction filter banner — below search (mobile) / below filters (desktop).
+                NOTE: motion elements that animate y overwrite the CSS transform, killing
+                -translate-x-1/2 — the x:'-50%' in style restores true centering. */}
             {interactionFilter && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-[25]"
+                style={{ x: '-50%' }}
+                className="absolute top-[8.25rem] md:top-[13rem] left-1/2 md:left-[calc(50%-7rem)] z-[25]"
               >
                 <div className={`glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs ${
                   interactionFilter === 'VISITED' ? 'text-emerald-400 border-emerald-400/20' :
@@ -392,12 +404,15 @@ export default function Home() {
               </motion.div>
             )}
 
-            {/* Search bar — compact on mobile */}
+            {/* Search bar — compact on mobile. x:'-50%' keeps it centered because the
+                y animation would otherwise clobber the Tailwind translate. Narrower on
+                md so it never runs under the right-side HUD/vitrine columns. */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-10 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-30 w-full max-w-xl px-3"
+              style={{ x: '-50%' }}
+              className="absolute top-10 sm:top-16 md:top-20 left-1/2 md:left-[calc(50%-7rem)] z-30 w-full max-w-xl md:max-w-md lg:max-w-xl px-3"
             >
               <SearchBar
                 value={searchQuery}
@@ -408,12 +423,14 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* Quick action buttons — left side, below header */}
+            {/* Quick action buttons — horizontal row below the search on mobile
+                (the old column collided with the centered search bar), vertical
+                column on the left on desktop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-2 md:left-4 z-[25] flex flex-col gap-1.5"
+              className="absolute top-[6.25rem] sm:top-[7rem] md:top-[5.5rem] left-2 md:left-4 z-[25] flex flex-row md:flex-col gap-1.5"
             >
               {/* Nearby button */}
               <button
@@ -443,12 +460,14 @@ export default function Home() {
               <InstallPrompt />
             </motion.div>
 
-            {/* Active epic banner — centered below search */}
+            {/* Active epic banner — below search (mobile) / below filters (desktop),
+                x:'-50%' for true centering (see note on the search bar) */}
             {activeEpic && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-[25]"
+                style={{ x: '-50%' }}
+                className="absolute top-[8.25rem] md:top-[13rem] left-1/2 md:left-[calc(50%-7rem)] z-[25]"
               >
                 <div
                   className="glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs"
@@ -467,7 +486,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className={`absolute top-[6.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-20 w-full max-w-3xl px-2 md:px-4 ${
+              className={`absolute top-[10rem] sm:top-[10.5rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-20 w-full max-w-3xl px-2 md:px-4 ${
                 showFilters ? 'block' : 'hidden md:block'
               }`}
             >
@@ -533,7 +552,8 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Marketplace vitrines — outside the UI overlay block, always visible except during intro */}
+      {/* Marketplace vitrines — outside the UI overlay block, always visible except during intro.
+          On mobile the strip yields its slot to the category filters / active banners. */}
       {uiVisible && (
         <VitrineStrip
           allPlaces={allPlaces}
@@ -542,6 +562,7 @@ export default function Home() {
           onSelectPlace={handlePlaceSelect}
           chercheurActive={chercheur.chercheurMode}
           panelOpen={!!selectedPlace || showEpicPanel}
+          mobileHidden={showFilters || !!activeEpic || !!interactionFilter}
         />
       )}
 
@@ -595,14 +616,16 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Chercheur — badge toast */}
+      {/* Chercheur — badge toast + XP gain toast */}
       <BadgeToast badges={chercheur.lastBadges} onDismiss={chercheur.clearBadges} />
+      <XpToast delta={chercheur.lastXpDelta} onDismiss={chercheur.clearXpDelta} />
 
-      {/* Music player — fixed bottom-right, always visible */}
+      {/* Music player — fixed bottom-left; hidden on mobile when a panel covers the screen */}
       <AmbientMusic
         selectedCountry={selectedPlace?.country}
         selectedEras={selectedPlace?.era}
         placeSlug={selectedPlace?.slug}
+        panelOpen={!!selectedPlace || showEpicPanel}
       />
     </main>
   )

@@ -41,6 +41,9 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
   // re-run and populate the globe even if `places` never changes identity after
   // mount (otherwise markers only appeared on a fortuitous later re-render).
   const [viewerReady, setViewerReady] = useState(false)
+  // WebGL unavailable / init crashed — show a graceful fallback instead of
+  // Cesium's raw error panel (hidden via globals.css).
+  const [initFailed, setInitFailed] = useState(false)
 
   // ─── Init viewer once ───
   useEffect(() => {
@@ -170,6 +173,7 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
 
       } catch (err) {
         console.error('[GlobeView] Init failed:', err)
+        if (!destroyed) setInitFailed(true)
       }
     })()
 
@@ -320,6 +324,23 @@ export default function GlobeView({ places, selectedPlace, flyToTrigger, onPlace
   }, [epicLines, places, viewerReady])
 
   return (
-    <div ref={containerRef} className="w-full h-full" style={{ background: '#05060d' }} />
+    <div className="relative w-full h-full" style={{ background: '#05060d' }}>
+      <div ref={containerRef} className="w-full h-full" />
+      {initFailed && (
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <div className="max-w-sm text-center space-y-3">
+            <div className="text-4xl">🌍</div>
+            <p className="text-sm text-white/70 font-medium">
+              Le globe 3D n&apos;a pas pu démarrer
+            </p>
+            <p className="text-xs text-white/40 leading-relaxed">
+              Votre navigateur ne semble pas prendre en charge WebGL.
+              Vous pouvez continuer à explorer les lieux via la recherche
+              et la liste en bas de l&apos;écran.
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

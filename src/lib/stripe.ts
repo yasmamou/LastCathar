@@ -20,48 +20,20 @@ export const stripe = new Proxy({} as Stripe, {
   },
 })
 
-export type PlanKey = 'SINGLE' | 'PACK_10'
+import { PLAN_INFO, type PlanKey, type PlanInfo } from '@/lib/plans'
 
-export interface PlanConfig {
-  key: PlanKey
-  name: string
-  tagline: string
-  slots: number
-  priceMonthly: number
+export type { PlanKey }
+
+export interface PlanConfig extends PlanInfo {
   priceId: string | undefined
-  features: string[]
 }
 
+// Server-side plan config = shared plan data + Stripe price ids from env.
+// Client components should import PLAN_INFO from '@/lib/plans' instead, so the
+// stripe SDK never lands in the browser bundle.
 export const PLANS: Record<PlanKey, PlanConfig> = {
-  SINGLE: {
-    key: 'SINGLE',
-    name: 'Vitrine unique',
-    tagline: 'Un emplacement sur un lieu de votre choix',
-    slots: 1,
-    priceMonthly: 50,
-    priceId: process.env.STRIPE_PRICE_SINGLE,
-    features: [
-      '1 emplacement produit sur 1 lieu',
-      "Statistiques vues + clics en temps réel",
-      'Modification illimitée du contenu',
-      'Résiliable à tout moment',
-    ],
-  },
-  PACK_10: {
-    key: 'PACK_10',
-    name: 'Pack Marchand',
-    tagline: '10 emplacements — économie de 100 €/mois',
-    slots: 10,
-    priceMonthly: 400,
-    priceId: process.env.STRIPE_PRICE_PACK_10,
-    features: [
-      '10 emplacements sur les lieux de votre choix',
-      "Statistiques détaillées + export CSV",
-      'Support prioritaire',
-      'Placement mis en avant dans la sidebar',
-      'Résiliable à tout moment',
-    ],
-  },
+  SINGLE: { ...PLAN_INFO.SINGLE, priceId: process.env.STRIPE_PRICE_SINGLE },
+  PACK_10: { ...PLAN_INFO.PACK_10, priceId: process.env.STRIPE_PRICE_PACK_10 },
 }
 
 export function planFromPriceId(priceId: string | null | undefined): PlanKey | null {

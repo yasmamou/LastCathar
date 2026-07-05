@@ -117,7 +117,7 @@ export const EPICS: Epic[] = [
       { slug: 'dwarka-cite-engloutie-inde', role: 'La cité de Krishna engloutie — l\'Atlantide indienne', order: 13 },
       { slug: 'baiae-cite-romaine-engloutie', role: 'Villas romaines sous la mer — la preuve visible que des villes sombrent', order: 14 },
       { slug: 'rungholt-atlantide-mer-du-nord', role: 'Engloutie en une nuit par une tempête en 1362 — l\'Atlantide du Nord', order: 15, date: '1362' },
-      { slug: 'ville-dys', role: 'Ker-Ys — l\'Atlantide celtique, engloutie dans la baie de Douarnenez', order: 16 },
+      { slug: 'ville-d-ys', role: 'Ker-Ys — l\'Atlantide celtique, engloutie dans la baie de Douarnenez', order: 16 },
       { slug: 'bibliotheque-alexandrie', role: 'La bibliothèque perdue contenait peut-être les preuves originales', order: 17 },
       { slug: 'temples-megalithiques-malte', role: 'Temples plus vieux que les pyramides — vestiges d\'une civilisation oubliée ?', order: 18, date: '3600 av. J.-C.' },
     ],
@@ -151,7 +151,7 @@ export const EPICS: Epic[] = [
       { slug: 'grotte-de-niaux', role: 'Salon Noir — bisons et chevaux peints au charbon avec un réalisme saisissant', order: 2, date: '14 000 av. J.-C.' },
       { slug: 'alignements-de-carnac', role: '3 000 menhirs alignés sur 4 km — le plus grand ensemble mégalithique au monde', order: 3, date: '4500 av. J.-C.' },
       { slug: 'cairn-de-gavrinis', role: 'Gravures spiralées d\'une complexité unique — un langage perdu ?', order: 4, date: '3500 av. J.-C.' },
-      { slug: 'roche-aux-fees', role: '40 dalles de 10 à 45 tonnes — transportées sur 4 km sans la roue', order: 5, date: '3000 av. J.-C.' },
+      { slug: 'roche-aux-f-es', role: '40 dalles de 10 à 45 tonnes — transportées sur 4 km sans la roue', order: 5, date: '3000 av. J.-C.' },
     ],
   },
   {

@@ -22,6 +22,8 @@ interface Props {
   onSelectPlace: (place: PlaceEntry, productId?: string) => void
   chercheurActive?: boolean
   panelOpen?: boolean
+  // Hide the mobile strip when its slot is needed by filters or active banners
+  mobileHidden?: boolean
   limit?: number
 }
 
@@ -36,6 +38,7 @@ export function VitrineStrip({
   onSelectPlace,
   chercheurActive,
   panelOpen,
+  mobileHidden,
   limit = 3,
 }: Props) {
   const [products, setProducts] = useState<VitrineProduct[] | null>(null)
@@ -129,14 +132,15 @@ export function VitrineStrip({
         <DesktopEmptySlot label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'} />
       </motion.div>
 
-      {/* ────────────── MOBILE: top horizontal strip, hidden when panel is open ────────────── */}
-      {!panelOpen && (
+      {/* ────────────── MOBILE: top horizontal strip, hidden when panel is open
+             or when filters/banners occupy its slot ────────────── */}
+      {!panelOpen && !mobileHidden && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.4, delay: 0.5 }}
-          className="md:hidden absolute top-[8.5rem] left-0 right-0 z-20 pointer-events-auto"
+          className="md:hidden absolute top-[10rem] left-0 right-0 z-20 pointer-events-auto"
         >
           <div className="flex items-center gap-1.5 px-3 pb-1 text-[9px] uppercase tracking-widest text-amber-300/80">
             <Store className="w-2.5 h-2.5" />
