@@ -466,6 +466,7 @@ export default function Home() {
               cameraLat={cameraLat}
               cameraLng={cameraLng}
               onSelectPlace={handlePlaceSelect}
+              chercheurActive={chercheur.chercheurMode}
             />
           </>
         )}
