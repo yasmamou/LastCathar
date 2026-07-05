@@ -1,9 +1,10 @@
 'use client'
 
 import { useRef, useCallback } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Headphones } from 'lucide-react'
 import { PlaceEntry } from '@/types/places'
 import { getCategoryColor, getCategoryIcon, getConfidenceLabel, getConfidenceColor } from '@/lib/categories'
+import { getAudioGuide } from '@/data/audio-guides'
 
 interface FeaturedStripProps {
   places: PlaceEntry[]
@@ -134,6 +135,14 @@ export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
                 <span className="text-xs font-medium text-white/80 group-hover:text-white/95 transition-colors truncate">
                   {place.title}
                 </span>
+                {getAudioGuide(place.slug) && (
+                  <span
+                    className="flex-shrink-0 flex items-center justify-center w-4 h-4 rounded-full bg-gold-400/20 text-gold-400"
+                    title="Guide audio disponible"
+                  >
+                    <Headphones className="w-2.5 h-2.5" />
+                  </span>
+                )}
               </div>
               <p className="text-[10px] text-white/30 leading-relaxed line-clamp-2">
                 {place.shortDescription}

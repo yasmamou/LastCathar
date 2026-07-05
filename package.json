@@ -15,7 +15,10 @@
     "seed:export": "npx tsx scripts/export-seed-json.ts",
     "remotion:preview": "npx remotion preview remotion/index.tsx",
     "remotion:render": "npx remotion render remotion/index.tsx RoisBerberes out/rois-berberes.mp4",
-    "seed:cathar": "npx tsx scripts/seed-cathar.ts"
+    "seed:cathar": "npx tsx scripts/seed-cathar.ts",
+    "stripe:setup": "npx tsx scripts/setup-stripe.ts",
+    "check:epics": "npx tsx scripts/check-epics.ts",
+    "audio:guides": "./scripts/generate-audio-guides.sh"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",

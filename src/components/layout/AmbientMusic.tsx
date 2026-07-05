@@ -217,7 +217,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
       {/* ── Player button — fixed bottom-left, above the featured strip.
              (The old center-left spot collided with the vitrine column when a
              panel was open, and floated over the full-screen panel on mobile.) ── */}
-      <div className={`fixed left-2 md:left-3 bottom-[11.5rem] md:bottom-40 z-[60] pointer-events-auto flex-col items-start gap-2 ${panelOpen ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`fixed left-2 md:left-3 bottom-[11.5rem] md:bottom-40 z-[60] pointer-events-auto flex-row items-center gap-2 ${panelOpen ? 'hidden md:flex' : 'flex'}`}>
         {/* Play/Pause + track name */}
         <button
           onClick={toggleMusic}
@@ -265,7 +265,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -20, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="fixed left-2 md:left-3 bottom-[15rem] md:bottom-64 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/85 border border-white/10 max-h-[55vh] flex flex-col pointer-events-auto"
+            className="fixed left-2 bottom-[15rem] md:left-64 md:bottom-40 z-[60] w-72 sm:w-80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl bg-black/85 border border-white/10 max-h-[55vh] flex flex-col pointer-events-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">

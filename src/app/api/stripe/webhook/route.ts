@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
-import { stripe, planFromPriceId, PLANS } from '@/lib/stripe'
+import { stripe } from '@/lib/stripe'
+import { upsertSubscription } from '@/lib/subscription-sync'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -71,62 +72,4 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id
   const stripeSub = await stripe.subscriptions.retrieve(subId)
   await upsertSubscription(stripeSub, userId)
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: { role: 'SELLER' },
-  }).catch(() => {})
-}
-
-async function upsertSubscription(stripeSub: Stripe.Subscription, fallbackUserId?: string) {
-  const userId = stripeSub.metadata?.userId || fallbackUserId
-  if (!userId) return
-
-  const item = stripeSub.items.data[0]
-  const priceId = item?.price.id
-  const planKey = planFromPriceId(priceId)
-  if (!planKey) return
-
-  const slots = PLANS[planKey].slots
-  const status = mapStatus(stripeSub.status)
-  const customerId = typeof stripeSub.customer === 'string' ? stripeSub.customer : stripeSub.customer.id
-  const periodEnd = item?.current_period_end ? new Date(item.current_period_end * 1000) : null
-
-  await prisma.subscription.upsert({
-    where: { stripeSubId: stripeSub.id },
-    create: {
-      userId,
-      plan: planKey,
-      status,
-      slotsIncluded: slots,
-      stripeCustomerId: customerId,
-      stripeSubId: stripeSub.id,
-      stripePriceId: priceId,
-      currentPeriodEnd: periodEnd,
-    },
-    update: {
-      plan: planKey,
-      status,
-      slotsIncluded: slots,
-      stripeCustomerId: customerId,
-      stripePriceId: priceId,
-      currentPeriodEnd: periodEnd,
-    },
-  })
-}
-
-function mapStatus(stripeStatus: Stripe.Subscription.Status) {
-  switch (stripeStatus) {
-    case 'active':
-    case 'trialing':
-      return 'ACTIVE' as const
-    case 'past_due':
-    case 'unpaid':
-      return 'PAST_DUE' as const
-    case 'canceled':
-    case 'incomplete_expired':
-      return 'CANCELLED' as const
-    default:
-      return 'EXPIRED' as const
-  }
 }
