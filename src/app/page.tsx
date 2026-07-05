@@ -332,7 +332,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 z-25"
+                className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-25"
               >
                 <div className={`glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs ${
                   interactionFilter === 'VISITED' ? 'text-emerald-400 border-emerald-400/20' :
@@ -355,7 +355,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-10 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-3"
+              className="absolute top-10 sm:top-16 md:top-20 left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-30 w-full max-w-xl px-3"
             >
               <SearchBar
                 value={searchQuery}
@@ -406,7 +406,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 z-25"
+                className="absolute top-[4.2rem] sm:top-[5rem] md:top-[5.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-25"
               >
                 <div
                   className="glass rounded-full px-4 py-1.5 flex items-center gap-2 text-xs"
@@ -425,7 +425,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className={`absolute top-[6.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-2 md:px-4 ${
+              className={`absolute top-[6.5rem] sm:top-[7rem] md:top-[8.5rem] left-1/2 -translate-x-1/2 md:left-[calc(50%-7rem)] z-20 w-full max-w-3xl px-2 md:px-4 ${
                 showFilters ? 'block' : 'hidden md:block'
               }`}
             >

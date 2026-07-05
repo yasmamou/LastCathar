@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Check, Sparkles, ArrowLeft, Loader2 } from 'lucide-react'
 import { PLANS, type PlanKey } from '@/lib/stripe'
+import { AuthModal } from '@/components/auth/AuthModal'
 
 const PLAN_ORDER: PlanKey[] = ['SINGLE', 'PACK_10']
 
@@ -12,13 +13,10 @@ export default function PricingPage() {
   const { status } = useSession()
   const [loading, setLoading] = useState<PlanKey | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [pendingPlan, setPendingPlan] = useState<PlanKey | null>(null)
 
-  async function handleCheckout(plan: PlanKey) {
-    setError(null)
-    if (status !== 'authenticated') {
-      setError('Connectez-vous pour souscrire un abonnement.')
-      return
-    }
+  const startCheckout = async (plan: PlanKey) => {
     setLoading(plan)
     try {
       const res = await fetch('/api/stripe/checkout', {
@@ -35,6 +33,26 @@ export default function PricingPage() {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
       setLoading(null)
     }
+  }
+
+  // When the user just authenticated with a pending plan, resume checkout
+  useEffect(() => {
+    if (status === 'authenticated' && pendingPlan && !loading) {
+      const plan = pendingPlan
+      setPendingPlan(null)
+      startCheckout(plan)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, pendingPlan])
+
+  async function handleCheckout(plan: PlanKey) {
+    setError(null)
+    if (status !== 'authenticated') {
+      setPendingPlan(plan)
+      setAuthOpen(true)
+      return
+    }
+    await startCheckout(plan)
   }
 
   return (
@@ -67,14 +85,13 @@ export default function PricingPage() {
         {error && (
           <div className="mx-auto max-w-md mb-8 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
             {error}
-            {status !== 'authenticated' && (
-              <>
-                {' — '}
-                <Link href="/" className="underline">
-                  Retour à l&apos;accueil pour vous connecter
-                </Link>
-              </>
-            )}
+          </div>
+        )}
+
+        {status === 'unauthenticated' && (
+          <div className="mx-auto max-w-md mb-8 rounded-lg border border-amber-400/25 bg-amber-400/5 p-4 text-sm text-amber-200/90">
+            💡 Pas encore de compte ? Cliquez sur un plan — nous créerons votre compte marchand,
+            puis vous redirigerons vers Stripe pour le paiement.
           </div>
         )}
 
@@ -129,7 +146,7 @@ export default function PricingPage() {
                       Redirection…
                     </span>
                   ) : status !== 'authenticated' ? (
-                    'Se connecter pour souscrire'
+                    `Créer un compte — ${plan.priceMonthly} €/mois`
                   ) : (
                     `Souscrire — ${plan.priceMonthly} €/mois`
                   )}
@@ -159,6 +176,14 @@ export default function PricingPage() {
           </p>
         </div>
       </div>
+
+      <AuthModal
+        isOpen={authOpen}
+        onClose={() => {
+          setAuthOpen(false)
+          setPendingPlan(null)
+        }}
+      />
     </div>
   )
 }
