@@ -42,3 +42,4 @@ next-env.d.ts
 # data pipeline
 /data/raw
 /data/enriched
+scripts/voices/
