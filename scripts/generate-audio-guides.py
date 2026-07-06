@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-"""Génère les guides audio avec Piper TTS (voix française naturelle, open source).
+"""Génère les guides audio multilingues avec Piper TTS (voix naturelles, open source).
 
-Voix par défaut : fr_FR-tom-medium (masculine, naturelle).
-Source unique : src/data/audio-guides-content.json (slug, title, text).
-Sortie        : public/audio-guides/<slug>.m4a  (AAC ~96 kbps, léger pour le web)
-Effet de bord : écrit les durées réelles dans src/data/audio-guides-durations.json,
-                lu par src/data/audio-guides.ts.
+Langues (LANGS ci-dessous) :
+  fr → fr_FR-tom-medium   → public/audio-guides/<slug>.m4a
+  en → en_US-ryan-high    → public/audio-guides/<slug>.en.m4a
+
+Sources : src/data/audio-guides-content.json      (fr)
+          src/data/audio-guides-content.en.json    (en)
+Effet de bord : durées réelles dans src/data/audio-guides-durations.json
+                (clés : "<slug>" pour fr, "<slug>.en" pour en), lues par
+                src/data/audio-guides.ts.
 
 Prérequis :
-  pip3 install --user piper-tts
-  # modèle (une fois) — voir MODEL_PATH ci-dessous / scripts/setup-audio-voice.sh
+  ./scripts/setup-audio-voice.sh   (pip install piper-tts + modèles de voix)
   ffmpeg (brew install ffmpeg)
 
 Usage : npm run audio:guides
-        VOICE_MODEL=/chemin/vers/autre.onnx npm run audio:guides   # changer de voix
+        npm run audio:guides fr        # une seule langue
+        LENGTH_SCALE=1.15 npm run audio:guides
 """
 import json
 import os
@@ -22,17 +26,29 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONTENT = os.path.join(ROOT, "src", "data", "audio-guides-content.json")
-DURATIONS = os.path.join(ROOT, "src", "data", "audio-guides-durations.json")
+DATA = os.path.join(ROOT, "src", "data")
+VOICES = os.path.join(ROOT, "scripts", "voices")
 OUT_DIR = os.path.join(ROOT, "public", "audio-guides")
+DURATIONS = os.path.join(DATA, "audio-guides-durations.json")
 
-# Voix : surchargeable via la variable d'env VOICE_MODEL
-MODEL = os.environ.get(
-    "VOICE_MODEL",
-    os.path.join(ROOT, "scripts", "voices", "fr_FR-tom-medium.onnx"),
-)
-# Débit : > 1 = plus lent / posé (voix de documentaire). 1.10 ≈ narration calme.
-LENGTH_SCALE = os.environ.get("LENGTH_SCALE", "1.12")
+# Configuration des langues : (code, fichier contenu, modèle, suffixe fichier, length-scale)
+LANGS = [
+    {
+        "code": "fr",
+        "content": os.path.join(DATA, "audio-guides-content.json"),
+        "model": os.environ.get("VOICE_MODEL_FR", os.path.join(VOICES, "fr_FR-tom-medium.onnx")),
+        "suffix": "",            # <slug>.m4a
+        "length": os.environ.get("LENGTH_SCALE", "1.12"),
+    },
+    {
+        "code": "en",
+        "content": os.path.join(DATA, "audio-guides-content.en.json"),
+        "model": os.environ.get("VOICE_MODEL_EN", os.path.join(VOICES, "en_US-ryan-high.onnx")),
+        "suffix": ".en",         # <slug>.en.m4a
+        "length": os.environ.get("LENGTH_SCALE_EN", "1.05"),
+    },
+]
+
 PAUSE_SEC = "0.55"  # silence entre paragraphes
 
 
@@ -51,65 +67,83 @@ def ffprobe_duration(path: str) -> int:
         return 0
 
 
-def synth_paragraph(text: str, out_wav: str):
+def synth_paragraph(model: str, length: str, text: str, out_wav: str):
     run([
         sys.executable, "-m", "piper",
-        "--model", MODEL,
-        "--length-scale", LENGTH_SCALE,
+        "--model", model,
+        "--length-scale", length,
         "--output-file", out_wav,
     ], input=text.encode("utf-8"))
 
 
-def main():
-    if not os.path.exists(MODEL):
-        print(f"❌ Modèle de voix introuvable : {MODEL}\n"
-              f"   Lance d'abord : ./scripts/setup-audio-voice.sh", file=sys.stderr)
-        sys.exit(1)
+def generate_lang(lang, sil_wav, tmp, durations):
+    if not os.path.exists(lang["model"]):
+        print(f"⏭  {lang['code']} : modèle absent ({os.path.basename(lang['model'])}) — "
+              f"lance ./scripts/setup-audio-voice.sh", file=sys.stderr)
+        return 0
+    if not os.path.exists(lang["content"]):
+        print(f"⏭  {lang['code']} : contenu absent ({os.path.basename(lang['content'])})", file=sys.stderr)
+        return 0
 
-    with open(CONTENT, encoding="utf-8") as fh:
+    with open(lang["content"], encoding="utf-8") as fh:
         data = json.load(fh)
 
-    os.makedirs(OUT_DIR, exist_ok=True)
-    durations = {}
+    print(f"\n▸ {lang['code'].upper()}  ({os.path.basename(lang['model'])})")
+    count = 0
+    for g in data["guides"]:
+        slug = g["slug"]
+        paras = [p.strip() for p in g["text"].split("\n\n") if p.strip()]
+        parts = []
+        for i, para in enumerate(paras):
+            w = os.path.join(tmp, f"{lang['code']}_{slug}_{i}.wav")
+            synth_paragraph(lang["model"], lang["length"], para, w)
+            parts.append(w)
+            if i < len(paras) - 1:
+                parts.append(sil_wav)
 
+        concat = os.path.join(tmp, f"{lang['code']}_{slug}_list.txt")
+        with open(concat, "w") as fh:
+            for p in parts:
+                fh.write(f"file '{p}'\n")
+
+        joined = os.path.join(tmp, f"{lang['code']}_{slug}.wav")
+        run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat, "-c", "copy", joined])
+
+        key = f"{slug}{lang['suffix']}"
+        out_m4a = os.path.join(OUT_DIR, f"{key}.m4a")
+        run(["ffmpeg", "-y", "-i", joined, "-c:a", "aac", "-b:a", "96k", out_m4a])
+
+        durations[key] = ffprobe_duration(out_m4a)
+        print(f"  ✓ {key}  ({durations[key]}s)")
+        count += 1
+    return count
+
+
+def main():
+    only = sys.argv[1] if len(sys.argv) > 1 else None
+    langs = [l for l in LANGS if not only or l["code"] == only]
+
+    os.makedirs(OUT_DIR, exist_ok=True)
+
+    # On repart des durées existantes pour ne pas perdre les langues non régénérées
+    durations = {}
+    if os.path.exists(DURATIONS):
+        with open(DURATIONS, encoding="utf-8") as fh:
+            durations = json.load(fh)
+
+    total_count = 0
     with tempfile.TemporaryDirectory() as tmp:
         sil = os.path.join(tmp, "sil.wav")
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i",
-             "anullsrc=r=22050:cl=mono", "-t", PAUSE_SEC, sil])
-
-        for g in data["guides"]:
-            slug = g["slug"]
-            paras = [p.strip() for p in g["text"].split("\n\n") if p.strip()]
-            parts = []
-            for i, para in enumerate(paras):
-                w = os.path.join(tmp, f"{slug}_{i}.wav")
-                synth_paragraph(para, w)
-                parts.append(w)
-                if i < len(paras) - 1:
-                    parts.append(sil)
-
-            concat = os.path.join(tmp, f"{slug}_list.txt")
-            with open(concat, "w") as fh:
-                for p in parts:
-                    fh.write(f"file '{p}'\n")
-
-            joined = os.path.join(tmp, f"{slug}.wav")
-            run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                 "-i", concat, "-c", "copy", joined])
-
-            out_m4a = os.path.join(OUT_DIR, f"{slug}.m4a")
-            run(["ffmpeg", "-y", "-i", joined,
-                 "-c:a", "aac", "-b:a", "96k", out_m4a])
-
-            durations[slug] = ffprobe_duration(out_m4a)
-            print(f"  ✓ {slug}  ({durations[slug]}s)")
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=22050:cl=mono", "-t", PAUSE_SEC, sil])
+        for lang in langs:
+            total_count += generate_lang(lang, sil, tmp, durations)
 
     with open(DURATIONS, "w", encoding="utf-8") as fh:
         json.dump(durations, fh, ensure_ascii=False, indent=2)
 
-    total = sum(durations.values())
-    print(f"\n✓ {len(durations)} guides générés dans public/audio-guides/  "
-          f"(~{total // 60} min {total % 60}s au total)")
+    total_sec = sum(durations.values())
+    print(f"\n✓ {total_count} pistes générées dans public/audio-guides/  "
+          f"(~{total_sec // 60} min au total, toutes langues)")
     print(f"✓ Durées écrites dans {os.path.relpath(DURATIONS, ROOT)}")
 
 
