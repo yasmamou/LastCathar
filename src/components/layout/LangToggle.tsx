@@ -8,11 +8,12 @@ interface Props {
   className?: string
 }
 
-// Petit sélecteur FR / EN réutilisable (même style que les lecteurs audio).
+// Sélecteur de langue compact avec drapeaux — 🇫🇷 FR / 🇬🇧 EN.
+// Assez petit pour tenir en haut à droite sur mobile, bien contrasté.
 export function LangToggle({ lang, onChange, className = '' }: Props) {
   return (
     <div
-      className={`inline-flex items-center rounded-full bg-black/40 border border-white/10 overflow-hidden text-[10px] font-semibold ${className}`}
+      className={`inline-flex items-center rounded-full bg-black/60 border border-white/20 overflow-hidden text-xs font-semibold shadow-lg ${className}`}
     >
       {(['fr', 'en'] as const).map((code) => (
         <button
@@ -20,11 +21,13 @@ export function LangToggle({ lang, onChange, className = '' }: Props) {
           type="button"
           onClick={() => onChange(code)}
           aria-pressed={lang === code}
-          className={`px-2.5 py-1 uppercase tracking-wider transition-colors ${
-            lang === code ? 'bg-gold-400 text-midnight-950' : 'text-white/50 hover:text-white/90'
+          aria-label={code === 'fr' ? 'Français' : 'English'}
+          className={`flex items-center gap-1 px-2.5 py-1.5 transition-colors ${
+            lang === code ? 'bg-amber-400 text-midnight-950' : 'text-white/60 hover:text-white'
           }`}
         >
-          {code === 'fr' ? 'FR' : 'EN'}
+          <span className="text-sm leading-none">{code === 'fr' ? '🇫🇷' : '🇬🇧'}</span>
+          <span className="tracking-wide">{code === 'fr' ? 'FR' : 'EN'}</span>
         </button>
       ))}
     </div>

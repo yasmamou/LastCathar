@@ -10,6 +10,7 @@ import { AudioGuidePlayer } from '@/components/panels/AudioGuidePlayer'
 import { CarcassonneTour } from '@/components/tour/CarcassonneTour'
 import { getTourForPlace } from '@/data/carcassonne-tour'
 import { useLang } from '@/lib/lang'
+import { LangToggle } from '@/components/layout/LangToggle'
 import { PlaceEntry } from '@/types/places'
 
 const PANEL_T = {
@@ -62,7 +63,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
   const [tourOpen, setTourOpen] = useState(false)
   const tour = getTourForPlace(place.slug)
-  const [lang] = useLang()
+  const [lang, setLang] = useLang()
   const t = PANEL_T[lang]
 
   // Reset to the first image when switching place (component is reused, not
@@ -121,6 +122,11 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
       className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-40"
     >
+      {/* Language switcher (flags) — fixed top-right of the panel */}
+      <div className="absolute top-3 right-3 z-50">
+        <LangToggle lang={lang} onChange={setLang} />
+      </div>
+
       <div className="h-full glass overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
         {/* Mobile back button */}
         <div className="md:hidden flex items-center px-3 py-3 border-b border-white/5 sticky top-0 z-10 glass safe-top">

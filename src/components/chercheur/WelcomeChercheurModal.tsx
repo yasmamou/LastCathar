@@ -1,9 +1,10 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Compass, Flame, Sparkles, X, Globe } from 'lucide-react'
+import { Compass, Flame, Sparkles, X } from 'lucide-react'
 import { getEpic, STARTER_EPIC_ID } from '@/lib/game'
 import { useLang } from '@/lib/lang'
+import { LangToggle } from '@/components/layout/LangToggle'
 
 interface Props {
   isOpen: boolean
@@ -80,38 +81,22 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="relative max-w-lg w-full rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-8 sm:p-10 shadow-[0_0_80px_-15px_rgba(251,191,36,0.4)]"
           >
-            {/* Close button */}
+            {/* Language switcher (flags) — top-left, and close button top-right */}
+            <div className="absolute top-3 left-3 z-10">
+              <LangToggle lang={lang} onChange={setLang} />
+            </div>
             <button
               onClick={onDismiss}
-              className="absolute top-4 right-4 text-white/30 hover:text-white/70 transition"
+              className="absolute top-4 right-4 z-10 text-white/40 hover:text-white/80 transition"
               aria-label={t.close}
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Prominent language switcher — Français / English */}
-            <div className="flex items-center justify-between mb-5 pr-8">
+            <div className="flex items-center gap-2 mb-4 mt-8">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] uppercase tracking-widest text-amber-300">
                 <Sparkles className="w-3 h-3" />
                 {t.badge}
-              </div>
-              <div className="inline-flex items-center gap-1 rounded-full bg-white/5 border border-white/15 p-1">
-                <Globe className="w-3.5 h-3.5 text-white/40 ml-1.5" />
-                {(['fr', 'en'] as const).map((code) => (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => setLang(code)}
-                    aria-pressed={lang === code}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide transition-colors ${
-                      lang === code
-                        ? 'bg-amber-400 text-midnight-950'
-                        : 'text-white/50 hover:text-white/90'
-                    }`}
-                  >
-                    {code === 'fr' ? 'Français' : 'English'}
-                  </button>
-                ))}
               </div>
             </div>
 
