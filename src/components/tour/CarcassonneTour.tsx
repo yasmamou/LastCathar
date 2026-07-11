@@ -3,15 +3,29 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useSession, signIn } from 'next-auth/react'
-import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock, ShoppingBag, ExternalLink, Plus } from 'lucide-react'
+import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock, ShoppingBag, ExternalLink } from 'lucide-react'
 import type { Tour } from '@/data/carcassonne-tour'
 import type { GuideLang } from '@/data/audio-guides'
 import { useLang } from '@/lib/lang'
-import { STARTER_EPIC_ID, STARTER_PLACE_SLUG } from '@/lib/game'
+import { STARTER_EPIC_ID, STARTER_PLACE_SLUG, BADGE_MAP } from '@/lib/game'
+import businessesData from '@/data/carcassonne-businesses.json'
+
+interface Business {
+  id: string
+  name: string
+  tag: Record<GuideLang, string>
+  price: Record<GuideLang, string>
+  url: string
+  image: string
+}
+const BUSINESSES = businessesData.businesses as Business[]
+const TOUR_BADGE = 'cite-carcassonne-guide'
 
 interface Props {
   tour: Tour
   onClose: () => void
+  // Continuer l'épopée cathare après la visite (→ lieu suivant, ex. Béziers)
+  onContinueEpic?: () => void
 }
 
 const IMAGE_INTERVAL = 5000 // défilement auto des images (ms)
@@ -27,6 +41,10 @@ const UI = {
     create: 'Créer mon compte & continuer', later: 'Plus tard, continuer la visite',
     saved: 'Progression sauvegardée ✦', errGeneric: 'Une erreur est survenue',
     localProducts: 'Produits locaux', yourProduct: 'Votre produit ici →',
+    badgeUnlocked: 'Badge débloqué', completeTitle: 'Visite terminée !',
+    completeBody: 'Vous avez parcouru toute la Cité de Carcassonne.',
+    seeShops: 'Voir les boutiques locales', continueEpic: "Continuer l'épopée →",
+    backToTour: '← Retour', shopsTitle: 'Boutiques & artisans de la Cité', visit: 'Visiter',
   },
   en: {
     of: 'of', prev: 'Previous', next: 'Next', transcript: 'Text', finish: 'Finish the tour',
@@ -37,6 +55,10 @@ const UI = {
     create: 'Create my account & continue', later: 'Later, continue the tour',
     saved: 'Progress saved ✦', errGeneric: 'Something went wrong',
     localProducts: 'Local products', yourProduct: 'Your product here →',
+    badgeUnlocked: 'Badge unlocked', completeTitle: 'Tour complete!',
+    completeBody: 'You have walked through the whole Cité of Carcassonne.',
+    seeShops: 'See local shops', continueEpic: 'Continue the epic →',
+    backToTour: '← Back', shopsTitle: 'Shops & artisans of the Cité', visit: 'Visit',
   },
 } as const
 
@@ -52,7 +74,7 @@ function emitGuideState(playing: boolean) {
   }
 }
 
-export function CarcassonneTour({ tour, onClose }: Props) {
+export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   const { status } = useSession()
   const [lang, setLang] = useLang()
   const [stopIndex, setStopIndex] = useState(0)
@@ -73,32 +95,36 @@ export function CarcassonneTour({ tour, onClose }: Props) {
   const [obError, setObError] = useState('')
   const [obSaved, setObSaved] = useState(false)
 
-  // Local products for this place — shown while listening to the tour.
-  const [tourProducts, setTourProducts] = useState<
-    { id: string; title: string; price: string | null; imageUrls: string[]; externalUrl: string | null }[]
-  >([])
+  // Completion flow (after the last stop): badge + shops / continue-epic.
+  const [completed, setCompleted] = useState(false)
+  const [showShops, setShowShops] = useState(false)
+  const completedRef = useRef(false)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoAdvanceRef = useRef(autoAdvance)
   autoAdvanceRef.current = autoAdvance
 
-  useEffect(() => {
-    let cancelled = false
-    fetch(`/api/products?placeSlug=${encodeURIComponent(tour.placeSlug)}`)
-      .then((r) => r.json())
-      .then((data) => { if (!cancelled) setTourProducts(data.products ?? []) })
-      .catch(() => {})
-    return () => { cancelled = true }
-  }, [tour.placeSlug])
-
-  const openProduct = (p: { id: string; externalUrl: string | null }) => {
-    fetch('/api/products/click', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId: p.id, placeSlug: tour.placeSlug }),
-    }).catch(() => {})
-    if (p.externalUrl) window.open(p.externalUrl, '_blank', 'noopener,noreferrer')
+  const openBusiness = (b: Business) => {
+    window.open(b.url, '_blank', 'noopener,noreferrer')
   }
+
+  // Reach the end of the tour → grant the badge (if signed in) + show the
+  // completion screen with shops / continue options.
+  const finishTour = useCallback(() => {
+    if (completedRef.current) { setCompleted(true); return }
+    completedRef.current = true
+    audioRef.current?.pause()
+    setPlaying(false)
+    emitGuideState(false)
+    setCompleted(true)
+    if (status === 'authenticated') {
+      fetch('/api/game/badge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ badgeSlug: TOUR_BADGE }),
+      }).catch(() => {})
+    }
+  }, [status])
 
   const stop = tour.stops[stopIndex]
   const track = stop.audio[lang]
@@ -191,6 +217,11 @@ export function CarcassonneTour({ tour, onClose }: Props) {
     const onEnded = () => {
       setPlaying(false)
       emitGuideState(false)
+      // Dernière étape terminée → écran de fin (badge + boutiques / suite)
+      if (stopIndex >= tour.stops.length - 1) {
+        finishTour()
+        return
+      }
       // Enchaînement automatique vers l'étape suivante
       if (autoAdvanceRef.current) {
         setStopIndex((idx) => {
@@ -345,50 +376,34 @@ export function CarcassonneTour({ tour, onClose }: Props) {
       {/* Spacer pushes content to the bottom */}
       <div className="flex-1" />
 
-      {/* Local products — visible while listening to the audio guide */}
-      {tourProducts.length > 0 && (
-        <div className="relative z-10 px-4 md:px-6 mb-2">
-          <div className="mx-auto max-w-2xl">
-            <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-widest text-amber-300/80">
-              <ShoppingBag className="w-3 h-3" /> {T.localProducts}
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-              {tourProducts.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => openProduct(p)}
-                  className="group flex-shrink-0 w-[190px] flex items-center gap-2 rounded-xl border border-amber-400/20 bg-black/50 backdrop-blur-md p-2 text-left hover:border-amber-400/50 transition-colors"
-                  title={p.title}
-                >
-                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
-                    {p.imageUrls?.[0] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.imageUrls[0]} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-amber-300/40">🛍️</div>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">{p.title}</div>
-                    {p.price && <div className="text-[10px] text-amber-300/80 truncate">{p.price}</div>}
-                  </div>
-                  <ExternalLink className="w-3 h-3 text-white/30 flex-shrink-0" />
-                </button>
-              ))}
-              {/* Reserve-a-slot CTA */}
-              <a
-                href="/pricing"
-                className="flex-shrink-0 w-[150px] flex items-center gap-2 rounded-xl border border-dashed border-amber-400/30 bg-amber-400/5 p-2 hover:bg-amber-400/10 transition-colors"
+      {/* Real local businesses — visible while listening to the audio guide */}
+      <div className="relative z-10 px-4 md:px-6 mb-2">
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-widest text-amber-300/80">
+            <ShoppingBag className="w-3 h-3" /> {T.localProducts}
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+            {BUSINESSES.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => openBusiness(b)}
+                className="group flex-shrink-0 w-[200px] flex items-center gap-2 rounded-xl border border-amber-400/20 bg-black/50 backdrop-blur-md p-2 text-left hover:border-amber-400/50 transition-colors"
+                title={b.name}
               >
-                <div className="w-10 h-10 rounded-lg bg-amber-400/10 flex items-center justify-center flex-shrink-0">
-                  <Plus className="w-4 h-4 text-amber-300" />
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={b.image} alt="" className="w-full h-full object-cover" />
                 </div>
-                <div className="text-[10px] font-medium text-amber-300 leading-tight">{T.yourProduct}</div>
-              </a>
-            </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">{b.name}</div>
+                  <div className="text-[10px] text-amber-300/80 truncate">{b.tag[lang]}</div>
+                </div>
+                <ExternalLink className="w-3 h-3 text-white/30 flex-shrink-0" />
+              </button>
+            ))}
           </div>
         </div>
-      )}
+      </div>
 
       {/* Content card */}
       <div className="relative z-10 px-4 md:px-6 pb-4 safe-bottom">
@@ -486,7 +501,7 @@ export function CarcassonneTour({ tour, onClose }: Props) {
 
             {isLast ? (
               <button
-                onClick={onClose}
+                onClick={finishTour}
                 className="flex items-center gap-1 text-xs font-semibold text-gold-400 hover:text-gold-300 transition-colors"
               >
                 {T.finish}
@@ -586,6 +601,105 @@ export function CarcassonneTour({ tour, onClose }: Props) {
                     {T.later}
                   </button>
                 </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Completion screen: badge + shops / continue the epic */}
+      <AnimatePresence>
+        {completed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-30 flex items-center justify-center px-4"
+            style={{ background: 'rgba(5,6,13,0.9)', backdropFilter: 'blur(8px)' }}
+          >
+            <motion.div
+              initial={{ scale: 0.94, y: 16, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              className="w-full max-w-md rounded-2xl border border-amber-400/25 bg-gradient-to-b from-[#0f1120] to-[#05060d] shadow-[0_0_70px_-15px_rgba(251,191,36,0.6)] overflow-hidden"
+            >
+              {showShops ? (
+                <div className="flex flex-col max-h-[80vh]">
+                  <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-300">
+                      <ShoppingBag className="w-4 h-4" /> {T.shopsTitle}
+                    </div>
+                    <button onClick={() => setShowShops(false)} className="text-white/40 hover:text-white/80 text-xs">
+                      {T.backToTour}
+                    </button>
+                  </div>
+                  <div className="overflow-y-auto p-3 space-y-2">
+                    {BUSINESSES.map((b) => (
+                      <button
+                        key={b.id}
+                        onClick={() => openBusiness(b)}
+                        className="group w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-amber-400/30 p-2.5 text-left transition-colors"
+                      >
+                        <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={b.image} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium text-white truncate group-hover:text-amber-200">{b.name}</div>
+                          <div className="text-[11px] text-white/50 truncate">{b.tag[lang]}</div>
+                          <div className="text-[10px] text-amber-300/70 truncate">{b.price[lang]}</div>
+                        </div>
+                        <ExternalLink className="w-3.5 h-3.5 text-white/30 flex-shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-7 text-center">
+                  <motion.div
+                    initial={{ scale: 0.6, rotate: -8 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', damping: 12 }}
+                    className="w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl"
+                    style={{ background: `${BADGE_MAP[TOUR_BADGE]?.color ?? '#fbbf24'}25` }}
+                  >
+                    {BADGE_MAP[TOUR_BADGE]?.icon ?? '🏰'}
+                  </motion.div>
+                  <div className="text-[10px] uppercase tracking-widest text-amber-300/70 font-semibold mb-1">
+                    {T.badgeUnlocked}
+                  </div>
+                  <h3 className="font-serif text-2xl font-semibold text-white mb-1">
+                    {BADGE_MAP[TOUR_BADGE]?.label ?? T.completeTitle}
+                  </h3>
+                  <p className="text-sm text-white/60 mb-1">{T.completeBody}</p>
+                  {xp > 0 && (
+                    <div className="inline-flex items-center gap-1 rounded-full bg-amber-400/15 border border-amber-400/30 px-3 py-1 text-xs font-bold text-amber-300 mb-5 mt-1">
+                      <Sparkles className="w-3 h-3" /> +{xp} {T.xp}
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2.5">
+                    <button
+                      onClick={() => setShowShops(true)}
+                      className="w-full py-3 rounded-xl bg-white/5 border border-amber-400/20 text-sm font-semibold text-amber-300 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <ShoppingBag className="w-4 h-4" /> {T.seeShops}
+                    </button>
+                    {onContinueEpic && (
+                      <button
+                        onClick={() => { onContinueEpic(); onClose() }}
+                        className="w-full py-3 rounded-xl bg-amber-400 text-midnight-950 font-semibold text-sm hover:bg-amber-300 transition-colors"
+                      >
+                        {T.continueEpic}
+                      </button>
+                    )}
+                    <button
+                      onClick={onClose}
+                      className="w-full text-center text-[11px] text-white/40 hover:text-white/70 transition-colors pt-1"
+                    >
+                      {T.finish}
+                    </button>
+                  </div>
+                </div>
               )}
             </motion.div>
           </motion.div>

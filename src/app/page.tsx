@@ -249,6 +249,25 @@ export default function Home() {
     setShowAuthModal(true)
   }, [])
 
+  // From the end of the Carcassonne guided tour → continue the Cathar epic at
+  // the next place (Béziers). Activates the epic + flies to the next place.
+  const handleContinueCatharEpic = useCallback(() => {
+    const cathar = EPICS.find((e) => e.id === STARTER_EPIC_ID)
+    if (!cathar) return
+    const ordered = [...cathar.places].sort((a, b) => a.order - b.order)
+    const idx = ordered.findIndex((p) => p.slug === 'cite-de-carcassonne')
+    const nextEpicPlace = ordered[idx + 1] ?? ordered[0]
+    const target = allPlaces.find((p) => p.slug === nextEpicPlace?.slug)
+    chercheur.setActiveEpicId(STARTER_EPIC_ID)
+    setActiveEpic(cathar)
+    if (target) {
+      setSelectedPlace(target)
+      setShowEpicPanel(false)
+      setFlyToTrigger((n) => n + 1)
+      chercheur.recordVisit(STARTER_EPIC_ID, target.slug)
+    }
+  }, [chercheur])
+
   const handleStartChercheur = useCallback(() => {
     // startMode() resets the active epic to STARTER_EPIC_ID; reference the
     // constant directly rather than chercheur.activeEpicId, which still holds
@@ -548,6 +567,7 @@ export default function Home() {
             allPlaces={allPlaces}
             onPlaceSelect={handlePlaceSelect}
             highlightedProductId={highlightedProductId}
+            onContinueCatharEpic={handleContinueCatharEpic}
           />
         )}
       </AnimatePresence>

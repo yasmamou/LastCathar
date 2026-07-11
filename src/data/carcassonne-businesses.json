@@ -1,0 +1,54 @@
+{
+  "_comment": "Vrais commerces & spécialités de la Cité de Carcassonne, présentés pendant la visite guidée. Images : Wikimedia Commons.",
+  "placeSlug": "cite-de-carcassonne",
+  "businesses": [
+    {
+      "id": "hotel-de-la-cite",
+      "name": "Hôtel de la Cité",
+      "tag": { "fr": "Hôtel 5★ & Spa · dans la Cité", "en": "5-star hotel & spa · inside the Cité" },
+      "price": { "fr": "dès 290 €/nuit", "en": "from €290/night" },
+      "url": "https://www.hoteldelacite.com",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Hotel_de_la_Cite_Carcassonne_02.jpg/960px-Hotel_de_la_Cite_Carcassonne_02.jpg"
+    },
+    {
+      "id": "la-barbacane",
+      "name": "Restaurant La Barbacane",
+      "tag": { "fr": "Gastronomique · ★ Michelin", "en": "Fine dining · ★ Michelin" },
+      "price": { "fr": "menu dès 65 €", "en": "menu from €65" },
+      "url": "https://www.restaurant-labarbacane.com",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Foie_gras_en_cocotte.jpg/960px-Foie_gras_en_cocotte.jpg"
+    },
+    {
+      "id": "truffes-noires-carcassonne",
+      "name": "Truffes Noires de Carcassonne",
+      "tag": { "fr": "Producteur de truffes noires", "en": "Black truffle grower" },
+      "price": { "fr": "vente directe", "en": "farm-direct" },
+      "url": "https://www.truffes-noires-carcassonne.fr",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Truffe_nature.JPG/960px-Truffe_nature.JPG"
+    },
+    {
+      "id": "cassoulet-pays-cathare",
+      "name": "Cassoulet du Pays Cathare",
+      "tag": { "fr": "La spécialité, label Pays Cathare", "en": "The local specialty" },
+      "price": { "fr": "producteurs & tables", "en": "producers & tables" },
+      "url": "https://www.tourisme-carcassonne.fr/preparer/restaurants-gastronomie/les-specialites-de-carcassonne/",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cassoulet.cuit.jpg/960px-Cassoulet.cuit.jpg"
+    },
+    {
+      "id": "nougats-confiseries",
+      "name": "Nougats & Confiseries",
+      "tag": { "fr": "Douceurs artisanales de la Cité", "en": "Artisan sweets of the Cité" },
+      "price": { "fr": "boutiques artisanales", "en": "artisan shops" },
+      "url": "https://www.tourisme-carcassonne.fr/preparer/restaurants-gastronomie/les-specialites-de-carcassonne/",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Nougat.jpg/960px-Nougat.jpg"
+    },
+    {
+      "id": "vins-corbieres-minervois",
+      "name": "Vins des Corbières & Minervois",
+      "tag": { "fr": "Caves & dégustation, Pays Cathare", "en": "Wine cellars & tasting" },
+      "price": { "fr": "dégustations", "en": "tastings" },
+      "url": "https://www.grand-carcassonne-tourisme.fr/",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Cucugnan_%28France%29_Vignes.jpg/960px-Cucugnan_%28France%29_Vignes.jpg"
+    }
+  ]
+}

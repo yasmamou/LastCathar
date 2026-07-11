@@ -89,7 +89,18 @@ const STATIC_BADGES: BadgeDef[] = [
     icon: '👑',
     color: '#f59e0b',
   },
+  {
+    slug: 'cite-carcassonne-guide',
+    label: 'Gardien de la Cité',
+    description: 'Vous avez terminé la visite guidée de la Cité de Carcassonne.',
+    icon: '🏰',
+    color: '#fbbf24',
+  },
 ]
+
+// Badges pouvant être attribués directement (hors visite d'épopée), ex. fin de
+// la visite guidée immersive. Allowlist pour l'endpoint /api/game/badge.
+export const GRANTABLE_BADGES = new Set<string>(['cite-carcassonne-guide'])
 
 // Generic per-epic badges: "epic <id> started" (first place) + "epic <id> complete".
 // Generated dynamically from EPICS so adding a new epic gives it badges for free.

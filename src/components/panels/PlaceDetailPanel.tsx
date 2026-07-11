@@ -45,9 +45,11 @@ interface PlaceDetailPanelProps {
   allPlaces?: PlaceEntry[]
   onPlaceSelect?: (place: PlaceEntry) => void
   highlightedProductId?: string | null
+  // Continuer l'épopée cathare depuis la fin de la visite guidée (→ Béziers)
+  onContinueCatharEpic?: () => void
 }
 
-export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId, onContinueCatharEpic }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -103,7 +105,13 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
     <>
     {tour && (
       <AnimatePresence>
-        {tourOpen && <CarcassonneTour tour={tour} onClose={() => setTourOpen(false)} />}
+        {tourOpen && (
+          <CarcassonneTour
+            tour={tour}
+            onClose={() => setTourOpen(false)}
+            onContinueEpic={onContinueCatharEpic}
+          />
+        )}
       </AnimatePresence>
     )}
     <motion.div
