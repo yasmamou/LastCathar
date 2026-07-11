@@ -3,6 +3,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Compass, Flame, Sparkles, X } from 'lucide-react'
 import { getEpic, STARTER_EPIC_ID } from '@/lib/game'
+import { useLang } from '@/lib/lang'
+import { LangToggle } from '@/components/layout/LangToggle'
 
 interface Props {
   isOpen: boolean
@@ -10,9 +12,52 @@ interface Props {
   onDismiss: () => void
 }
 
+const T = {
+  fr: {
+    badge: 'Mode Chercheur',
+    titleA: 'Suivez la trace des ',
+    titleHi: 'Cathares',
+    intro:
+      "Bienvenue, chercheur. Vous êtes sur le point d'entrer dans une des grandes histoires perdues du Languedoc — la croisade albigeoise, ses forteresses imprenables, ses trésors dissimulés, son bûcher final à Montségur.",
+    epicLabel: 'Épopée de départ',
+    epicPlaces: (n: number) => `${n} lieux — départ à Carcassonne, 1209`,
+    b1a: 'Chaque lieu visité rapporte de l’',
+    b1b: 'XP',
+    b1c: ' et fait progresser votre rang de chercheur.',
+    b2a: 'Débloquez des ',
+    b2b: 'badges',
+    b2c: ' aux étapes clés de l’épopée.',
+    b3: 'Vous pouvez à tout moment explorer librement le globe — la piste reste sauvegardée.',
+    start: "Commencer l'épopée à Carcassonne",
+    free: 'Explorer librement',
+    close: 'Fermer',
+  },
+  en: {
+    badge: 'Seeker Mode',
+    titleA: 'Follow the trail of the ',
+    titleHi: 'Cathars',
+    intro:
+      "Welcome, seeker. You are about to enter one of the great lost stories of the Languedoc — the Albigensian Crusade, its impregnable fortresses, its hidden treasures, and its final pyre at Montségur.",
+    epicLabel: 'Starting epic',
+    epicPlaces: (n: number) => `${n} places — starting at Carcassonne, 1209`,
+    b1a: 'Every place you visit earns ',
+    b1b: 'XP',
+    b1c: ' and raises your seeker rank.',
+    b2a: 'Unlock ',
+    b2b: 'badges',
+    b2c: ' at the key milestones of the epic.',
+    b3: 'You can roam the globe freely at any time — your trail is always saved.',
+    start: 'Begin the epic at Carcassonne',
+    free: 'Explore freely',
+    close: 'Close',
+  },
+} as const
+
 export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
+  const [lang, setLang] = useLang()
   const epic = getEpic(STARTER_EPIC_ID)
   if (!epic) return null
+  const t = T[lang]
 
   return (
     <AnimatePresence>
@@ -36,30 +81,31 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="relative max-w-lg w-full rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-8 sm:p-10 shadow-[0_0_80px_-15px_rgba(251,191,36,0.4)]"
           >
-            <button
-              onClick={onDismiss}
-              className="absolute top-4 right-4 text-white/30 hover:text-white/70 transition"
-              aria-label="Fermer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            {/* Top bar: language toggle + close */}
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <LangToggle lang={lang} onChange={setLang} />
+              <button
+                onClick={onDismiss}
+                className="text-white/30 hover:text-white/70 transition"
+                aria-label={t.close}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <div className="flex items-center gap-2 mb-4">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] uppercase tracking-widest text-amber-300">
                 <Sparkles className="w-3 h-3" />
-                Mode Chercheur
+                {t.badge}
               </div>
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white leading-tight mb-3">
-              Suivez la trace des <span className="text-amber-300">Cathares</span>
+              {t.titleA}
+              <span className="text-amber-300">{t.titleHi}</span>
             </h2>
 
-            <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-6">
-              Bienvenue, chercheur. Vous êtes sur le point d&apos;entrer dans une des grandes histoires
-              perdues du Languedoc — la croisade albigeoise, ses forteresses imprenables, ses
-              trésors dissimulés, son bûcher final à Montségur.
-            </p>
+            <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-6">{t.intro}</p>
 
             <div className="rounded-xl border border-white/10 bg-white/5 p-4 mb-6">
               <div className="flex items-start gap-3">
@@ -71,12 +117,12 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
                 </div>
                 <div>
                   <div className="text-xs uppercase tracking-widest text-white/40 mb-0.5">
-                    Épopée de départ
+                    {t.epicLabel}
                   </div>
                   <div className="text-white font-medium mb-1">{epic.title}</div>
                   <div className="text-xs text-white/60 flex items-center gap-2">
                     <Flame className="w-3 h-3" />
-                    {epic.places.length} lieux — départ à Carcassonne, 1209
+                    {t.epicPlaces(epic.places.length)}
                   </div>
                 </div>
               </div>
@@ -85,15 +131,15 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
             <div className="space-y-2 mb-8 text-sm text-white/70">
               <div className="flex items-start gap-2">
                 <span className="text-amber-300 mt-0.5">✦</span>
-                <span>Chaque lieu visité rapporte de l&apos;<b className="text-amber-300">XP</b> et fait progresser votre rang de chercheur.</span>
+                <span>{t.b1a}<b className="text-amber-300">{t.b1b}</b>{t.b1c}</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-amber-300 mt-0.5">✦</span>
-                <span>Débloquez des <b className="text-amber-300">badges</b> aux étapes clés de l&apos;épopée.</span>
+                <span>{t.b2a}<b className="text-amber-300">{t.b2b}</b>{t.b2c}</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-amber-300 mt-0.5">✦</span>
-                <span>Vous pouvez à tout moment explorer librement le globe — la piste reste sauvegardée.</span>
+                <span>{t.b3}</span>
               </div>
             </div>
 
@@ -103,13 +149,13 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-black hover:bg-amber-300 transition"
               >
                 <Compass className="w-4 h-4" />
-                Commencer l&apos;épopée à Carcassonne
+                {t.start}
               </button>
               <button
                 onClick={onDismiss}
                 className="rounded-lg border border-white/15 px-5 py-3 text-sm text-white/70 hover:bg-white/5 hover:text-white transition"
               >
-                Explorer librement
+                {t.free}
               </button>
             </div>
           </motion.div>

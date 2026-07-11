@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Headphones, Play, Pause, RotateCcw, FileText, ChevronUp } from 'lucide-react'
 import { getAudioGuide, type GuideLang } from '@/data/audio-guides'
+import { useLang } from '@/lib/lang'
 
 interface Props {
   placeSlug: string
 }
-
-const LS_LANG = 'audioguide:lang'
 
 const LABELS = {
   fr: { badge: 'Guide audio', show: 'Lire les paroles', hide: 'Masquer les paroles', play: 'Écouter le guide audio', pause: 'Mettre le guide en pause', restart: 'Recommencer le guide' },
@@ -28,15 +27,10 @@ function emitGuideState(playing: boolean) {
   }
 }
 
-function initialLang(): GuideLang {
-  if (typeof window === 'undefined') return 'fr'
-  return localStorage.getItem(LS_LANG) === 'en' ? 'en' : 'fr'
-}
-
 export function AudioGuidePlayer({ placeSlug }: Props) {
   const guide = getAudioGuide(placeSlug)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const [lang, setLang] = useState<GuideLang>(initialLang)
+  const [lang, setLang] = useLang()
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -93,7 +87,6 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
     setPlaying(false)
     emitGuideState(false)
     setLang(next)
-    if (typeof window !== 'undefined') localStorage.setItem(LS_LANG, next)
   }
 
   const toggle = () => {

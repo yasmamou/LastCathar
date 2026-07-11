@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin } from 'lucide-react'
 import type { Tour } from '@/data/carcassonne-tour'
 import type { GuideLang } from '@/data/audio-guides'
+import { useLang } from '@/lib/lang'
 
 interface Props {
   tour: Tour
   onClose: () => void
 }
 
-const LS_LANG = 'audioguide:lang'
 const IMAGE_INTERVAL = 5000 // défilement auto des images (ms)
 
 const UI = {
@@ -32,9 +32,7 @@ function emitGuideState(playing: boolean) {
 }
 
 export function CarcassonneTour({ tour, onClose }: Props) {
-  const [lang, setLang] = useState<GuideLang>(() =>
-    (typeof window !== 'undefined' && localStorage.getItem(LS_LANG) === 'en' ? 'en' : 'fr'),
-  )
+  const [lang, setLang] = useLang()
   const [stopIndex, setStopIndex] = useState(0)
   const [imageIndex, setImageIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -140,7 +138,6 @@ export function CarcassonneTour({ tour, onClose }: Props) {
     audioRef.current?.pause()
     setPlaying(false)
     setLang(next)
-    if (typeof window !== 'undefined') localStorage.setItem(LS_LANG, next)
   }
 
   const img = stop.images[imageIndex]
