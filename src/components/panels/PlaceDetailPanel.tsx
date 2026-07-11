@@ -9,7 +9,23 @@ import { ProductCards } from '@/components/marketplace/ProductCards'
 import { AudioGuidePlayer } from '@/components/panels/AudioGuidePlayer'
 import { CarcassonneTour } from '@/components/tour/CarcassonneTour'
 import { getTourForPlace } from '@/data/carcassonne-tour'
+import { useLang } from '@/lib/lang'
 import { PlaceEntry } from '@/types/places'
+
+const PANEL_T = {
+  fr: {
+    globe: 'Globe', alsoKnown: 'Aussi connu sous', visits: 'visites', today: "aujourd'hui",
+    enterCite: 'Entrer dans la Cité', tourSub: (n: number) => `Visite guidée immersive · ${n} étapes · audio FR/EN`,
+    localFinds: 'Découvertes locales', epicsHere: 'Épopées liées', sources: 'Sources', location: 'Localisation',
+    story: "L'histoire",
+  },
+  en: {
+    globe: 'Globe', alsoKnown: 'Also known as', visits: 'views', today: 'today',
+    enterCite: 'Enter the Cité', tourSub: (n: number) => `Immersive guided tour · ${n} stops · FR/EN audio`,
+    localFinds: 'Local finds', epicsHere: 'Related epics', sources: 'Sources', location: 'Location',
+    story: 'The Story',
+  },
+} as const
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
   getCategoryColor,
@@ -44,6 +60,8 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
   const [tourOpen, setTourOpen] = useState(false)
   const tour = getTourForPlace(place.slug)
+  const [lang] = useLang()
+  const t = PANEL_T[lang]
 
   // Reset to the first image when switching place (component is reused, not
   // remounted, when navigating via "À proximité") — otherwise a stale index can
@@ -51,6 +69,17 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   useEffect(() => {
     setActiveImageIndex(0)
   }, [place.slug])
+
+  // Auto-advance the hero photo every 5s for a lively, dynamic feel.
+  // `imageTick` lets a manual thumbnail click restart the timer.
+  const [imageTick, setImageTick] = useState(0)
+  useEffect(() => {
+    if (images.length < 2) return
+    const t = setInterval(() => {
+      setActiveImageIndex((i) => (i + 1) % images.length)
+    }, 5000)
+    return () => clearInterval(t)
+  }, [images.length, place.slug, imageTick])
 
   // Track place view + fetch stats
   useEffect(() => {
@@ -92,7 +121,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
             className="flex items-center gap-2 text-white/60 active:text-white/90 py-2 pr-4"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Globe</span>
+            <span className="text-sm font-medium">{t.globe}</span>
           </button>
         </div>
         {/* Hero section with Wikipedia image */}
@@ -105,14 +134,21 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
               : `linear-gradient(135deg, ${categoryColor}15 0%, #05060d 100%)`,
           }}
         >
-          {/* Background image */}
+          {/* Background image (crossfade on auto-advance) */}
           {activeImage && (
             <>
-              <img
-                src={activeImage.thumb}
-                alt={place.title}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+              <AnimatePresence mode="popLayout">
+                <motion.img
+                  key={`${place.slug}-${activeImageIndex}`}
+                  src={activeImage.thumb}
+                  alt={place.title}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.9 }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-[#05060d] via-[#05060d]/60 to-transparent" />
             </>
           )}
@@ -121,7 +157,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
           {images.length > 1 && (
             <div className="absolute top-4 left-4 flex items-center gap-1 z-10">
               <button
-                onClick={() => setActiveImageIndex((i) => (i - 1 + images.length) % images.length)}
+                onClick={() => { setActiveImageIndex((i) => (i - 1 + images.length) % images.length); setImageTick((t) => t + 1) }}
                 className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center text-white/60 hover:text-white transition-colors"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
@@ -130,7 +166,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
                 {activeImageIndex + 1}/{images.length}
               </span>
               <button
-                onClick={() => setActiveImageIndex((i) => (i + 1) % images.length)}
+                onClick={() => { setActiveImageIndex((i) => (i + 1) % images.length); setImageTick((t) => t + 1) }}
                 className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center text-white/60 hover:text-white transition-colors"
               >
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -171,7 +207,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
 
             {place.alternateNames.length > 0 && (
               <p className="text-xs text-white/30 italic">
-                Also known as: {place.alternateNames.join(', ')}
+                {t.alsoKnown}: {place.alternateNames.join(', ')}
               </p>
             )}
           </div>
@@ -183,7 +219,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
             {images.map((img, i) => (
               <button
                 key={i}
-                onClick={() => setActiveImageIndex(i)}
+                onClick={() => { setActiveImageIndex(i); setImageTick((t) => t + 1) }}
                 className={`w-12 h-9 rounded overflow-hidden border-2 transition-all ${
                   i === activeImageIndex
                     ? 'border-gold-400/60 opacity-100'
@@ -208,21 +244,31 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
         {/* Immersive guided tour (for places that have one, e.g. Carcassonne) */}
         {tour && (
           <div className="mx-6 mt-3">
-            <button
+            <motion.button
               onClick={() => setTourOpen(true)}
-              className="group w-full rounded-xl overflow-hidden border border-gold-400/30 bg-gradient-to-r from-gold-400/15 via-gold-400/5 to-transparent hover:from-gold-400/25 transition-colors p-4 flex items-center gap-3 text-left"
+              initial={{ scale: 1 }}
+              animate={{
+                scale: [1, 1.035, 1],
+                boxShadow: [
+                  '0 0 0px 0px rgba(251,191,36,0.0)',
+                  '0 0 26px 2px rgba(251,191,36,0.35)',
+                  '0 0 0px 0px rgba(251,191,36,0.0)',
+                ],
+              }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.98 }}
+              className="group w-full rounded-xl overflow-hidden border border-gold-400/40 bg-gradient-to-r from-gold-400/20 via-gold-400/8 to-transparent p-4 flex items-center gap-3 text-left"
             >
               <div className="flex-shrink-0 w-11 h-11 rounded-full bg-gold-400 text-midnight-950 flex items-center justify-center shadow-lg shadow-gold-400/25">
                 <Footprints className="w-5 h-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold text-white">Entrer dans la Cité</div>
-                <div className="text-[11px] text-white/50 mt-0.5">
-                  Visite guidée immersive · {tour.stops.length} étapes · audio FR/EN
-                </div>
+                <div className="text-sm font-semibold text-white">{t.enterCite}</div>
+                <div className="text-[11px] text-white/60 mt-0.5">{t.tourSub(tour.stops.length)}</div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gold-400/70 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
-            </button>
+              <ChevronRight className="w-5 h-5 text-gold-400/80 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+            </motion.button>
           </div>
         )}
 
@@ -245,12 +291,12 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
               <div className="flex items-center gap-1.5 text-white/40">
                 <Eye className="w-3.5 h-3.5" />
                 <span className="text-xs font-medium">{placeStats.totalViews.toLocaleString()}</span>
-                <span className="text-[10px] text-white/25">visites</span>
+                <span className="text-[10px] text-white/25">{t.visits}</span>
               </div>
               {placeStats.todayViews > 0 && (
                 <div className="flex items-center gap-1.5 text-emerald-400/60">
                   <TrendingUp className="w-3 h-3" />
-                  <span className="text-[10px] font-medium">+{placeStats.todayViews} aujourd&apos;hui</span>
+                  <span className="text-[10px] font-medium">+{placeStats.todayViews} {t.today}</span>
                 </div>
               )}
             </div>
@@ -334,7 +380,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
 
           <div className="space-y-2">
             <h3 className="text-xs tracking-widest uppercase text-gold-400/50 font-medium">
-              The Story
+              {t.story}
             </h3>
             <p className="text-sm text-white/60 leading-relaxed whitespace-pre-line">
               {place.fullStory}

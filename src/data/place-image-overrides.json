@@ -1,0 +1,25 @@
+{
+  "_comment": "Images/peintures explicites pour des lieux dont l'article Wikipédia n'a pas d'image de tête exploitable. Appliqué dans all-places.ts. Sources: Wikimedia Commons (domaine public / CC).",
+  "massacre-de-beziers": {
+    "heroImageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Le_massacre_des_Albigeois.jpg",
+    "imageUrls": [
+      "https://upload.wikimedia.org/wikipedia/commons/e/ec/Le_massacre_des_Albigeois.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Esgl%C3%A9sia_de_la_Magdalena_%28Besiers%29_-_Vista_general_-_2.jpg/1280px-Esgl%C3%A9sia_de_la_Magdalena_%28Besiers%29_-_Vista_general_-_2.jpg"
+    ],
+    "credit": "« Le massacre des Albigeois », enluminure XIVe s. — domaine public"
+  },
+  "otto-rahn-quete-du-graal": {
+    "heroImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ch%C3%A2teau_de_Monts%C3%A9gur_-_vue_a%C3%A9rienne.jpg/1280px-Ch%C3%A2teau_de_Monts%C3%A9gur_-_vue_a%C3%A9rienne.jpg",
+    "imageUrls": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ch%C3%A2teau_de_Monts%C3%A9gur_-_vue_a%C3%A9rienne.jpg/1280px-Ch%C3%A2teau_de_Monts%C3%A9gur_-_vue_a%C3%A9rienne.jpg"
+    ],
+    "credit": "Château de Montségur, sujet de la quête d'Otto Rahn — Wikimedia Commons"
+  },
+  "abbaye-de-fontfroide": {
+    "heroImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Fontfroide_034.jpg/1280px-Fontfroide_034.jpg",
+    "imageUrls": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Fontfroide_034.jpg/1280px-Fontfroide_034.jpg"
+    ],
+    "credit": "Abbaye de Fontfroide — Wikimedia Commons"
+  }
+}

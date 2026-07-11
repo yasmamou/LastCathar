@@ -25,7 +25,9 @@ import { seedEpicsNewPlaces } from './seed-epics-new'
 import { seedBerberesPlaces } from './seed-berberes'
 import { seedSciencePlaces } from './seed-science'
 
-export const allPlaces: PlaceEntry[] = [
+import imageOverrides from './place-image-overrides.json'
+
+const rawPlaces: PlaceEntry[] = [
   ...seedCatharPlaces,
   ...seedMaghrebExtraPlaces,
   ...seedLegendPlaces,
@@ -51,3 +53,21 @@ export const allPlaces: PlaceEntry[] = [
   ...seedBerberesPlaces,
   ...seedSciencePlaces,
 ]
+
+// Applique les images explicites (place-image-overrides.json) aux lieux dont
+// l'article Wikipédia n'a pas d'image de tête exploitable (ex. Massacre de
+// Béziers → enluminure médiévale).
+const overrides = imageOverrides as unknown as Record<
+  string,
+  { heroImageUrl?: string; imageUrls?: string[] }
+>
+
+export const allPlaces: PlaceEntry[] = rawPlaces.map((p) => {
+  const o = overrides[p.slug]
+  if (!o) return p
+  return {
+    ...p,
+    heroImageUrl: p.heroImageUrl ?? o.heroImageUrl ?? null,
+    imageUrls: p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls : (o.imageUrls ?? []),
+  }
+})

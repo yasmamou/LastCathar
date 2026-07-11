@@ -36,17 +36,37 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
   // Audio-guide narration in progress → duck the ambient volume.
   const duckedRef = useRef(false)
 
-  // Duck ambient volume while an audio guide narrates (event from AudioGuidePlayer)
+  // Duck the ambient music while an audio guide / tour narrates, so the voice is
+  // clearly audible and the music stays softly in the background — then bring it
+  // back up smoothly when narration ends. (Event from AudioGuidePlayer / tour.)
+  const DUCK_VOL = 0.08 // doux mais audible en fond
+  const FULL_VOL = 0.25
   useEffect(() => {
+    let fade: ReturnType<typeof setInterval> | null = null
     const onGuideState = (e: Event) => {
       const playing = (e as CustomEvent<{ playing: boolean }>).detail?.playing
       duckedRef.current = !!playing
       const audio = audioRef.current
-      if (!audio) return
-      audio.volume = playing ? 0.04 : (playingRef.current ? 0.25 : audio.volume)
+      // Only act if the music is actually playing; nothing to duck otherwise.
+      if (!audio || !playingRef.current) return
+      const target = playing ? DUCK_VOL : FULL_VOL
+      if (fade) clearInterval(fade)
+      fade = setInterval(() => {
+        const cur = audio.volume
+        const step = 0.02
+        if (Math.abs(cur - target) <= step) {
+          audio.volume = target
+          if (fade) { clearInterval(fade); fade = null }
+        } else {
+          audio.volume = cur < target ? cur + step : cur - step
+        }
+      }, 40)
     }
     window.addEventListener('audioguide:state', onGuideState)
-    return () => window.removeEventListener('audioguide:state', onGuideState)
+    return () => {
+      window.removeEventListener('audioguide:state', onGuideState)
+      if (fade) clearInterval(fade)
+    }
   }, [])
 
   // Init audio + auto-start on first user interaction
@@ -133,7 +153,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
     audio.play().then(() => {
       let vol = 0
       const timer = setInterval(() => {
-        const target = duckedRef.current ? 0.04 : 0.25
+        const target = duckedRef.current ? 0.08 : 0.25
         vol = Math.min(target, vol + 0.008)
         audio.volume = vol
         if (vol >= target) clearInterval(timer)
@@ -167,7 +187,7 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
           setIsPlaying(true)
           let v = 0
           const inp = setInterval(() => {
-            const target = duckedRef.current ? 0.04 : 0.25
+            const target = duckedRef.current ? 0.08 : 0.25
             v = Math.min(target, v + 0.008)
             audio.volume = v
             if (v >= target) { clearInterval(inp); fadingRef.current = false }

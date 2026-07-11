@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin } from 'lucide-react'
+import { useSession, signIn } from 'next-auth/react'
+import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock } from 'lucide-react'
 import type { Tour } from '@/data/carcassonne-tour'
 import type { GuideLang } from '@/data/audio-guides'
 import { useLang } from '@/lib/lang'
+import { STARTER_EPIC_ID, STARTER_PLACE_SLUG } from '@/lib/game'
 
 interface Props {
   tour: Tour
@@ -13,10 +15,27 @@ interface Props {
 }
 
 const IMAGE_INTERVAL = 5000 // défilement auto des images (ms)
+const XP_PER_STOP = 25 // XP gagné en franchissant chaque étape
 
 const UI = {
-  fr: { of: 'sur', prev: 'Précédent', next: 'Suivant', transcript: 'Texte', finish: 'Terminer la visite', enter: "Reprendre", auto: 'Enchaînement auto' },
-  en: { of: 'of', prev: 'Previous', next: 'Next', transcript: 'Text', finish: 'Finish the tour', enter: 'Resume', auto: 'Auto-advance' },
+  fr: {
+    of: 'sur', prev: 'Précédent', next: 'Suivant', transcript: 'Texte', finish: 'Terminer la visite',
+    enter: 'Reprendre', auto: 'Enchaînement auto', xp: 'XP',
+    obTitle: 'Bravo, chercheur !', obXp: (n: number) => `Vous avez déjà gagné ${n} XP`,
+    obBody: 'Créez votre compte pour sauvegarder votre progression et vos badges — puis continuez la visite.',
+    email: 'Votre email', pass: 'Mot de passe (6+ caractères)',
+    create: 'Créer mon compte & continuer', later: 'Plus tard, continuer la visite',
+    saved: 'Progression sauvegardée ✦', errGeneric: 'Une erreur est survenue',
+  },
+  en: {
+    of: 'of', prev: 'Previous', next: 'Next', transcript: 'Text', finish: 'Finish the tour',
+    enter: 'Resume', auto: 'Auto-advance', xp: 'XP',
+    obTitle: 'Well done, seeker!', obXp: (n: number) => `You have already earned ${n} XP`,
+    obBody: 'Create your account to save your progress and badges — then continue the tour.',
+    email: 'Your email', pass: 'Password (6+ characters)',
+    create: 'Create my account & continue', later: 'Later, continue the tour',
+    saved: 'Progress saved ✦', errGeneric: 'Something went wrong',
+  },
 } as const
 
 function fmt(s: number) {
@@ -32,6 +51,7 @@ function emitGuideState(playing: boolean) {
 }
 
 export function CarcassonneTour({ tour, onClose }: Props) {
+  const { status } = useSession()
   const [lang, setLang] = useLang()
   const [stopIndex, setStopIndex] = useState(0)
   const [imageIndex, setImageIndex] = useState(0)
@@ -41,6 +61,16 @@ export function CarcassonneTour({ tour, onClose }: Props) {
   const [showTranscript, setShowTranscript] = useState(false)
   const [autoAdvance, setAutoAdvance] = useState(true)
 
+  // Onboarding: XP accrual + account/email capture from stop 2 onward.
+  const [maxStopReached, setMaxStopReached] = useState(0)
+  const [showOnboard, setShowOnboard] = useState(false)
+  const onboardDoneRef = useRef(false)
+  const [obEmail, setObEmail] = useState('')
+  const [obPass, setObPass] = useState('')
+  const [obLoading, setObLoading] = useState(false)
+  const [obError, setObError] = useState('')
+  const [obSaved, setObSaved] = useState(false)
+
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoAdvanceRef = useRef(autoAdvance)
   autoAdvanceRef.current = autoAdvance
@@ -49,6 +79,74 @@ export function CarcassonneTour({ tour, onClose }: Props) {
   const track = stop.audio[lang]
   const T = UI[lang]
   const isLast = stopIndex === tour.stops.length - 1
+  const xp = maxStopReached * XP_PER_STOP
+
+  // Track furthest stop reached (for XP) and trigger the onboarding prompt the
+  // first time an anonymous visitor reaches stop 2 (index 1).
+  useEffect(() => {
+    setMaxStopReached((m) => Math.max(m, stopIndex))
+    if (
+      stopIndex >= 1 &&
+      status === 'unauthenticated' &&
+      !onboardDoneRef.current &&
+      !showOnboard
+    ) {
+      onboardDoneRef.current = true
+      setShowOnboard(true)
+      audioRef.current?.pause()
+      setPlaying(false)
+      emitGuideState(false)
+    }
+  }, [stopIndex, status, showOnboard])
+
+  const submitOnboard = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setObError('')
+    if (!obEmail.trim() || obPass.length < 6) {
+      setObError(T.errGeneric)
+      return
+    }
+    setObLoading(true)
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: obEmail.trim(), password: obPass }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok && res.status !== 409) {
+        setObError(data.error || T.errGeneric)
+        setObLoading(false)
+        return
+      }
+      // Sign in (works for both new account and existing email)
+      const signRes = await signIn('credentials', { email: obEmail.trim(), password: obPass, redirect: false })
+      if (signRes?.error) {
+        setObError(data.error || T.errGeneric)
+        setObLoading(false)
+        return
+      }
+      // Grant real XP by recording the Carcassonne visit in the starter epic.
+      await fetch('/api/game/visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ epicId: STARTER_EPIC_ID, placeSlug: STARTER_PLACE_SLUG }),
+      }).catch(() => {})
+      setObSaved(true)
+      setObLoading(false)
+      // Return to stop 2 (where they are) and resume after a short beat.
+      setTimeout(() => { setShowOnboard(false); resumeAudio() }, 1400)
+    } catch {
+      setObError(T.errGeneric)
+      setObLoading(false)
+    }
+  }
+
+  const resumeAudio = () => {
+    audioRef.current?.play().then(() => { setPlaying(true); emitGuideState(true) }).catch(() => {})
+  }
+
+  const skipOnboard = () => { setShowOnboard(false); resumeAudio() }
 
   const goToStop = useCallback((i: number) => {
     setStopIndex(Math.max(0, Math.min(tour.stops.length - 1, i)))
@@ -180,6 +278,12 @@ export function CarcassonneTour({ tour, onClose }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* XP earned during the tour */}
+          {xp > 0 && (
+            <div className="flex items-center gap-1 rounded-full bg-amber-400/15 border border-amber-400/30 px-2.5 py-1 text-[10px] font-bold text-amber-300 tabular-nums">
+              <Sparkles className="w-3 h-3" /> {xp} {T.xp}
+            </div>
+          )}
           <div className="flex items-center rounded-full bg-black/40 border border-white/10 overflow-hidden text-[10px] font-semibold">
             {(['fr', 'en'] as const).map((code) => (
               <button
@@ -340,6 +444,83 @@ export function CarcassonneTour({ tour, onClose }: Props) {
           </div>
         </motion.div>
       </div>
+
+      {/* Onboarding: account/email capture from stop 2 (anonymous visitors) */}
+      <AnimatePresence>
+        {showOnboard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-20 flex items-center justify-center px-4"
+            style={{ background: 'rgba(5,6,13,0.8)', backdropFilter: 'blur(6px)' }}
+          >
+            <motion.div
+              initial={{ scale: 0.94, y: 16, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              className="w-full max-w-sm rounded-2xl border border-amber-400/25 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-6 shadow-[0_0_60px_-15px_rgba(251,191,36,0.5)]"
+            >
+              {obSaved ? (
+                <div className="text-center py-6">
+                  <Sparkles className="w-10 h-10 text-amber-300 mx-auto mb-3" />
+                  <p className="text-lg font-semibold text-white">{T.saved}</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <h3 className="font-serif text-xl font-semibold text-white">{T.obTitle}</h3>
+                  </div>
+                  <p className="text-sm text-amber-300/90 font-medium mb-1">{T.obXp(xp)}</p>
+                  <p className="text-xs text-white/60 leading-relaxed mb-4">{T.obBody}</p>
+
+                  <form onSubmit={submitOnboard} className="space-y-2.5">
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
+                      <input
+                        type="email"
+                        value={obEmail}
+                        onChange={(e) => setObEmail(e.target.value)}
+                        placeholder={T.email}
+                        required
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/25 focus:outline-none focus:border-amber-400/40"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
+                      <input
+                        type="password"
+                        value={obPass}
+                        onChange={(e) => setObPass(e.target.value)}
+                        placeholder={T.pass}
+                        required
+                        minLength={6}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/25 focus:outline-none focus:border-amber-400/40"
+                      />
+                    </div>
+                    {obError && <p className="text-xs text-red-400/80 text-center">{obError}</p>}
+                    <button
+                      type="submit"
+                      disabled={obLoading}
+                      className="w-full py-3 rounded-xl bg-amber-400 text-midnight-950 font-semibold text-sm hover:bg-amber-300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {obLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      {T.create}
+                    </button>
+                  </form>
+                  <button
+                    onClick={skipOnboard}
+                    className="mt-3 w-full text-center text-[11px] text-white/40 hover:text-white/70 transition-colors"
+                  >
+                    {T.later}
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
