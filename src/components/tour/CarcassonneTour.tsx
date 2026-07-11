@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useSession, signIn } from 'next-auth/react'
-import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock } from 'lucide-react'
+import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock, ShoppingBag, ExternalLink, Plus } from 'lucide-react'
 import type { Tour } from '@/data/carcassonne-tour'
 import type { GuideLang } from '@/data/audio-guides'
 import { useLang } from '@/lib/lang'
@@ -26,6 +26,7 @@ const UI = {
     email: 'Votre email', pass: 'Mot de passe (6+ caractères)',
     create: 'Créer mon compte & continuer', later: 'Plus tard, continuer la visite',
     saved: 'Progression sauvegardée ✦', errGeneric: 'Une erreur est survenue',
+    localProducts: 'Produits locaux', yourProduct: 'Votre produit ici →',
   },
   en: {
     of: 'of', prev: 'Previous', next: 'Next', transcript: 'Text', finish: 'Finish the tour',
@@ -35,6 +36,7 @@ const UI = {
     email: 'Your email', pass: 'Password (6+ characters)',
     create: 'Create my account & continue', later: 'Later, continue the tour',
     saved: 'Progress saved ✦', errGeneric: 'Something went wrong',
+    localProducts: 'Local products', yourProduct: 'Your product here →',
   },
 } as const
 
@@ -71,9 +73,32 @@ export function CarcassonneTour({ tour, onClose }: Props) {
   const [obError, setObError] = useState('')
   const [obSaved, setObSaved] = useState(false)
 
+  // Local products for this place — shown while listening to the tour.
+  const [tourProducts, setTourProducts] = useState<
+    { id: string; title: string; price: string | null; imageUrls: string[]; externalUrl: string | null }[]
+  >([])
+
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoAdvanceRef = useRef(autoAdvance)
   autoAdvanceRef.current = autoAdvance
+
+  useEffect(() => {
+    let cancelled = false
+    fetch(`/api/products?placeSlug=${encodeURIComponent(tour.placeSlug)}`)
+      .then((r) => r.json())
+      .then((data) => { if (!cancelled) setTourProducts(data.products ?? []) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [tour.placeSlug])
+
+  const openProduct = (p: { id: string; externalUrl: string | null }) => {
+    fetch('/api/products/click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: p.id, placeSlug: tour.placeSlug }),
+    }).catch(() => {})
+    if (p.externalUrl) window.open(p.externalUrl, '_blank', 'noopener,noreferrer')
+  }
 
   const stop = tour.stops[stopIndex]
   const track = stop.audio[lang]
@@ -319,6 +344,51 @@ export function CarcassonneTour({ tour, onClose }: Props) {
 
       {/* Spacer pushes content to the bottom */}
       <div className="flex-1" />
+
+      {/* Local products — visible while listening to the audio guide */}
+      {tourProducts.length > 0 && (
+        <div className="relative z-10 px-4 md:px-6 mb-2">
+          <div className="mx-auto max-w-2xl">
+            <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-widest text-amber-300/80">
+              <ShoppingBag className="w-3 h-3" /> {T.localProducts}
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+              {tourProducts.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => openProduct(p)}
+                  className="group flex-shrink-0 w-[190px] flex items-center gap-2 rounded-xl border border-amber-400/20 bg-black/50 backdrop-blur-md p-2 text-left hover:border-amber-400/50 transition-colors"
+                  title={p.title}
+                >
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+                    {p.imageUrls?.[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.imageUrls[0]} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-amber-300/40">🛍️</div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">{p.title}</div>
+                    {p.price && <div className="text-[10px] text-amber-300/80 truncate">{p.price}</div>}
+                  </div>
+                  <ExternalLink className="w-3 h-3 text-white/30 flex-shrink-0" />
+                </button>
+              ))}
+              {/* Reserve-a-slot CTA */}
+              <a
+                href="/pricing"
+                className="flex-shrink-0 w-[150px] flex items-center gap-2 rounded-xl border border-dashed border-amber-400/30 bg-amber-400/5 p-2 hover:bg-amber-400/10 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-amber-400/10 flex items-center justify-center flex-shrink-0">
+                  <Plus className="w-4 h-4 text-amber-300" />
+                </div>
+                <div className="text-[10px] font-medium text-amber-300 leading-tight">{T.yourProduct}</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content card */}
       <div className="relative z-10 px-4 md:px-6 pb-4 safe-bottom">

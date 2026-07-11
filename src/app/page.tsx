@@ -562,7 +562,6 @@ export default function Home() {
           onSelectPlace={handlePlaceSelect}
           chercheurActive={chercheur.chercheurMode}
           panelOpen={!!selectedPlace || showEpicPanel}
-          mobileHidden={showFilters || !!activeEpic || !!interactionFilter}
         />
       )}
 
