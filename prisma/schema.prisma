@@ -154,6 +154,10 @@ model Product {
   price       String?
   imageUrls   String[]        @map("image_urls")
   externalUrl String?         @map("external_url")
+  // Emplacement GPS précis du vendeur (facultatif) — permet d'épingler la
+  // boutique sur la carte du lieu (ex. dans la Cité de Carcassonne).
+  latitude    Float?
+  longitude   Float?
   status      ModerationState @default(REVIEW)
   views       Int             @default(0)
   clicks      Int             @default(0)

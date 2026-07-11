@@ -1,0 +1,65 @@
+{
+  "id": "carcassonne",
+  "placeSlug": "cite-de-carcassonne",
+  "title": { "fr": "Visite guidée de la Cité", "en": "Guided tour of the Cité" },
+  "subtitle": {
+    "fr": "Un parcours en 6 étapes sur l'itinéraire classique de la Cité de Carcassonne.",
+    "en": "A six-stop walk along the classic route through the Cité of Carcassonne."
+  },
+  "stops": [
+    {
+      "id": "dame-carcas",
+      "title": { "fr": "Dame Carcas", "en": "Dame Carcas" },
+      "subtitle": { "fr": "L'entrée & la légende", "en": "The entrance & the legend" },
+      "text": {
+        "fr": "Bienvenue à la Cité de Carcassonne. Avant de franchir les portes, levez les yeux vers ce buste de pierre : Dame Carcas.\n\nLa légende raconte qu'au huitième siècle, Charlemagne assiégeait la cité depuis cinq ans. À l'intérieur, il ne restait qu'une femme, Dame Carcas, et presque plus rien à manger.\n\nRusée, elle fit gaver le dernier cochon avec le dernier sac de blé, et le jeta par-dessus les remparts. En voyant l'animal éclater, gras et repu, Charlemagne crut la ville encore pleine de vivres, et leva le siège.\n\nAlors, du haut des tours, Dame Carcas fit sonner toutes les cloches. Un soldat s'écria : Carcas sonne ! Et la cité, dit-on, en garda le nom. Franchissons maintenant la porte.",
+        "en": "Welcome to the Cité of Carcassonne. Before you cross the gates, look up at this bust of stone: Dame Carcas.\n\nLegend says that in the eighth century, Charlemagne had besieged the city for five years. Inside, only one woman remained, Dame Carcas, and almost nothing left to eat.\n\nCunning, she had the last pig stuffed with the last sack of wheat, and threw it over the ramparts. Seeing the animal burst open, fat and full, Charlemagne believed the town still overflowed with food, and lifted the siege.\n\nThen, from the top of the towers, Dame Carcas had every bell rung. A soldier cried out: Carcas rings! And the city, they say, kept the name. Now, let us cross the gate."
+      }
+    },
+    {
+      "id": "porte-narbonnaise",
+      "title": { "fr": "La Porte Narbonnaise", "en": "The Narbonnaise Gate" },
+      "subtitle": { "fr": "L'entrée fortifiée", "en": "The fortified entrance" },
+      "text": {
+        "fr": "Vous voici devant la porte Narbonnaise, l'entrée principale de la Cité. Deux tours massives en éperon, un pont dormant puis un pont-levis, une herse, des assommoirs pour verser l'huile bouillante : rien n'était laissé au hasard.\n\nUn assaillant qui franchissait la première porte se retrouvait pris au piège dans un couloir, sous le feu des défenseurs.\n\nConstruite au treizième siècle par le roi de France après la croisade, cette porte proclamait une chose : Carcassonne était désormais imprenable.\n\nAvancez sous la voûte, et entrez dans la ville close.",
+        "en": "Here you stand before the Narbonnaise Gate, the main entrance to the Cité. Two massive spur-shaped towers, a fixed bridge then a drawbridge, a portcullis, murder-holes for pouring boiling oil: nothing was left to chance.\n\nAn attacker who passed the first gate found himself trapped in a corridor, under the defenders' fire.\n\nBuilt in the thirteenth century by the King of France after the crusade, this gate proclaimed one thing: Carcassonne was now impregnable.\n\nWalk beneath the vault, and enter the walled town."
+      }
+    },
+    {
+      "id": "lices",
+      "title": { "fr": "Les Lices", "en": "The Lices" },
+      "subtitle": { "fr": "Entre les deux murailles", "en": "Between the double walls" },
+      "text": {
+        "fr": "Regardez autour de vous : deux lignes de remparts, l'une derrière l'autre, et entre elles, cet espace dégagé : les lices.\n\nUne double muraille, séparée de dix-huit mètres, longue de plus d'un kilomètre. Un ennemi qui prenait le premier mur se trouvait aussitôt à découvert, écrasé sous les tirs du second. C'était l'une des fortifications les plus modernes de son temps.\n\nIci, au Moyen Âge, se pressaient des maisons, des ateliers, et parfois des tournois.\n\nMarchez le long des lices : à droite, les murs gallo-romains, vieux de mille sept cents ans ; à gauche, l'œuvre des rois de France.",
+        "en": "Look around you: two lines of ramparts, one behind the other, and between them, this open ground: the lices.\n\nA double wall, eighteen metres apart, more than a kilometre long. An enemy who took the first wall found himself instantly exposed, crushed under fire from the second. It was one of the most modern fortifications of its time.\n\nHere, in the Middle Ages, houses and workshops crowded together, and sometimes tournaments were held.\n\nWalk along the lices: to your right, the Gallo-Roman walls, seventeen hundred years old; to your left, the work of the kings of France."
+      }
+    },
+    {
+      "id": "chateau-comtal",
+      "title": { "fr": "Le Château Comtal", "en": "The Château Comtal" },
+      "subtitle": { "fr": "La forteresse des Trencavel", "en": "The Trencavel stronghold" },
+      "text": {
+        "fr": "Au cœur de la Cité se dresse une forteresse dans la forteresse : le château comtal. C'était la demeure des vicomtes Trencavel, seigneurs de Carcassonne.\n\nEn douze cent neuf, c'est ici que le jeune Raymond-Roger Trencavel fut fait prisonnier pendant la croisade contre les Cathares, avant de mourir dans son propre cachot.\n\nAprès lui, le château devint le poste de commandement des sénéchaux du roi. Entouré de son propre fossé et de sa barbacane, il pouvait résister même si la ville tombait.\n\nFranchissez le pont : vous entrez dans le dernier refuge des maîtres de Carcassonne.",
+        "en": "At the heart of the Cité stands a fortress within the fortress: the Château Comtal, the count's castle. It was the home of the Trencavel viscounts, lords of Carcassonne.\n\nIn twelve hundred and nine, it was here that the young Raymond-Roger Trencavel was taken prisoner during the crusade against the Cathars, before dying in his own dungeon.\n\nAfter him, the castle became the command post of the king's seneschals. Surrounded by its own moat and barbican, it could hold out even if the town fell.\n\nCross the bridge: you are entering the last refuge of the masters of Carcassonne."
+      }
+    },
+    {
+      "id": "basilique-saint-nazaire",
+      "title": { "fr": "Basilique Saint-Nazaire", "en": "Basilica of Saint-Nazaire" },
+      "subtitle": { "fr": "Le joyau de la Cité", "en": "The jewel of the Cité" },
+      "text": {
+        "fr": "Voici le joyau de la Cité : la basilique Saint-Nazaire. À l'extérieur, une austère forteresse romane. À l'intérieur, un éblouissement.\n\nLevez les yeux vers les vitraux du chœur, parmi les plus beaux du sud de la France : des murs de lumière rouge et bleue, tissés au quatorzième siècle.\n\nLa nef romane, sombre et massive, contraste avec le chœur gothique, aérien et lumineux : deux âges de la foi réunis sous un même toit.\n\nPrenez un instant, dans le silence, pour écouter la pierre chanter.",
+        "en": "Here is the jewel of the Cité: the Basilica of Saint-Nazaire. From the outside, an austere Romanesque fortress. Inside, a dazzling sight.\n\nLift your eyes to the stained-glass windows of the choir, among the finest in the south of France: walls of red and blue light, woven in the fourteenth century.\n\nThe dark, massive Romanesque nave contrasts with the airy, luminous Gothic choir: two ages of faith joined under one roof.\n\nTake a moment, in the silence, to hear the stone sing."
+      }
+    },
+    {
+      "id": "porte-aude",
+      "title": { "fr": "La Porte d'Aude", "en": "The Aude Gate" },
+      "subtitle": { "fr": "La descente vers la rivière", "en": "The descent to the river" },
+      "text": {
+        "fr": "Notre parcours s'achève à la porte d'Aude, la porte de l'ouest. De là, un chemin escarpé descend vers la rivière Aude et la ville basse. C'est par ici que, pendant des siècles, on montait à la Cité depuis les berges.\n\nRetournez-vous une dernière fois : au-dessus de vous, les cinquante-deux tours se découpent sur le ciel.\n\nAu dix-neuvième siècle, tout cela menaçait ruine, avant que Viollet-le-Duc ne redonne vie à la forteresse.\n\nVous avez traversé deux mille ans d'histoire en quelques pas. La Cité de Carcassonne vous attend, chaque fois que vous reviendrez.",
+        "en": "Our journey ends at the Aude Gate, the western gate. From here, a steep path descends toward the Aude river and the lower town. It was this way that, for centuries, people climbed up to the Cité from the riverbanks.\n\nTurn around one last time: above you, the fifty-two towers stand against the sky.\n\nIn the nineteenth century, all of this was falling into ruin, before Viollet-le-Duc brought the fortress back to life.\n\nYou have crossed two thousand years of history in a few steps. The Cité of Carcassonne will be waiting, each time you return."
+      }
+    }
+  ]
+}

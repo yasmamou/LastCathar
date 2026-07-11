@@ -1,0 +1,86 @@
+{
+  "dame-carcas": [
+    {
+      "src": "/tour/carcassonne/dame-carcas-1.jpg",
+      "artist": "Pinpin",
+      "license": "CC BY 2.5",
+      "source": "https://commons.wikimedia.org/wiki/File:France_carcassonne_dame_carcas.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/dame-carcas-2.jpg",
+      "artist": "Joe Mabel",
+      "license": "Public domain",
+      "source": "https://commons.wikimedia.org/wiki/File:Mus%C3%A9e_Lapidaire_de_Carcassonne_-_Dame_Carcas_-_~XVI_century_02.jpg"
+    }
+  ],
+  "porte-narbonnaise": [
+    {
+      "src": "/tour/carcassonne/porte-narbonnaise-1.jpg",
+      "artist": "Krzysztof Golik",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Porte_Narbonnaise_Carcassone.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/porte-narbonnaise-2.jpg",
+      "artist": "E. Roudière",
+      "license": "Public domain",
+      "source": "https://commons.wikimedia.org/wiki/File:Porte_Narbonnaise_-_Pont-Levis_Cit%C3%A9_de_Carcassonne.jpg"
+    }
+  ],
+  "lices": [
+    {
+      "src": "/tour/carcassonne/lices-1.jpg",
+      "artist": "Gzen92",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Cit%C3%A9_-_remparts_et_lice_(Carcassonne)_(5).jpg"
+    },
+    {
+      "src": "/tour/carcassonne/lices-2.jpg",
+      "artist": "Krzysztof Golik",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Ramparts_of_the_historic_fortified_city_of_Carcassone_10.jpg"
+    }
+  ],
+  "chateau-comtal": [
+    {
+      "src": "/tour/carcassonne/chateau-comtal-1.jpg",
+      "artist": "Inferno986return",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_Comtal_de_Carcassonne.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/chateau-comtal-2.jpg",
+      "artist": "Pinpin",
+      "license": "CC BY 2.5",
+      "source": "https://commons.wikimedia.org/wiki/File:France_carcassonne_cour_chateau_comtal.jpg"
+    }
+  ],
+  "basilique-saint-nazaire": [
+    {
+      "src": "/tour/carcassonne/basilique-saint-nazaire-1.jpg",
+      "artist": "MathieuMD",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Basilique_Saint-Nazaire_de_Carcassonne_2014-09-26_-_i3121.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/basilique-saint-nazaire-2.jpg",
+      "artist": "Tylwyth Eldar",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Basilique_Saint-Nazaire_-_Int%C3%A9rieur_03.jpg"
+    }
+  ],
+  "porte-aude": [
+    {
+      "src": "/tour/carcassonne/porte-aude-1.jpg",
+      "artist": "Lynx1211",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Cit%C3%A9_de_Carcassonne_%E2%80%93_Porte_d%E2%80%99Aude.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/porte-aude-2.jpg",
+      "artist": "Benh LIEU SONG (Flickr)",
+      "license": "CC BY-SA 3.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Carcassonne_Cite.jpg"
+    }
+  ]
+}

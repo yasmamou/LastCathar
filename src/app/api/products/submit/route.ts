@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ error: 'Requête invalide' }, { status: 400 })
   }
-  const { placeSlug, title, description, price, externalUrl, imageUrls } = body
+  const { placeSlug, title, description, price, externalUrl, imageUrls, latitude, longitude } = body
 
   if (!placeSlug || typeof placeSlug !== 'string' || !title || typeof title !== 'string') {
     return NextResponse.json({ error: 'Le lieu et le titre sont requis' }, { status: 400 })
@@ -24,6 +24,12 @@ export async function POST(request: Request) {
   const safeImageUrls = Array.isArray(imageUrls)
     ? imageUrls.filter((u): u is string => typeof u === 'string').slice(0, 5)
     : []
+
+  // Optional GPS location — only kept if both are valid finite coordinates.
+  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : null
+  const lng = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : null
+  const gpsLat = lat !== null && lat >= -90 && lat <= 90 ? lat : null
+  const gpsLng = lng !== null && lng >= -180 && lng <= 180 ? lng : null
 
   // Normalize URL: add https:// if missing
   const rawUrl = typeof externalUrl === 'string' ? externalUrl.trim() : ''
@@ -89,6 +95,8 @@ export async function POST(request: Request) {
           price: typeof price === 'string' ? price : null,
           externalUrl: normalizedUrl || null,
           imageUrls: safeImageUrls,
+          latitude: gpsLat,
+          longitude: gpsLng,
           status: 'REVIEW',
         },
       })

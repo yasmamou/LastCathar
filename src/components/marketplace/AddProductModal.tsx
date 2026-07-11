@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession } from 'next-auth/react'
-import { X, Plus, Loader2, ImagePlus, Link, Tag, FileText, DollarSign, CheckCircle, Eye, TrendingUp, MousePointerClick } from 'lucide-react'
+import { X, Plus, Loader2, ImagePlus, Link, Tag, FileText, DollarSign, CheckCircle, Eye, TrendingUp, MousePointerClick, MapPin, LocateFixed } from 'lucide-react'
 
 interface AddProductModalProps {
   isOpen: boolean
@@ -20,6 +20,9 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
   const [price, setPrice] = useState('')
   const [externalUrl, setExternalUrl] = useState('')
   const [imageUrls, setImageUrls] = useState<string[]>([''])
+  const [lat, setLat] = useState('')
+  const [lng, setLng] = useState('')
+  const [locating, setLocating] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   // When the server reports a missing subscription / no free slot (HTTP 402),
@@ -48,9 +51,31 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
     setPrice('')
     setExternalUrl('')
     setImageUrls([''])
+    setLat('')
+    setLng('')
     setError('')
     setNeedsSubscription(false)
     setSuccess(false)
+  }
+
+  const useMyLocation = () => {
+    if (!('geolocation' in navigator)) {
+      setError("La géolocalisation n'est pas disponible sur cet appareil")
+      return
+    }
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLat(pos.coords.latitude.toFixed(6))
+        setLng(pos.coords.longitude.toFixed(6))
+        setLocating(false)
+      },
+      () => {
+        setError('Impossible de récupérer votre position (autorisez la localisation)')
+        setLocating(false)
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    )
   }
 
   const handleClose = () => {
@@ -104,6 +129,8 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
           price: price.trim() || null,
           externalUrl: externalUrl.trim() || null,
           imageUrls: imageUrls.filter(u => u.trim()),
+          latitude: lat.trim() ? Number(lat) : undefined,
+          longitude: lng.trim() ? Number(lng) : undefined,
         }),
       })
 
@@ -309,6 +336,43 @@ export function AddProductModal({ isOpen, onClose, placeSlug, placeTitle, onOpen
                       </button>
                     )}
                   </div>
+                </div>
+
+                {/* GPS location — optional precise pin */}
+                <div>
+                  <label className="flex items-center gap-1.5 text-[10px] tracking-wider uppercase text-white/30 mb-1.5">
+                    <MapPin className="w-3 h-3" /> Emplacement GPS (optionnel)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={lat}
+                      onChange={e => setLat(e.target.value)}
+                      placeholder="Latitude"
+                      className="flex-1 min-w-0 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-gold-400/40 transition-colors"
+                    />
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={lng}
+                      onChange={e => setLng(e.target.value)}
+                      placeholder="Longitude"
+                      className="flex-1 min-w-0 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-gold-400/40 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={useMyLocation}
+                      disabled={locating}
+                      title="Utiliser ma position actuelle"
+                      className="flex-shrink-0 w-11 h-11 rounded-xl bg-gold-400/10 border border-gold-400/20 flex items-center justify-center text-gold-400/80 hover:bg-gold-400/20 transition-colors disabled:opacity-50"
+                    >
+                      {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <LocateFixed className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-white/25 mt-1">
+                    Épinglez votre boutique à l&apos;endroit exact (utile dans une cité comme Carcassonne).
+                  </p>
                 </div>
 
                 {/* Info box */}

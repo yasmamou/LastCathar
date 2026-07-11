@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp } from 'lucide-react'
+import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp, Footprints } from 'lucide-react'
+import { AnimatePresence } from 'framer-motion'
 import { PlaceInteractionButtons } from '@/components/auth/PlaceInteractionButtons'
 import { ProductCards } from '@/components/marketplace/ProductCards'
 import { AudioGuidePlayer } from '@/components/panels/AudioGuidePlayer'
+import { CarcassonneTour } from '@/components/tour/CarcassonneTour'
+import { getTourForPlace } from '@/data/carcassonne-tour'
 import { PlaceEntry } from '@/types/places'
 import { useWikipediaImages } from '@/hooks/useWikipediaImages'
 import {
@@ -39,6 +42,8 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   })
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
+  const [tourOpen, setTourOpen] = useState(false)
+  const tour = getTourForPlace(place.slug)
 
   // Reset to the first image when switching place (component is reused, not
   // remounted, when navigating via "À proximité") — otherwise a stale index can
@@ -66,6 +71,12 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   const activeImage = images[activeImageIndex]
 
   return (
+    <>
+    {tour && (
+      <AnimatePresence>
+        {tourOpen && <CarcassonneTour tour={tour} onClose={() => setTourOpen(false)} />}
+      </AnimatePresence>
+    )}
     <motion.div
       initial={{ x: '100%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -191,6 +202,27 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
             <p className="text-[9px] text-white/20 italic">
               Photo: {activeImage.attribution} — Wikimedia Commons
             </p>
+          </div>
+        )}
+
+        {/* Immersive guided tour (for places that have one, e.g. Carcassonne) */}
+        {tour && (
+          <div className="mx-6 mt-3">
+            <button
+              onClick={() => setTourOpen(true)}
+              className="group w-full rounded-xl overflow-hidden border border-gold-400/30 bg-gradient-to-r from-gold-400/15 via-gold-400/5 to-transparent hover:from-gold-400/25 transition-colors p-4 flex items-center gap-3 text-left"
+            >
+              <div className="flex-shrink-0 w-11 h-11 rounded-full bg-gold-400 text-midnight-950 flex items-center justify-center shadow-lg shadow-gold-400/25">
+                <Footprints className="w-5 h-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-white">Entrer dans la Cité</div>
+                <div className="text-[11px] text-white/50 mt-0.5">
+                  Visite guidée immersive · {tour.stops.length} étapes · audio FR/EN
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gold-400/70 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+            </button>
           </div>
         )}
 
@@ -431,6 +463,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
         </div>
       </div>
     </motion.div>
+    </>
   )
 }
 
