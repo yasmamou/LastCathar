@@ -70,24 +70,35 @@ async function renderAndUpload(slug: string, lang: 'fr' | 'en'): Promise<string>
   return blob.url
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 async function loop() {
   console.log('🎬 Worker de rendu démarré. En attente de demandes…')
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const job = await prisma.renderJob.findFirst({ where: { status: 'pending' }, orderBy: { createdAt: 'asc' } })
-    if (!job) {
-      await new Promise((r) => setTimeout(r, 3000))
-      continue
-    }
-    await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'rendering' } })
-    console.log(`▶ Rendu ${job.slug} (${job.lang})…`)
+    // Toute l'itération est protégée : Neon ferme les connexions inactives
+    // (P1017), on ne veut pas que ça tue le worker — on log et on réessaie.
     try {
-      const url = await renderAndUpload(job.slug, job.lang as 'fr' | 'en')
-      await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'done', videoUrl: url, error: null } })
-      console.log(`✓ Terminé : ${url}`)
+      const job = await prisma.renderJob.findFirst({ where: { status: 'pending' }, orderBy: { createdAt: 'asc' } })
+      if (!job) {
+        await sleep(3000)
+        continue
+      }
+      await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'rendering' } })
+      console.log(`▶ Rendu ${job.slug} (${job.lang})…`)
+      try {
+        const url = await renderAndUpload(job.slug, job.lang as 'fr' | 'en')
+        await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'done', videoUrl: url, error: null } })
+        console.log(`✓ Terminé : ${url}`)
+      } catch (e) {
+        await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'error', error: String(e).slice(0, 500) } }).catch(() => {})
+        console.log(`✗ Échec : ${String(e).slice(0, 200)}`)
+      }
     } catch (e) {
-      await prisma.renderJob.update({ where: { id: job.id }, data: { status: 'error', error: String(e).slice(0, 500) } })
-      console.log(`✗ Échec : ${String(e).slice(0, 200)}`)
+      // Erreur de connexion/DB transitoire → pause puis on continue (Prisma se
+      // reconnecte à la requête suivante).
+      console.log(`⚠ Reconnexion… (${String(e).slice(0, 120)})`)
+      await sleep(4000)
     }
   }
 }
