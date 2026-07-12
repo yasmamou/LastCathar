@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useSession } from 'next-auth/react'
 import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick, Plus } from 'lucide-react'
 import { AddProductModal } from './AddProductModal'
+import { getBusinessesForPlace } from '@/data/local-businesses'
+import { useLang } from '@/lib/lang'
 
 interface Product {
   id: string
@@ -26,6 +28,10 @@ interface ProductCardsProps {
 
 export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedProductId }: ProductCardsProps) {
   const { status } = useSession()
+  const [lang] = useLang()
+  // Curated real local businesses for this place (e.g. Carcassonne) — shown as
+  // "Découvertes locales" instead of the demo marketplace products. No alcohol.
+  const businesses = getBusinessesForPlace(placeSlug)
   const [products, setProducts] = useState<Product[]>([])
   const [maxSlots, setMaxSlots] = useState(0)
   const [availableSlots, setAvailableSlots] = useState(0)
@@ -104,18 +110,50 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-3.5 h-3.5 text-gold-400/50" />
             <h3 className="text-xs tracking-widest uppercase text-gold-400/50 font-medium">
-              Découvertes locales
+              {lang === 'en' ? 'Local finds' : 'Découvertes locales'}
             </h3>
-            {products.length > 0 && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gold-400/10 text-gold-400/40">
-                {products.length}{maxSlots > 0 ? `/${maxSlots}` : ''}
-              </span>
-            )}
           </div>
         </div>
 
-        {/* Product grid */}
-        {products.length > 0 && (
+        {/* Curated real local businesses (takes priority over demo products) */}
+        {businesses.length > 0 && (
+          <div className="grid grid-cols-2 gap-2">
+            {businesses.map((b, index) => (
+              <motion.a
+                key={b.id}
+                href={b.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06 }}
+                className="group text-left rounded-xl overflow-hidden border border-white/5 hover:border-gold-400/25 bg-white/[0.03] hover:bg-white/[0.06] transition-all"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={b.image}
+                    alt={b.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-2.5">
+                  <p className="text-[11px] font-medium text-white/80 leading-tight line-clamp-2">{b.name}</p>
+                  <p className="text-[10px] text-white/40 leading-tight line-clamp-1 mt-0.5">{b.tag[lang]}</p>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-[10px] font-semibold text-gold-400/70">{b.price[lang]}</span>
+                    <span className="flex items-center gap-1 text-[9px] text-white/25">
+                      <ExternalLink className="w-2.5 h-2.5" />
+                      {lang === 'en' ? 'Visit' : 'Voir'}
+                    </span>
+                  </div>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        )}
+
+        {/* Marketplace demo/paid products — only when no curated businesses */}
+        {businesses.length === 0 && products.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
             {products.map((product, index) => {
               const isHighlighted = highlightedProductId === product.id
@@ -175,10 +213,12 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-gold-400/15 hover:border-gold-400/30 text-gold-400/40 hover:text-gold-400/70 bg-gold-400/[0.02] hover:bg-gold-400/[0.05] transition-all text-xs"
         >
           <Plus className="w-3.5 h-3.5" />
-          Proposer un produit ici
+          {lang === 'en' ? 'Feature your business here' : 'Proposer un produit ici'}
           {availableSlots > 0 && (
             <span className="text-[9px] text-white/20">
-              · {availableSlots} emplacement{availableSlots > 1 ? 's' : ''} disponible{availableSlots > 1 ? 's' : ''}
+              · {availableSlots} {lang === 'en'
+                ? `slot${availableSlots > 1 ? 's' : ''} available`
+                : `emplacement${availableSlots > 1 ? 's' : ''} disponible${availableSlots > 1 ? 's' : ''}`}
             </span>
           )}
         </motion.button>

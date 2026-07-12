@@ -43,12 +43,12 @@
       "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Nougat.jpg/960px-Nougat.jpg"
     },
     {
-      "id": "vins-corbieres-minervois",
-      "name": "Vins des Corbières & Minervois",
-      "tag": { "fr": "Caves & dégustation, Pays Cathare", "en": "Wine cellars & tasting" },
-      "price": { "fr": "dégustations", "en": "tastings" },
+      "id": "miel-pays-cathare",
+      "name": "Miel du Pays Cathare",
+      "tag": { "fr": "Miel & confitures artisanales", "en": "Artisan honey & jams" },
+      "price": { "fr": "produits fermiers", "en": "farm produce" },
       "url": "https://www.grand-carcassonne-tourisme.fr/",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Cucugnan_%28France%29_Vignes.jpg/960px-Cucugnan_%28France%29_Vignes.jpg"
+      "image": "/tour/carcassonne/miel-1.jpg"
     }
   ]
 }
