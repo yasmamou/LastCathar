@@ -21,7 +21,9 @@
     "audio:setup": "./scripts/setup-audio-voice.sh",
     "audio:guides": "python3 scripts/generate-audio-guides.py",
     "tour:images": "python3 scripts/fetch-carcassonne-images.py",
-    "tour:audio": "python3 scripts/generate-tour-audio.py"
+    "tour:audio": "python3 scripts/generate-tour-audio.py",
+    "reel": "node scripts/render-reel.mjs",
+    "remotion:studio": "npx remotion studio remotion/index.tsx"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
@@ -30,6 +32,7 @@
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-slot": "^1.2.4",
     "@remotion/cli": "^4.0.441",
+    "@remotion/player": "^4.0.441",
     "@remotion/renderer": "^4.0.441",
     "@remotion/tailwind": "^4.0.441",
     "bcryptjs": "^3.0.3",

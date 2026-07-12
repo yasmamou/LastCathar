@@ -33,7 +33,6 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
   // "Découvertes locales" instead of the demo marketplace products. No alcohol.
   const businesses = getBusinessesForPlace(placeSlug)
   const [products, setProducts] = useState<Product[]>([])
-  const [maxSlots, setMaxSlots] = useState(0)
   const [availableSlots, setAvailableSlots] = useState(0)
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -48,7 +47,6 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
       .then(r => r.json())
       .then(data => {
         setProducts(data.products || [])
-        setMaxSlots(data.maxSlots || 0)
         setAvailableSlots(data.availableSlots || 0)
       })
       .catch(() => {})

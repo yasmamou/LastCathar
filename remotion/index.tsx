@@ -1,6 +1,7 @@
 import React from 'react'
 import { registerRoot, Composition } from 'remotion'
 import { EpicVideo, EpicConfig, EpicPlaceData } from './EpicVideo'
+import { CityReel, CITY_REEL_FPS, CITY_REEL_DURATION, CITY_REEL_W, CITY_REEL_H } from './CityReel'
 
 // Import directly from Last Cathar data
 import { EPICS } from '../src/data/epics'
@@ -47,6 +48,17 @@ const EPIC_VIDEOS: { id: string; epicId: string; zoom: number }[] = [
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* ─── Reel vertical par ville (Instagram / TikTok) ─── */}
+      <Composition
+        id="CityReel"
+        component={CityReel as unknown as React.ComponentType<Record<string, unknown>>}
+        durationInFrames={CITY_REEL_FPS * CITY_REEL_DURATION}
+        fps={CITY_REEL_FPS}
+        width={CITY_REEL_W}
+        height={CITY_REEL_H}
+        defaultProps={{ placeSlug: 'cite-de-carcassonne' }}
+      />
+
       {EPIC_VIDEOS.map(({ id, epicId, zoom }) => {
         const config = buildEpicConfig(epicId, zoom)
         const Comp: React.FC = () => <EpicVideo config={config} />
