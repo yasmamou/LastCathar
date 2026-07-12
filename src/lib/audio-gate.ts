@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from 'react'
 
 // Paywall audio : les FREE_AUDIO_GUIDES premiers guides sont gratuits, ensuite
-// le Pass Audioguides (5 €, paiement unique) est requis.
-export const FREE_AUDIO_GUIDES = 2
+// (dès la 5ᵉ lecture) le Pass Audioguides (5 €, paiement unique) est requis.
+export const FREE_AUDIO_GUIDES = 4
 
 const LS_PLAYS = 'audio:plays'
 
