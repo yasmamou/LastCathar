@@ -138,14 +138,11 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
                 </div>
                 <div className="p-2.5">
                   <p className="text-[11px] font-medium text-white/80 leading-tight line-clamp-2">{b.name}</p>
-                  <p className="text-[10px] text-white/40 leading-tight line-clamp-1 mt-0.5">{b.tag[lang]}</p>
-                  <div className="flex items-center justify-between mt-1.5">
-                    <span className="text-[10px] font-semibold text-gold-400/70">{b.price[lang]}</span>
-                    <span className="flex items-center gap-1 text-[9px] text-white/25">
-                      <ExternalLink className="w-2.5 h-2.5" />
-                      {lang === 'en' ? 'Visit' : 'Voir'}
-                    </span>
-                  </div>
+                  <p className="text-[10px] text-white/40 leading-tight line-clamp-2 mt-0.5">{b.tag[lang]}</p>
+                  <span className="flex items-center gap-1 text-[9px] text-gold-400/50 mt-1.5">
+                    <ExternalLink className="w-2.5 h-2.5" />
+                    {lang === 'en' ? 'Visit' : 'Découvrir'}
+                  </span>
                 </div>
               </motion.a>
             ))}

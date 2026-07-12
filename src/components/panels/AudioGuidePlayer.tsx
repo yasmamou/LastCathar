@@ -4,9 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Headphones, Play, Pause, RotateCcw, FileText, ChevronUp } from 'lucide-react'
 import { getAudioGuide, type GuideLang } from '@/data/audio-guides'
 import { useLang } from '@/lib/lang'
+import { useAudioGate } from '@/lib/audio-gate'
+import { AudioPaywall } from '@/components/audio/AudioPaywall'
 
 interface Props {
   placeSlug: string
+  onOpenAuth?: () => void
 }
 
 const LABELS = {
@@ -27,7 +30,7 @@ function emitGuideState(playing: boolean) {
   }
 }
 
-export function AudioGuidePlayer({ placeSlug }: Props) {
+export function AudioGuidePlayer({ placeSlug, onOpenAuth }: Props) {
   const guide = getAudioGuide(placeSlug)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [lang, setLang] = useLang()
@@ -35,8 +38,11 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [showTranscript, setShowTranscript] = useState(false)
+  const { canPlay, registerPlay } = useAudioGate()
+  const [showPaywall, setShowPaywall] = useState(false)
 
   const track = guide?.langs[lang]
+  const gateKey = `guide:${placeSlug}`
 
   // (Re)create the audio element when the place OR the language changes
   useEffect(() => {
@@ -97,6 +103,12 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
       setPlaying(false)
       emitGuideState(false)
     } else {
+      // Paywall : au-delà des guides gratuits, demander le Pass Audioguides.
+      if (!canPlay(gateKey)) {
+        setShowPaywall(true)
+        return
+      }
+      registerPlay(gateKey)
       audio.play().then(() => {
         setPlaying(true)
         emitGuideState(true)
@@ -125,6 +137,11 @@ export function AudioGuidePlayer({ placeSlug }: Props) {
 
   return (
     <div className="mx-6 mb-4 rounded-xl border border-gold-400/20 bg-gradient-to-r from-gold-400/10 to-transparent p-3">
+      <AudioPaywall
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        onNeedAuth={() => { setShowPaywall(false); onOpenAuth?.() }}
+      />
       <div className="flex items-center gap-3">
         {/* Play / pause */}
         <button

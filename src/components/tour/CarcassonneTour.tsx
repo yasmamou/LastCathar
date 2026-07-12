@@ -646,7 +646,6 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-medium text-white truncate group-hover:text-amber-200">{b.name}</div>
                           <div className="text-[11px] text-white/50 truncate">{b.tag[lang]}</div>
-                          <div className="text-[10px] text-amber-300/70 truncate">{b.price[lang]}</div>
                         </div>
                         <ExternalLink className="w-3.5 h-3.5 text-white/30 flex-shrink-0" />
                       </button>

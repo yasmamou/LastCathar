@@ -17,6 +17,8 @@ model User {
   hashedPassword String?   @map("hashed_password")
   image          String?
   role           UserRole  @default(EXPLORER)
+  // Pass audioguides (paiement unique 5 €) — débloque tous les guides audio.
+  audioAccess    Boolean   @default(false) @map("audio_access")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
 

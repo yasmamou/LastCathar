@@ -91,6 +91,31 @@ async function main() {
     env = setEnvValue(env, plan.envKey, priceId)
   }
 
+  // ─── Pass Audioguides — paiement unique 5 € ───
+  {
+    const lookupKey = 'lastcathar_audio_pass'
+    const existing = await stripe.prices.list({ lookup_keys: [lookupKey], limit: 1 })
+    let priceId: string
+    if (existing.data.length > 0) {
+      priceId = existing.data[0].id
+      console.log(`✓ Pass Audioguides — prix existant réutilisé (${priceId})`)
+    } else {
+      const product = await stripe.products.create({
+        name: 'Pass Audioguides — Last Cathar',
+        description: 'Accès illimité à tous les guides audio (paiement unique)',
+      })
+      const price = await stripe.prices.create({
+        product: product.id,
+        unit_amount: 500,
+        currency: 'eur',
+        lookup_key: lookupKey,
+      })
+      priceId = price.id
+      console.log(`✓ Pass Audioguides — créé (5 € → ${priceId})`)
+    }
+    env = setEnvValue(env, 'STRIPE_PRICE_AUDIO', priceId)
+  }
+
   writeFileSync(ENV_PATH, env)
   console.log(`\n✓ Price IDs écrits dans .env.local`)
 
@@ -108,6 +133,7 @@ Il reste 2 étapes (une seule fois) :
     vercel env add STRIPE_SECRET_KEY
     vercel env add STRIPE_PRICE_SINGLE
     vercel env add STRIPE_PRICE_PACK_10
+    vercel env add STRIPE_PRICE_AUDIO
     vercel env add STRIPE_WEBHOOK_SECRET
 ──────────────────────────────────────────────────────`)
 }

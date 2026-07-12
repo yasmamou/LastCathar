@@ -42,3 +42,10 @@ export function planFromPriceId(priceId: string | null | undefined): PlanKey | n
   if (priceId === PLANS.PACK_10.priceId) return 'PACK_10'
   return null
 }
+
+// Pass Audioguides — paiement unique de 5 € qui débloque tous les guides audio.
+export const AUDIO_PASS = {
+  priceId: process.env.STRIPE_PRICE_AUDIO,
+  amount: 500, // centimes (5,00 €)
+  name: 'Pass Audioguides — Last Cathar',
+}

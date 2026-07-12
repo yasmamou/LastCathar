@@ -67,8 +67,17 @@ export async function POST(request: Request) {
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const userId = session.metadata?.userId || session.client_reference_id
-  if (!userId || !session.subscription) return
+  if (!userId) return
 
+  // Pass Audioguides — paiement unique : débloque les guides audio.
+  if (session.metadata?.type === 'audio') {
+    if (session.payment_status === 'paid') {
+      await prisma.user.update({ where: { id: userId }, data: { audioAccess: true } }).catch(() => {})
+    }
+    return
+  }
+
+  if (!session.subscription) return
   const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id
   const stripeSub = await stripe.subscriptions.retrieve(subId)
   await upsertSubscription(stripeSub, userId)

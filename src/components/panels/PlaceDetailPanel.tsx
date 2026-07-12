@@ -288,7 +288,7 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
 
         {/* Audio guide — narrated tour when available for this place */}
         <div className="mt-3">
-          <AudioGuidePlayer placeSlug={place.slug} />
+          <AudioGuidePlayer placeSlug={place.slug} onOpenAuth={onOpenAuth} />
         </div>
 
         {/* Content */}

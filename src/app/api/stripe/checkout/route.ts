@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { stripe, PLANS, type PlanKey } from '@/lib/stripe'
+import { stripe, PLANS, AUDIO_PASS, type PlanKey } from '@/lib/stripe'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,14 +12,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Non connecté' }, { status: 401 })
   }
 
-  const body = (await request.json().catch(() => null)) as { plan?: PlanKey } | null
+  const body = (await request.json().catch(() => null)) as { plan?: PlanKey; product?: string } | null
+
+  const origin = request.headers.get('origin') ?? process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
+
+  // ─── Pass Audioguides — paiement unique 5 € ───
+  if (body?.product === 'audio') {
+    if (!AUDIO_PASS.priceId) {
+      return NextResponse.json({ error: 'Pass audio non configuré' }, { status: 400 })
+    }
+    const audioSession = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      line_items: [{ price: AUDIO_PASS.priceId, quantity: 1 }],
+      customer_email: session.user.email,
+      client_reference_id: session.user.id,
+      metadata: { userId: session.user.id, type: 'audio' },
+      payment_intent_data: { metadata: { userId: session.user.id, type: 'audio' } },
+      success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}&type=audio`,
+      cancel_url: `${origin}/pricing/canceled`,
+      allow_promotion_codes: true,
+    })
+    return NextResponse.json({ url: audioSession.url })
+  }
+
   const plan = body?.plan
   if (!plan || !PLANS[plan] || !PLANS[plan].priceId) {
     return NextResponse.json({ error: 'Plan inconnu ou non configuré' }, { status: 400 })
   }
   const planConfig = PLANS[plan]
-
-  const origin = request.headers.get('origin') ?? process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
 
   const existing = await prisma.subscription.findFirst({
     where: { userId: session.user.id, stripeCustomerId: { not: null } },

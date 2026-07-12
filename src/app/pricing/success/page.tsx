@@ -3,16 +3,18 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle2, Loader2, AlertTriangle, Store } from 'lucide-react'
+import { CheckCircle2, Loader2, AlertTriangle, Store, Headphones } from 'lucide-react'
 
 type SyncState =
   | { phase: 'syncing' }
   | { phase: 'done'; plan: string; slots: number }
+  | { phase: 'audio' }
   | { phase: 'error'; message: string }
 
 function SuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
+  const isAudio = searchParams.get('type') === 'audio'
   const [sync, setSync] = useState<SyncState>({ phase: 'syncing' })
 
   // Persist the subscription server-side right away — don't rely solely on the
@@ -32,7 +34,8 @@ function SuccessContent() {
         const data = await res.json()
         if (cancelled) return
         if (res.ok) {
-          setSync({ phase: 'done', plan: data.plan, slots: data.slots })
+          if (data.type === 'audio' || isAudio) setSync({ phase: 'audio' })
+          else setSync({ phase: 'done', plan: data.plan, slots: data.slots })
         } else {
           setSync({ phase: 'error', message: data.error || 'Erreur de synchronisation' })
         }
@@ -67,6 +70,17 @@ function SuccessContent() {
             <p className="text-xs text-white/40 mb-8">
               Pas d&apos;inquiétude — l&apos;activation se fera aussi via Stripe. Réessayez dans
               une minute ou contactez-nous si le problème persiste.
+            </p>
+          </>
+        ) : sync.phase === 'audio' ? (
+          <>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-400/20 mb-6">
+              <Headphones className="w-8 h-8 text-amber-300" />
+            </div>
+            <h1 className="font-serif text-4xl font-semibold mb-4">Pass Audioguides activé !</h1>
+            <p className="text-white/70 mb-8">
+              Tous les guides et parcours audio de Last Cathar sont désormais débloqués.
+              Bonne écoute !
             </p>
           </>
         ) : (

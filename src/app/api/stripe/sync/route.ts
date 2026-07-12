@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { stripe } from '@/lib/stripe'
+import { prisma } from '@/lib/prisma'
 import { upsertSubscription } from '@/lib/subscription-sync'
 
 export const dynamic = 'force-dynamic'
@@ -32,6 +33,16 @@ export async function POST(request: Request) {
     if (ownerId !== session.user.id) {
       return NextResponse.json({ error: 'Session inconnue' }, { status: 403 })
     }
+
+    // Pass Audioguides (paiement unique)
+    if (checkout.metadata?.type === 'audio') {
+      if (checkout.payment_status !== 'paid') {
+        return NextResponse.json({ error: 'Paiement non confirmé' }, { status: 409 })
+      }
+      await prisma.user.update({ where: { id: session.user.id }, data: { audioAccess: true } }).catch(() => {})
+      return NextResponse.json({ ok: true, type: 'audio' })
+    }
+
     if (checkout.payment_status !== 'paid' || !checkout.subscription) {
       return NextResponse.json({ error: 'Paiement non confirmé' }, { status: 409 })
     }
