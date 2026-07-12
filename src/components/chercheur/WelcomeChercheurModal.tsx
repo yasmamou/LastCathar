@@ -79,48 +79,48 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="relative max-w-lg w-full rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-8 sm:p-10 shadow-[0_0_80px_-15px_rgba(251,191,36,0.4)]"
+            className="relative max-w-md w-full max-h-[90vh] overflow-y-auto rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-5 sm:p-7 shadow-[0_0_80px_-15px_rgba(251,191,36,0.4)]"
           >
             {/* Language switcher (flags) — top-left, and close button top-right */}
-            <div className="absolute top-3 left-3 z-10">
+            <div className="absolute top-2.5 left-2.5 z-10">
               <LangToggle lang={lang} onChange={setLang} />
             </div>
             <button
               onClick={onDismiss}
-              className="absolute top-4 right-4 z-10 text-white/40 hover:text-white/80 transition"
+              className="absolute top-3 right-3 z-10 text-white/40 hover:text-white/80 transition"
               aria-label={t.close}
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-2 mb-4 mt-8">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] uppercase tracking-widest text-amber-300">
-                <Sparkles className="w-3 h-3" />
+            <div className="flex items-center gap-2 mb-3 mt-9">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-0.5 text-[9px] uppercase tracking-widest text-amber-300">
+                <Sparkles className="w-2.5 h-2.5" />
                 {t.badge}
               </div>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white leading-tight mb-3">
+            <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-white leading-tight mb-2">
               {t.titleA}
               <span className="text-amber-300">{t.titleHi}</span>
             </h2>
 
-            <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-6">{t.intro}</p>
+            <p className="text-white/70 text-[13px] leading-relaxed mb-4">{t.intro}</p>
 
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4 mb-6">
-              <div className="flex items-start gap-3">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3 mb-4">
+              <div className="flex items-start gap-2.5">
                 <div
-                  className="flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center text-xl"
+                  className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-lg"
                   style={{ background: `${epic.color}20`, color: epic.color }}
                 >
                   {epic.icon}
                 </div>
                 <div>
-                  <div className="text-xs uppercase tracking-widest text-white/40 mb-0.5">
+                  <div className="text-[10px] uppercase tracking-widest text-white/40 mb-0.5">
                     {t.epicLabel}
                   </div>
-                  <div className="text-white font-medium mb-1">{epic.title}</div>
-                  <div className="text-xs text-white/60 flex items-center gap-2">
+                  <div className="text-white text-sm font-medium mb-0.5">{epic.title}</div>
+                  <div className="text-[11px] text-white/60 flex items-center gap-1.5">
                     <Flame className="w-3 h-3" />
                     {t.epicPlaces(epic.places.length)}
                   </div>
@@ -128,7 +128,7 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
               </div>
             </div>
 
-            <div className="space-y-2 mb-8 text-sm text-white/70">
+            <div className="space-y-1.5 mb-5 text-[13px] text-white/70">
               <div className="flex items-start gap-2">
                 <span className="text-amber-300 mt-0.5">✦</span>
                 <span>{t.b1a}<b className="text-amber-300">{t.b1b}</b>{t.b1c}</span>
@@ -144,13 +144,25 @@ export function WelcomeChercheurModal({ isOpen, onStart, onDismiss }: Props) {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button
+              <motion.button
                 onClick={onStart}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-black hover:bg-amber-300 transition"
+                initial={{ scale: 1 }}
+                animate={{
+                  scale: [1, 1.04, 1],
+                  boxShadow: [
+                    '0 0 0px 0px rgba(251,191,36,0.0)',
+                    '0 0 28px 3px rgba(251,191,36,0.55)',
+                    '0 0 0px 0px rgba(251,191,36,0.0)',
+                  ],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-black hover:bg-amber-300"
               >
                 <Compass className="w-4 h-4" />
                 {t.start}
-              </button>
+              </motion.button>
               <button
                 onClick={onDismiss}
                 className="rounded-lg border border-white/15 px-5 py-3 text-sm text-white/70 hover:bg-white/5 hover:text-white transition"

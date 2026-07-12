@@ -33,34 +33,54 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
   // True once the user has explicitly paused — prevents the country/place effect
   // from silently restarting the music behind their back on the next re-render.
   const userPausedRef = useRef(false)
-  // Audio-guide narration in progress → duck the ambient volume.
+  // Audio-guide narration in progress → the ambient music is paused (kept low so
+  // switchTrack fades don't fight it) and resumed when narration ends.
   const duckedRef = useRef(false)
-
-  // Duck the ambient music while an audio guide / tour narrates, so the voice is
-  // clearly audible and the music stays softly in the background — then bring it
-  // back up smoothly when narration ends. (Event from AudioGuidePlayer / tour.)
-  const DUCK_VOL = 0.08 // doux mais audible en fond
+  // True when the music was auto-paused BY a guide (so we know to resume it).
+  const guidePausedRef = useRef(false)
   const FULL_VOL = 0.25
+
+  // When an audio guide / tour narrates, STOP the ambient music (fade out + pause)
+  // so the voice is heard clearly; resume it when the narration ends. Event from
+  // AudioGuidePlayer / CarcassonneTour.
   useEffect(() => {
     let fade: ReturnType<typeof setInterval> | null = null
     const onGuideState = (e: Event) => {
       const playing = (e as CustomEvent<{ playing: boolean }>).detail?.playing
       duckedRef.current = !!playing
       const audio = audioRef.current
-      // Only act if the music is actually playing; nothing to duck otherwise.
-      if (!audio || !playingRef.current) return
-      const target = playing ? DUCK_VOL : FULL_VOL
-      if (fade) clearInterval(fade)
-      fade = setInterval(() => {
-        const cur = audio.volume
-        const step = 0.02
-        if (Math.abs(cur - target) <= step) {
-          audio.volume = target
-          if (fade) { clearInterval(fade); fade = null }
-        } else {
-          audio.volume = cur < target ? cur + step : cur - step
+      if (!audio) return
+      if (fade) { clearInterval(fade); fade = null }
+
+      if (playing) {
+        // Narration started → fade the music out and pause it.
+        if (playingRef.current) {
+          guidePausedRef.current = true
+          fade = setInterval(() => {
+            const cur = audio.volume
+            if (cur <= 0.03) {
+              audio.volume = 0
+              audio.pause()
+              if (fade) { clearInterval(fade); fade = null }
+            } else {
+              audio.volume = Math.max(0, cur - 0.04)
+            }
+          }, 40)
         }
-      }, 40)
+      } else {
+        // Narration ended → resume only if WE paused it and the user didn't pause.
+        if (guidePausedRef.current && !userPausedRef.current) {
+          guidePausedRef.current = false
+          audio.play().then(() => {
+            let v = 0
+            fade = setInterval(() => {
+              v = Math.min(FULL_VOL, v + 0.02)
+              audio.volume = v
+              if (v >= FULL_VOL && fade) { clearInterval(fade); fade = null }
+            }, 40)
+          }).catch(() => {})
+        }
+      }
     }
     window.addEventListener('audioguide:state', onGuideState)
     return () => {
@@ -237,7 +257,9 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
       {/* ── Player button — fixed bottom-left, above the featured strip.
              (The old center-left spot collided with the vitrine column when a
              panel was open, and floated over the full-screen panel on mobile.) ── */}
-      <div className={`fixed left-2 md:left-3 bottom-[11.5rem] md:bottom-40 z-[60] pointer-events-auto flex-row items-center gap-2 ${panelOpen ? 'hidden md:flex' : 'flex'}`}>
+      {/* Always visible so the music can be stopped at any time — even with a
+          place panel open on mobile (moves to the bottom-left corner there). */}
+      <div className={`fixed left-2 md:left-3 z-[60] pointer-events-auto flex flex-row items-center gap-2 md:bottom-40 ${panelOpen ? 'bottom-4' : 'bottom-[11.5rem]'}`}>
         {/* Play/Pause + track name */}
         <button
           onClick={toggleMusic}
