@@ -133,6 +133,14 @@ body.admin-body {
   overflow: auto;
 }
 
+/* Pages qui doivent défiler normalement (ex. /remotion) — le body est en
+   overflow:hidden par défaut pour le globe plein écran. */
+body.scrollable-page {
+  overflow: auto !important;
+  height: auto !important;
+  position: static !important;
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glass {

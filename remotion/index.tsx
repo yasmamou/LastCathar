@@ -57,6 +57,14 @@ export const RemotionRoot: React.FC = () => {
         width={CITY_REEL_W}
         height={CITY_REEL_H}
         defaultProps={{ placeSlug: 'cite-de-carcassonne' }}
+        calculateMetadata={({ props }) => {
+          // Cale la durée de la vidéo sur la longueur de la voix (rendu final).
+          const d = (props as { durationInSeconds?: number }).durationInSeconds
+          if (d && d > 0) {
+            return { durationInFrames: Math.ceil((d + 1.2) * CITY_REEL_FPS) }
+          }
+          return {}
+        }}
       />
 
       {EPIC_VIDEOS.map(({ id, epicId, zoom }) => {

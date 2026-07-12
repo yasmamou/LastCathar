@@ -1,6 +1,8 @@
 import React from 'react'
 import {
   AbsoluteFill,
+  Audio,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
   interpolate,
@@ -9,14 +11,18 @@ import {
 } from 'remotion'
 import { allPlaces } from '../src/data/all-places'
 import { getCategoryColor, getCategoryLabel, getCategoryIcon } from '../src/lib/categories'
+import { buildReelContent } from '../src/lib/reel-content'
 
 export const CITY_REEL_FPS = 30
-export const CITY_REEL_DURATION = 22 // secondes
+export const CITY_REEL_DURATION = 22 // secondes (par défaut, sans voix)
 export const CITY_REEL_W = 1080
 export const CITY_REEL_H = 1920
 
 export interface CityReelProps {
   placeSlug: string
+  lang?: 'fr' | 'en'
+  narrationSrc?: string // URL/staticFile de la voix (rendu final)
+  durationInSeconds?: number // durée calée sur la voix (via calculateMetadata)
 }
 
 // ─── Tuiles OpenStreetMap ───
@@ -70,23 +76,7 @@ const MapTiles: React.FC<{ lat: number; lng: number; zoom: number }> = ({ lat, l
   )
 }
 
-// Découpe l'histoire en courts sous-titres (style TikTok)
-function buildCaptions(shortDesc: string, fullStory: string): string[] {
-  const caps: string[] = []
-  if (shortDesc) caps.push(shortDesc.trim())
-  const sentences = (fullStory || '')
-    .replace(/\s+/g, ' ')
-    .split(/(?<=[.!?])\s+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 20)
-  for (const s of sentences) {
-    caps.push(s.length > 140 ? s.slice(0, 137).trim() + '…' : s)
-    if (caps.length >= 5) break
-  }
-  return caps
-}
-
-export const CityReel: React.FC<CityReelProps> = ({ placeSlug }) => {
+export const CityReel: React.FC<CityReelProps> = ({ placeSlug, lang = 'fr', narrationSrc }) => {
   const frame = useCurrentFrame()
   const { fps, durationInFrames } = useVideoConfig()
   const place = allPlaces.find((p) => p.slug === placeSlug) ?? allPlaces[0]
@@ -116,8 +106,8 @@ export const CityReel: React.FC<CityReelProps> = ({ placeSlug }) => {
   // Titre
   const titleIn = spring({ frame: frame - fps * 0.5, fps, config: { damping: 13, stiffness: 90 } })
 
-  // Sous-titres animés
-  const captions = buildCaptions(place.shortDescription, place.fullStory)
+  // Sous-titres animés (langue choisie)
+  const captions = buildReelContent(place, lang).captions
   const capStart = fps * 3.2
   const capWindow = (durationInFrames - capStart) / Math.max(1, captions.length)
   const capIdx = Math.min(captions.length - 1, Math.max(0, Math.floor((frame - capStart) / capWindow)))
@@ -130,6 +120,11 @@ export const CityReel: React.FC<CityReelProps> = ({ placeSlug }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#05060d', fontFamily: 'Inter, system-ui, sans-serif', opacity: outro }}>
+      {/* ═══ VOIX (narration FR/EN) ═══ */}
+      {narrationSrc && (
+        <Audio src={/^https?:\/\/|^\//.test(narrationSrc) ? narrationSrc : staticFile(narrationSrc)} />
+      )}
+
       {/* ═══ CARTE (fond, zoom continu) ═══ */}
       <div style={{ position: 'absolute', inset: 0, transform: `scale(${mapScale}) translateY(${mapPan}px)`, transformOrigin: '50% 45%' }}>
         <MapTiles lat={place.latitude} lng={place.longitude} zoom={baseZoom} />

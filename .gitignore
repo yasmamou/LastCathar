@@ -43,3 +43,6 @@ next-env.d.ts
 /data/raw
 /data/enriched
 scripts/voices/
+
+# Reels rendus localement
+/public/reels
