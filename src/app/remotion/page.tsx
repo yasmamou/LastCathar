@@ -183,7 +183,8 @@ export default function RemotionStudioPage() {
 
               {render === 'rendering' && (
                 <p className="text-[11px] text-white/40 text-center mt-2">
-                  Le rendu tourne sur le serveur local (≈ 1 à 2 min). Ne fermez pas cette page.
+                  Demande envoyée au serveur de rendu. La vidéo apparaît ici dès qu&apos;elle est prête
+                  (≈ 1 à 2 min si le serveur est actif). Vous pouvez laisser la page ouverte.
                 </p>
               )}
 

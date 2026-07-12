@@ -46,3 +46,4 @@ scripts/voices/
 
 # Reels rendus localement
 /public/reels
+.env*
