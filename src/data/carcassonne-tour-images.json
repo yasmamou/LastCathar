@@ -82,5 +82,153 @@
       "license": "CC BY-SA 3.0",
       "source": "https://commons.wikimedia.org/wiki/File:Carcassonne_Cite.jpg"
     }
+  ],
+  "origine": [
+    {
+      "src": "/tour/carcassonne/origine-1.jpg",
+      "artist": "Chensiyuan",
+      "license": "CC BY-SA 4.0",
+      "source": ""
+    }
+  ],
+  "remparts-gallo-romains": [
+    {
+      "src": "/tour/carcassonne/lices-1.jpg",
+      "artist": "Gzen92",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Cit%C3%A9_-_remparts_et_lice_(Carcassonne)_(5).jpg"
+    },
+    {
+      "src": "/tour/carcassonne/lices-2.jpg",
+      "artist": "Krzysztof Golik",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Ramparts_of_the_historic_fortified_city_of_Carcassone_10.jpg"
+    }
+  ],
+  "tour-inquisition": [
+    {
+      "src": "/tour/carcassonne/tour-inquisition-1.jpg",
+      "artist": "Jean-Pol GRANDMONT",
+      "license": "CC BY 3.0",
+      "source": ""
+    }
+  ],
+  "viollet-le-duc": [
+    {
+      "src": "/tour/carcassonne/viollet-le-duc-1.jpg",
+      "artist": "Wikimedia Commons",
+      "license": "domaine public / CC",
+      "source": ""
+    }
+  ],
+  "ville-basse": [
+    {
+      "src": "/tour/carcassonne/ville-basse-1.jpg",
+      "artist": "Benh LIEU SONG (Flickr)",
+      "license": "CC BY-SA 3.0",
+      "source": ""
+    }
+  ],
+  "siege-1209": [
+    {
+      "src": "/tour/carcassonne/porte-narbonnaise-1.jpg",
+      "artist": "Krzysztof Golik",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Porte_Narbonnaise_Carcassone.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/porte-narbonnaise-2.jpg",
+      "artist": "E. Roudière",
+      "license": "Public domain",
+      "source": "https://commons.wikimedia.org/wiki/File:Porte_Narbonnaise_-_Pont-Levis_Cit%C3%A9_de_Carcassonne.jpg"
+    }
+  ],
+  "legendes": [
+    {
+      "src": "/tour/carcassonne/dame-carcas-1.jpg",
+      "artist": "Pinpin",
+      "license": "CC BY 2.5",
+      "source": "https://commons.wikimedia.org/wiki/File:France_carcassonne_dame_carcas.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/dame-carcas-2.jpg",
+      "artist": "Joe Mabel",
+      "license": "Public domain",
+      "source": "https://commons.wikimedia.org/wiki/File:Mus%C3%A9e_Lapidaire_de_Carcassonne_-_Dame_Carcas_-_~XVI_century_02.jpg"
+    }
+  ],
+  "saint-louis": [
+    {
+      "src": "/tour/carcassonne/chateau-comtal-1.jpg",
+      "artist": "Inferno986return",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_Comtal_de_Carcassonne.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/chateau-comtal-2.jpg",
+      "artist": "Pinpin",
+      "license": "CC BY 2.5",
+      "source": "https://commons.wikimedia.org/wiki/File:France_carcassonne_cour_chateau_comtal.jpg"
+    }
+  ],
+  "panorama": [
+    {
+      "src": "/tour/carcassonne/porte-aude-1.jpg",
+      "artist": "Lynx1211",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Cit%C3%A9_de_Carcassonne_%E2%80%93_Porte_d%E2%80%99Aude.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/porte-aude-2.jpg",
+      "artist": "Benh LIEU SONG (Flickr)",
+      "license": "CC BY-SA 3.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Carcassonne_Cite.jpg"
+    }
+  ],
+  "hourds": [
+    {
+      "src": "/tour/carcassonne/hourds-1.jpg",
+      "artist": "Dennis G. Jarvis",
+      "license": "CC BY-SA 2.0",
+      "source": ""
+    }
+  ],
+  "les-puits": [
+    {
+      "src": "/tour/carcassonne/les-puits-1.jpg",
+      "artist": "CharlèneChtl",
+      "license": "CC BY-SA 3.0",
+      "source": ""
+    }
+  ],
+  "embrasement": [
+    {
+      "src": "/tour/carcassonne/porte-aude-1.jpg",
+      "artist": "Lynx1211",
+      "license": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Cit%C3%A9_de_Carcassonne_%E2%80%93_Porte_d%E2%80%99Aude.jpg"
+    },
+    {
+      "src": "/tour/carcassonne/porte-aude-2.jpg",
+      "artist": "Benh LIEU SONG (Flickr)",
+      "license": "CC BY-SA 3.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Carcassonne_Cite.jpg"
+    }
+  ],
+  "hotel-de-la-cite": [
+    {
+      "src": "/tour/carcassonne/hotel-de-la-cite-1.jpg",
+      "artist": "Wikimedia Commons",
+      "license": "CC / domaine public",
+      "source": ""
+    }
+  ],
+  "theatre": [
+    {
+      "src": "/tour/carcassonne/theatre-1.jpg",
+      "artist": "Decryptys",
+      "license": "CC BY-SA 4.0",
+      "source": ""
+    }
   ]
 }

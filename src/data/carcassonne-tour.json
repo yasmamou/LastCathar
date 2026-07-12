@@ -3,17 +3,26 @@
   "placeSlug": "cite-de-carcassonne",
   "title": { "fr": "Visite guidée de la Cité", "en": "Guided tour of the Cité" },
   "subtitle": {
-    "fr": "Un parcours en 6 étapes sur l'itinéraire classique de la Cité de Carcassonne.",
-    "en": "A six-stop walk along the classic route through the Cité of Carcassonne."
+    "fr": "Un grand parcours audio à travers 25 siècles d'histoire de la Cité de Carcassonne.",
+    "en": "A full audio walk through 25 centuries of the Cité of Carcassonne."
   },
   "stops": [
+    {
+      "id": "origine",
+      "title": { "fr": "L'origine de la Cité", "en": "The origin of the Cité" },
+      "subtitle": { "fr": "2 500 ans d'histoire", "en": "2,500 years of history" },
+      "text": {
+        "fr": "Avant les Cathares, avant Rome même, cette colline dominait déjà la plaine. Il y a plus de deux mille cinq cents ans, un peuple gaulois, les Volques Tectosages, y établit un oppidum fortifié.\n\nPuis vinrent les Romains, au premier siècle avant notre ère. Ils firent de Carcaso une cité prospère et l'entourèrent de la première muraille de pierre — celle dont vous verrez encore les tours aux briques rouges.\n\nWisigoths, Sarrasins, Francs : chaque peuple ajouta sa pierre. La Cité que vous foulez est un mille-feuille de vingt-cinq siècles d'histoire.",
+        "en": "Before the Cathars, before even Rome, this hill already commanded the plain. More than two thousand five hundred years ago, a Gaulish people, the Volcae Tectosages, built a fortified stronghold here.\n\nThen came the Romans, in the first century before our era. They made Carcaso a prosperous city and ringed it with the first stone wall — the one whose red-brick towers you can still see.\n\nVisigoths, Saracens, Franks: each people added its stone. The Cité you walk today is a layer-cake of twenty-five centuries of history."
+      }
+    },
     {
       "id": "dame-carcas",
       "title": { "fr": "Dame Carcas", "en": "Dame Carcas" },
       "subtitle": { "fr": "L'entrée & la légende", "en": "The entrance & the legend" },
       "text": {
-        "fr": "Bienvenue à la Cité de Carcassonne. Avant de franchir les portes, levez les yeux vers ce buste de pierre : Dame Carcas.\n\nLa légende raconte qu'au huitième siècle, Charlemagne assiégeait la cité depuis cinq ans. À l'intérieur, il ne restait qu'une femme, Dame Carcas, et presque plus rien à manger.\n\nRusée, elle fit gaver le dernier cochon avec le dernier sac de blé, et le jeta par-dessus les remparts. En voyant l'animal éclater, gras et repu, Charlemagne crut la ville encore pleine de vivres, et leva le siège.\n\nAlors, du haut des tours, Dame Carcas fit sonner toutes les cloches. Un soldat s'écria : Carcas sonne ! Et la cité, dit-on, en garda le nom. Franchissons maintenant la porte.",
-        "en": "Welcome to the Cité of Carcassonne. Before you cross the gates, look up at this bust of stone: Dame Carcas.\n\nLegend says that in the eighth century, Charlemagne had besieged the city for five years. Inside, only one woman remained, Dame Carcas, and almost nothing left to eat.\n\nCunning, she had the last pig stuffed with the last sack of wheat, and threw it over the ramparts. Seeing the animal burst open, fat and full, Charlemagne believed the town still overflowed with food, and lifted the siege.\n\nThen, from the top of the towers, Dame Carcas had every bell rung. A soldier cried out: Carcas rings! And the city, they say, kept the name. Now, let us cross the gate."
+        "fr": "Bienvenue à la Cité de Carcassonne. Avant de franchir les portes, levez les yeux vers ce buste de pierre : Dame Carcas.\n\nLa légende raconte qu'au huitième siècle, Charlemagne assiégeait la cité depuis cinq ans. À l'intérieur, il ne restait qu'une femme, Dame Carcas, et presque plus rien à manger.\n\nRusée, elle fit gaver le dernier cochon avec le dernier sac de blé, et le jeta par-dessus les remparts. En voyant l'animal éclater, gras et repu, Charlemagne crut la ville encore pleine de vivres, et leva le siège.\n\nAlors, du haut des tours, Dame Carcas fit sonner toutes les cloches. Un soldat s'écria : Carcas sonne ! Et la cité, dit-on, en garda le nom.",
+        "en": "Welcome to the Cité of Carcassonne. Before you cross the gates, look up at this bust of stone: Dame Carcas.\n\nLegend says that in the eighth century, Charlemagne had besieged the city for five years. Inside, only one woman remained, Dame Carcas, and almost nothing left to eat.\n\nCunning, she had the last pig stuffed with the last sack of wheat, and threw it over the ramparts. Seeing the animal burst open, fat and full, Charlemagne believed the town still overflowed with food, and lifted the siege.\n\nThen, from the top of the towers, Dame Carcas had every bell rung. A soldier cried out: Carcas rings! And the city, they say, kept the name."
       }
     },
     {
@@ -21,8 +30,17 @@
       "title": { "fr": "La Porte Narbonnaise", "en": "The Narbonnaise Gate" },
       "subtitle": { "fr": "L'entrée fortifiée", "en": "The fortified entrance" },
       "text": {
-        "fr": "Vous voici devant la porte Narbonnaise, l'entrée principale de la Cité. Deux tours massives en éperon, un pont dormant puis un pont-levis, une herse, des assommoirs pour verser l'huile bouillante : rien n'était laissé au hasard.\n\nUn assaillant qui franchissait la première porte se retrouvait pris au piège dans un couloir, sous le feu des défenseurs.\n\nConstruite au treizième siècle par le roi de France après la croisade, cette porte proclamait une chose : Carcassonne était désormais imprenable.\n\nAvancez sous la voûte, et entrez dans la ville close.",
-        "en": "Here you stand before the Narbonnaise Gate, the main entrance to the Cité. Two massive spur-shaped towers, a fixed bridge then a drawbridge, a portcullis, murder-holes for pouring boiling oil: nothing was left to chance.\n\nAn attacker who passed the first gate found himself trapped in a corridor, under the defenders' fire.\n\nBuilt in the thirteenth century by the King of France after the crusade, this gate proclaimed one thing: Carcassonne was now impregnable.\n\nWalk beneath the vault, and enter the walled town."
+        "fr": "Vous voici devant la porte Narbonnaise, l'entrée principale de la Cité. Deux tours massives en éperon, un pont dormant puis un pont-levis, une herse, des assommoirs pour verser l'huile bouillante : rien n'était laissé au hasard.\n\nUn assaillant qui franchissait la première porte se retrouvait pris au piège dans un couloir, sous le feu des défenseurs.\n\nConstruite au treizième siècle par le roi de France après la croisade, cette porte proclamait une chose : Carcassonne était désormais imprenable. Avancez sous la voûte, et entrez dans la ville close.",
+        "en": "Here you stand before the Narbonnaise Gate, the main entrance to the Cité. Two massive spur-shaped towers, a fixed bridge then a drawbridge, a portcullis, murder-holes for pouring boiling oil: nothing was left to chance.\n\nAn attacker who passed the first gate found himself trapped in a corridor, under the defenders' fire.\n\nBuilt in the thirteenth century by the King of France after the crusade, this gate proclaimed one thing: Carcassonne was now impregnable. Walk beneath the vault, and enter the walled town."
+      }
+    },
+    {
+      "id": "remparts-gallo-romains",
+      "title": { "fr": "Les remparts gallo-romains", "en": "The Gallo-Roman ramparts" },
+      "subtitle": { "fr": "La signature de Rome", "en": "The signature of Rome" },
+      "text": {
+        "fr": "Regardez de près la muraille intérieure. Vous y verrez des rangées de briques rouges alternant avec la pierre : c'est la signature des bâtisseurs romains, vieille de mille sept cents ans.\n\nLeurs tours, en forme de fer à cheval et ouvertes à l'arrière, ont traversé les siècles. Certaines portent encore, à leur base, les grands blocs taillés de l'Antiquité.\n\nQuand les rois de France élevèrent la seconde enceinte, ils n'effacèrent pas la première : ils l'englobèrent. Rome, ici, n'est jamais vraiment tombée.",
+        "en": "Look closely at the inner wall. You will see rows of red brick alternating with stone: the signature of the Roman builders, seventeen centuries old.\n\nTheir horseshoe-shaped towers, open at the back, have crossed the ages. Some still carry, at their base, the great cut blocks of Antiquity.\n\nWhen the kings of France raised the second ring, they did not erase the first: they enclosed it. Here, Rome never truly fell."
       }
     },
     {
@@ -30,8 +48,26 @@
       "title": { "fr": "Les Lices", "en": "The Lices" },
       "subtitle": { "fr": "Entre les deux murailles", "en": "Between the double walls" },
       "text": {
-        "fr": "Regardez autour de vous : deux lignes de remparts, l'une derrière l'autre, et entre elles, cet espace dégagé : les lices.\n\nUne double muraille, séparée de dix-huit mètres, longue de plus d'un kilomètre. Un ennemi qui prenait le premier mur se trouvait aussitôt à découvert, écrasé sous les tirs du second. C'était l'une des fortifications les plus modernes de son temps.\n\nIci, au Moyen Âge, se pressaient des maisons, des ateliers, et parfois des tournois.\n\nMarchez le long des lices : à droite, les murs gallo-romains, vieux de mille sept cents ans ; à gauche, l'œuvre des rois de France.",
-        "en": "Look around you: two lines of ramparts, one behind the other, and between them, this open ground: the lices.\n\nA double wall, eighteen metres apart, more than a kilometre long. An enemy who took the first wall found himself instantly exposed, crushed under fire from the second. It was one of the most modern fortifications of its time.\n\nHere, in the Middle Ages, houses and workshops crowded together, and sometimes tournaments were held.\n\nWalk along the lices: to your right, the Gallo-Roman walls, seventeen hundred years old; to your left, the work of the kings of France."
+        "fr": "Regardez autour de vous : deux lignes de remparts, l'une derrière l'autre, et entre elles, cet espace dégagé : les lices.\n\nUne double muraille, séparée de dix-huit mètres, longue de plus d'un kilomètre. Un ennemi qui prenait le premier mur se trouvait aussitôt à découvert, écrasé sous les tirs du second.\n\nIci, au Moyen Âge, se pressaient des maisons, des ateliers, et parfois des tournois. Marchez le long des lices : à droite, les murs gallo-romains ; à gauche, l'œuvre des rois de France.",
+        "en": "Look around you: two lines of ramparts, one behind the other, and between them, this open ground: the lices.\n\nA double wall, eighteen metres apart, more than a kilometre long. An enemy who took the first wall found himself instantly exposed, crushed under fire from the second.\n\nHere, in the Middle Ages, houses and workshops crowded together, and sometimes tournaments were held. Walk along the lices: to your right, the Gallo-Roman walls; to your left, the work of the kings of France."
+      }
+    },
+    {
+      "id": "hourds",
+      "title": { "fr": "Les hourds", "en": "The hoardings" },
+      "subtitle": { "fr": "Quand les tours montraient les dents", "en": "When the towers bared their teeth" },
+      "text": {
+        "fr": "Imaginez les tours coiffées non pas d'ardoise, mais de bois. Ce sont les hourds : des galeries de combat en charpente, avancées au-dessus du vide.\n\nDepuis leurs planchers percés de trappes, les défenseurs lâchaient pierres, flèches et huile bouillante à la verticale, au pied même de la muraille — là où l'assaillant se croyait à l'abri.\n\nViollet-le-Duc en a reconstruit quelques-uns. Levez les yeux : c'est ainsi que la Cité montrait les dents.",
+        "en": "Picture the towers crowned not with slate, but with timber. These are the hoardings: wooden fighting galleries, jutting out over the void.\n\nFrom their trapdoor floors, defenders dropped stones, arrows and boiling oil straight down, to the very foot of the wall — where attackers thought themselves safe.\n\nViollet-le-Duc rebuilt a few of them. Look up: this is how the Cité bared its teeth."
+      }
+    },
+    {
+      "id": "tour-inquisition",
+      "title": { "fr": "La Tour de l'Inquisition", "en": "The Tower of the Inquisition" },
+      "subtitle": { "fr": "La foi jugée dans l'ombre", "en": "Faith judged in the shadows" },
+      "text": {
+        "fr": "Cette tour porte un nom qui glace : la Tour de l'Inquisition. Après la croisade, c'est ici que les inquisiteurs interrogeaient les suspects d'hérésie cathare.\n\nOn y montre encore un pilier central et des graffitis creusés dans la pierre par des mains anonymes. La légende parle de cachots et de tortures.\n\nPendant près d'un siècle, la peur du bûcher plana sur ces murs. La foi, ici, se jugeait dans l'ombre.",
+        "en": "This tower bears a chilling name: the Tower of the Inquisition. After the crusade, it was here that inquisitors questioned those suspected of Cathar heresy.\n\nA central pillar still stands, and graffiti carved into the stone by anonymous hands. Legend speaks of dungeons and torture.\n\nFor nearly a century, the fear of the pyre hung over these walls. Here, faith was judged in the shadows."
       }
     },
     {
@@ -39,8 +75,26 @@
       "title": { "fr": "Le Château Comtal", "en": "The Château Comtal" },
       "subtitle": { "fr": "La forteresse des Trencavel", "en": "The Trencavel stronghold" },
       "text": {
-        "fr": "Au cœur de la Cité se dresse une forteresse dans la forteresse : le château comtal. C'était la demeure des vicomtes Trencavel, seigneurs de Carcassonne.\n\nEn douze cent neuf, c'est ici que le jeune Raymond-Roger Trencavel fut fait prisonnier pendant la croisade contre les Cathares, avant de mourir dans son propre cachot.\n\nAprès lui, le château devint le poste de commandement des sénéchaux du roi. Entouré de son propre fossé et de sa barbacane, il pouvait résister même si la ville tombait.\n\nFranchissez le pont : vous entrez dans le dernier refuge des maîtres de Carcassonne.",
-        "en": "At the heart of the Cité stands a fortress within the fortress: the Château Comtal, the count's castle. It was the home of the Trencavel viscounts, lords of Carcassonne.\n\nIn twelve hundred and nine, it was here that the young Raymond-Roger Trencavel was taken prisoner during the crusade against the Cathars, before dying in his own dungeon.\n\nAfter him, the castle became the command post of the king's seneschals. Surrounded by its own moat and barbican, it could hold out even if the town fell.\n\nCross the bridge: you are entering the last refuge of the masters of Carcassonne."
+        "fr": "Au cœur de la Cité se dresse une forteresse dans la forteresse : le château comtal. C'était la demeure des vicomtes Trencavel, seigneurs de Carcassonne.\n\nEn douze cent neuf, c'est ici que le jeune Raymond-Roger Trencavel fut fait prisonnier pendant la croisade contre les Cathares, avant de mourir dans son propre cachot.\n\nAprès lui, le château devint le poste de commandement des sénéchaux du roi. Entouré de son propre fossé et de sa barbacane, il pouvait résister même si la ville tombait.",
+        "en": "At the heart of the Cité stands a fortress within the fortress: the Château Comtal, the count's castle. It was the home of the Trencavel viscounts, lords of Carcassonne.\n\nIn twelve hundred and nine, it was here that the young Raymond-Roger Trencavel was taken prisoner during the crusade against the Cathars, before dying in his own dungeon.\n\nAfter him, the castle became the command post of the king's seneschals. Surrounded by its own moat and barbican, it could hold out even if the town fell."
+      }
+    },
+    {
+      "id": "les-puits",
+      "title": { "fr": "Les puits", "en": "The wells" },
+      "subtitle": { "fr": "L'eau vaut plus que l'or", "en": "Water worth more than gold" },
+      "text": {
+        "fr": "Comment tient une cité assiégée ? Par son eau. Regardez ce puits : creusé profond dans le roc, il fut, pendant des siècles, une question de vie ou de mort.\n\nEn douze cent neuf, c'est justement la soif qui fit tomber Carcassonne : la chaleur tarit les réserves, et la ville dut se rendre en quinze jours.\n\nCiternes, puits et sources cachées : sous vos pieds court tout un réseau secret. Dans une forteresse, l'eau vaut plus que l'or.",
+        "en": "How does a besieged city hold out? By its water. Look at this well: dug deep into the rock, for centuries it was a matter of life and death.\n\nIn twelve hundred and nine, it was thirst that brought Carcassonne down: the heat dried up the reserves, and the town had to surrender in fifteen days.\n\nCisterns, wells and hidden springs: a whole secret network runs beneath your feet. In a fortress, water is worth more than gold."
+      }
+    },
+    {
+      "id": "siege-1209",
+      "title": { "fr": "Le siège de 1209", "en": "The siege of 1209" },
+      "subtitle": { "fr": "La chute de Trencavel", "en": "The fall of Trencavel" },
+      "text": {
+        "fr": "Août douze cent neuf. L'armée de la croisade, forte de plusieurs milliers d'hommes, encercle la Cité. À sa tête, le redoutable Simon de Montfort.\n\nLe jeune vicomte Raymond-Roger Trencavel défend sa ville et les Cathares qui s'y sont réfugiés. Mais l'eau manque, la maladie frappe. En quinze jours, tout est fini.\n\nAttiré hors des murs pour négocier, Trencavel est fait prisonnier par traîtrise. Il mourra dans son propre cachot. Carcassonne, elle, passe aux mains des croisés.",
+        "en": "August, twelve hundred and nine. The crusader army, thousands strong, surrounds the Cité. At its head, the fearsome Simon de Montfort.\n\nThe young viscount Raymond-Roger Trencavel defends his town and the Cathars sheltering there. But water runs short, disease strikes. In fifteen days, it is over.\n\nLured outside the walls to negotiate, Trencavel is taken prisoner by treachery. He will die in his own dungeon. Carcassonne passes into crusader hands."
       }
     },
     {
@@ -48,8 +102,71 @@
       "title": { "fr": "Basilique Saint-Nazaire", "en": "Basilica of Saint-Nazaire" },
       "subtitle": { "fr": "Le joyau de la Cité", "en": "The jewel of the Cité" },
       "text": {
-        "fr": "Voici le joyau de la Cité : la basilique Saint-Nazaire. À l'extérieur, une austère forteresse romane. À l'intérieur, un éblouissement.\n\nLevez les yeux vers les vitraux du chœur, parmi les plus beaux du sud de la France : des murs de lumière rouge et bleue, tissés au quatorzième siècle.\n\nLa nef romane, sombre et massive, contraste avec le chœur gothique, aérien et lumineux : deux âges de la foi réunis sous un même toit.\n\nPrenez un instant, dans le silence, pour écouter la pierre chanter.",
-        "en": "Here is the jewel of the Cité: the Basilica of Saint-Nazaire. From the outside, an austere Romanesque fortress. Inside, a dazzling sight.\n\nLift your eyes to the stained-glass windows of the choir, among the finest in the south of France: walls of red and blue light, woven in the fourteenth century.\n\nThe dark, massive Romanesque nave contrasts with the airy, luminous Gothic choir: two ages of faith joined under one roof.\n\nTake a moment, in the silence, to hear the stone sing."
+        "fr": "Voici le joyau de la Cité : la basilique Saint-Nazaire. À l'extérieur, une austère forteresse romane. À l'intérieur, un éblouissement.\n\nLevez les yeux vers les vitraux du chœur, parmi les plus beaux du sud de la France : des murs de lumière rouge et bleue, tissés au quatorzième siècle.\n\nLa nef romane, sombre et massive, contraste avec le chœur gothique, aérien et lumineux : deux âges de la foi réunis sous un même toit. Prenez un instant, dans le silence, pour écouter la pierre chanter.",
+        "en": "Here is the jewel of the Cité: the Basilica of Saint-Nazaire. From the outside, an austere Romanesque fortress. Inside, a dazzling sight.\n\nLift your eyes to the stained-glass windows of the choir, among the finest in the south of France: walls of red and blue light, woven in the fourteenth century.\n\nThe dark, massive Romanesque nave contrasts with the airy, luminous Gothic choir: two ages of faith joined under one roof. Take a moment, in the silence, to hear the stone sing."
+      }
+    },
+    {
+      "id": "theatre",
+      "title": { "fr": "Le théâtre de plein air", "en": "The open-air theatre" },
+      "subtitle": { "fr": "La forteresse devenue fête", "en": "The fortress turned festival" },
+      "text": {
+        "fr": "Au cœur de la Cité s'ouvre un grand théâtre à ciel ouvert, adossé aux remparts. L'été, des milliers de spectateurs s'y pressent sous les étoiles.\n\nLe Festival de Carcassonne y fait résonner musique, danse et théâtre, avec les tours médiévales pour décor. Peu de scènes au monde offrent un tel écrin.\n\nLà où grondaient les machines de guerre, applaudit aujourd'hui la foule. La forteresse est devenue fête.",
+        "en": "At the heart of the Cité opens a great open-air theatre, set against the ramparts. In summer, thousands of spectators gather there beneath the stars.\n\nThe Carcassonne Festival fills it with music, dance and drama, the medieval towers as its backdrop. Few stages in the world offer such a setting.\n\nWhere war machines once thundered, the crowd now applauds. The fortress has become a celebration."
+      }
+    },
+    {
+      "id": "viollet-le-duc",
+      "title": { "fr": "Viollet-le-Duc", "en": "Viollet-le-Duc" },
+      "subtitle": { "fr": "La résurrection de la Cité", "en": "The resurrection of the Cité" },
+      "text": {
+        "fr": "Au dix-neuvième siècle, la Cité n'était plus qu'un amas de ruines habité par les pauvres. On parla même de la démolir.\n\nUn homme la sauva : l'architecte Eugène Viollet-le-Duc. Pendant des décennies, il la releva, tour après tour, et la coiffa de ces toits d'ardoise pointus qui font aujourd'hui sa silhouette.\n\nCertains lui reprochent d'avoir rêvé une Cité plus septentrionale que méridionale. Mais sans lui, il ne resterait rien. La forteresse que vous admirez est aussi son chef-d'œuvre.",
+        "en": "In the nineteenth century, the Cité was little more than a heap of ruins, home to the poor. There was even talk of demolishing it.\n\nOne man saved it: the architect Eugène Viollet-le-Duc. Over decades, he raised it, tower by tower, and crowned it with those pointed slate roofs that shape its silhouette today.\n\nSome reproach him for dreaming a Cité more northern than southern. But without him, nothing would remain. The fortress you admire is also his masterpiece."
+      }
+    },
+    {
+      "id": "hotel-de-la-cite",
+      "title": { "fr": "L'Hôtel de la Cité", "en": "The Hôtel de la Cité" },
+      "subtitle": { "fr": "Le luxe dans les remparts", "en": "Luxury within the ramparts" },
+      "text": {
+        "fr": "Adossé à la basilique, un palais néo-gothique se cache derrière un rideau de lierre : l'Hôtel de la Cité, ouvert en mille neuf cent neuf sur l'emplacement de l'ancien palais épiscopal.\n\nRois, artistes et têtes couronnées y ont dormi. Sa table étoilée, La Barbacane, sert une cuisine qui célèbre les produits du Pays Cathare.\n\nDe ses jardins suspendus sur les remparts, la vue plonge sur la vallée de l'Aude. Le luxe, ici, a pour décor huit siècles d'histoire.",
+        "en": "Set against the basilica, a neo-Gothic palace hides behind a curtain of ivy: the Hôtel de la Cité, opened in nineteen hundred and nine on the site of the former bishop's palace.\n\nKings, artists and crowned heads have slept here. Its Michelin-starred table, La Barbacane, serves a cuisine that celebrates the produce of the Pays Cathare.\n\nFrom its gardens perched on the ramparts, the view plunges over the Aude valley. Here, luxury is set against eight centuries of history."
+      }
+    },
+    {
+      "id": "legendes",
+      "title": { "fr": "Les légendes de la Cité", "en": "The legends of the Cité" },
+      "subtitle": { "fr": "Trésors & souterrains", "en": "Treasures & tunnels" },
+      "text": {
+        "fr": "Chaque pierre ici murmure une histoire. Celle de Dame Carcas et de son cochon, bien sûr. Mais aussi celle des souterrains secrets qui, dit-on, relient la Cité à la campagne.\n\nOn raconte qu'un trésor cathare dormirait quelque part sous les remparts, et que certaines nuits, on entend encore le pas des sentinelles disparues.\n\nEntre l'histoire et la légende, la frontière est mince. C'est ce mélange qui donne à Carcassonne son âme de conte.",
+        "en": "Every stone here whispers a story. That of Dame Carcas and her pig, of course. But also that of secret tunnels said to link the Cité to the countryside.\n\nThey say a Cathar treasure sleeps somewhere beneath the ramparts, and that on some nights, you can still hear the step of vanished sentinels.\n\nBetween history and legend, the border is thin. It is this blend that gives Carcassonne its fairy-tale soul."
+      }
+    },
+    {
+      "id": "saint-louis",
+      "title": { "fr": "Saint-Louis & le royaume", "en": "Saint Louis & the kingdom" },
+      "subtitle": { "fr": "La Cité imprenable", "en": "The impregnable Cité" },
+      "text": {
+        "fr": "Après la chute des Trencavel, Carcassonne devient une place forte du roi de France. C'est Saint-Louis, puis son fils Philippe le Hardi, qui lui donnent son visage définitif.\n\nIls élèvent la seconde enceinte, doublent les murailles, creusent les lices. La Cité devient imprenable : une frontière de pierre face au royaume d'Aragon.\n\nPour des siècles, nul n'osera plus l'attaquer. Sa force même fera son oubli, quand la frontière, bien plus tard, se déplacera vers le sud.",
+        "en": "After the fall of the Trencavels, Carcassonne becomes a stronghold of the King of France. It is Saint Louis, then his son Philip the Bold, who give it its final face.\n\nThey raise the second ring, double the walls, dig the lices. The Cité becomes impregnable: a frontier of stone facing the kingdom of Aragon.\n\nFor centuries, none will dare attack it again. Its very strength will bring its oblivion, when the border, much later, shifts to the south."
+      }
+    },
+    {
+      "id": "ville-basse",
+      "title": { "fr": "La Bastide Saint-Louis", "en": "The Bastide Saint-Louis" },
+      "subtitle": { "fr": "L'autre Carcassonne", "en": "The other Carcassonne" },
+      "text": {
+        "fr": "En contrebas, de l'autre côté de l'Aude, s'étend la ville basse : la Bastide Saint-Louis. Elle naquit en douze cent soixante, après que les habitants rebelles de la Cité en furent chassés.\n\nDessinée en damier autour de sa place centrale, elle prospéra grâce au drap et au vin. Le Pont Vieux, aux arches médiévales, relie encore les deux villes.\n\nDeux Carcassonne, donc : la forteresse sur sa hauteur, et la cité marchande dans la plaine. Deux visages d'une même histoire.",
+        "en": "Below, on the other side of the Aude, stretches the lower town: the Bastide Saint-Louis. It was born in twelve hundred and sixty, after the rebellious inhabitants of the Cité were driven out.\n\nLaid out in a grid around its central square, it prospered through cloth and wine. The Pont Vieux, with its medieval arches, still links the two towns.\n\nTwo Carcassonnes, then: the fortress on its height, and the merchant town in the plain. Two faces of a single history."
+      }
+    },
+    {
+      "id": "embrasement",
+      "title": { "fr": "L'Embrasement de la Cité", "en": "The Embrasement" },
+      "subtitle": { "fr": "Le 14 juillet en feu", "en": "The 14th of July ablaze" },
+      "text": {
+        "fr": "Chaque quatorze juillet, à la nuit tombée, la Cité s'embrase. Des milliers de feux d'artifice jaillissent des remparts : c'est l'Embrasement de la Cité, l'un des plus célèbres feux de France.\n\nPendant quelques minutes, la forteresse semble prise dans un incendie de lumière rouge — un clin d'œil à l'histoire, à ces sièges où le feu menaçait vraiment les murs.\n\nUn demi-million de regards se lèvent alors vers la colline. Carcassonne, une nuit par an, redevient un brasier — de joie, cette fois.",
+        "en": "Every fourteenth of July, at nightfall, the Cité is set ablaze. Thousands of fireworks burst from the ramparts: this is the Embrasement de la Cité, one of the most famous firework displays in France.\n\nFor a few minutes, the fortress seems caught in a blaze of red light — a nod to history, to those sieges when fire truly threatened the walls.\n\nHalf a million eyes then rise toward the hill. Carcassonne, one night a year, becomes a blaze again — of joy, this time."
       }
     },
     {
@@ -57,8 +174,17 @@
       "title": { "fr": "La Porte d'Aude", "en": "The Aude Gate" },
       "subtitle": { "fr": "La descente vers la rivière", "en": "The descent to the river" },
       "text": {
-        "fr": "Notre parcours s'achève à la porte d'Aude, la porte de l'ouest. De là, un chemin escarpé descend vers la rivière Aude et la ville basse. C'est par ici que, pendant des siècles, on montait à la Cité depuis les berges.\n\nRetournez-vous une dernière fois : au-dessus de vous, les cinquante-deux tours se découpent sur le ciel.\n\nAu dix-neuvième siècle, tout cela menaçait ruine, avant que Viollet-le-Duc ne redonne vie à la forteresse.\n\nVous avez traversé deux mille ans d'histoire en quelques pas. La Cité de Carcassonne vous attend, chaque fois que vous reviendrez.",
-        "en": "Our journey ends at the Aude Gate, the western gate. From here, a steep path descends toward the Aude river and the lower town. It was this way that, for centuries, people climbed up to the Cité from the riverbanks.\n\nTurn around one last time: above you, the fifty-two towers stand against the sky.\n\nIn the nineteenth century, all of this was falling into ruin, before Viollet-le-Duc brought the fortress back to life.\n\nYou have crossed two thousand years of history in a few steps. The Cité of Carcassonne will be waiting, each time you return."
+        "fr": "Nous approchons de la porte d'Aude, la porte de l'ouest. De là, un chemin escarpé descend vers la rivière Aude et la ville basse. C'est par ici que, pendant des siècles, on montait à la Cité depuis les berges.\n\nRetournez-vous : au-dessus de vous, les cinquante-deux tours se découpent sur le ciel.\n\nC'était l'un des points les plus vulnérables de la forteresse : aussi les rois de France l'ont-ils hérissée de tours et de chicanes. Rien, ici, n'était laissé au hasard.",
+        "en": "We approach the Aude Gate, the western gate. From here, a steep path descends toward the Aude river and the lower town. It was this way that, for centuries, people climbed up to the Cité from the riverbanks.\n\nTurn around: above you, the fifty-two towers stand against the sky.\n\nThis was one of the fortress's weakest points: and so the kings of France bristled it with towers and switchbacks. Here, nothing was left to chance."
+      }
+    },
+    {
+      "id": "panorama",
+      "title": { "fr": "Panorama & adieu", "en": "Panorama & farewell" },
+      "subtitle": { "fr": "Vingt-cinq siècles en un regard", "en": "Twenty-five centuries at a glance" },
+      "text": {
+        "fr": "Prenez de la hauteur une dernière fois. Devant vous, la double couronne de remparts, cinquante-deux tours, et par-delà, les vignes des Corbières qui courent vers la Méditerranée.\n\nVous avez traversé vingt-cinq siècles : Gaulois, Romains, Wisigoths, Cathares, rois de France, et le rêve d'un architecte du dix-neuvième siècle.\n\nLa Cité de Carcassonne n'est pas un décor : c'est une survivante. Et elle vous attendra, fidèle, à chacun de vos retours.",
+        "en": "Rise up one last time. Before you, the double crown of ramparts, fifty-two towers, and beyond, the vineyards of the Corbières running toward the Mediterranean.\n\nYou have crossed twenty-five centuries: Gauls, Romans, Visigoths, Cathars, kings of France, and the dream of a nineteenth-century architect.\n\nThe Cité of Carcassonne is not a stage set: it is a survivor. And it will wait for you, faithful, on each of your returns."
       }
     }
   ]

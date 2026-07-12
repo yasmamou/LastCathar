@@ -485,18 +485,17 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
               <ChevronLeft className="w-4 h-4" /> {T.prev}
             </button>
 
-            {/* Progress dots */}
-            <div className="flex items-center gap-1.5">
-              {tour.stops.map((s, i) => (
-                <button
-                  key={s.id}
-                  onClick={() => goToStop(i)}
-                  aria-label={`${s.title[lang]}`}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === stopIndex ? 'w-6 bg-gold-400' : 'w-1.5 bg-white/25 hover:bg-white/50'
-                  }`}
+            {/* Progress bar + counter (scales to any number of stops) */}
+            <div className="flex-1 flex items-center gap-2 px-2">
+              <div className="flex-1 h-1 rounded-full bg-white/15 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gold-400 transition-all duration-500"
+                  style={{ width: `${((stopIndex + 1) / tour.stops.length) * 100}%` }}
                 />
-              ))}
+              </div>
+              <span className="text-[10px] text-white/40 tabular-nums flex-shrink-0">
+                {stopIndex + 1}/{tour.stops.length}
+              </span>
             </div>
 
             {isLast ? (
