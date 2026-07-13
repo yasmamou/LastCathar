@@ -28,66 +28,72 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
   const [currentTrack, setCurrentTrack] = useState<MusicTrack>(MUSIC_LIBRARY.find(t => t.id === 'gregorian') ?? MUSIC_LIBRARY[0])
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const autoStartedRef = useRef(false)
-  const playingRef = useRef(false)
+  // Guards the place/country effect while a track cross-fade is in progress.
   const fadingRef = useRef(false)
-  // True once the user has explicitly paused — prevents the country/place effect
-  // from silently restarting the music behind their back on the next re-render.
-  const userPausedRef = useRef(false)
-  // Audio-guide narration in progress → the ambient music is paused (kept low so
-  // switchTrack fades don't fight it) and resumed when narration ends.
+  // Does the USER want music on? (true after auto-start, false after they pause).
+  // Effective sound = wantMusic && !ducked.
+  const wantMusicRef = useRef(false)
+  // True while an audio-guide / tour narration is playing → music is FORCED
+  // silent (paused immediately, no fade) so the voice is never overlaid.
   const duckedRef = useRef(false)
-  // True when the music was auto-paused BY a guide (so we know to resume it).
-  const guidePausedRef = useRef(false)
+  // The single fade timer. EVERY volume ramp goes through this ref and clears any
+  // previous one first, so two fades can never fight each other (that tug-of-war
+  // was the cause of the 4-5 s lag and the music bleeding under the narration).
+  const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const FULL_VOL = 0.25
 
-  // When an audio guide / tour narrates, STOP the ambient music (fade out + pause)
-  // so the voice is heard clearly; resume it when the narration ends. Event from
-  // AudioGuidePlayer / CarcassonneTour.
+  const clearFade = useCallback(() => {
+    if (fadeRef.current) { clearInterval(fadeRef.current); fadeRef.current = null }
+  }, [])
+
+  // Ramp the volume to `target` over ~ms; cancels any fade already running.
+  const fadeTo = useCallback((target: number, ms = 500, pauseAtEnd = false) => {
+    const audio = audioRef.current
+    if (!audio) return
+    clearFade()
+    const stepMs = 25
+    const steps = Math.max(1, Math.round(ms / stepMs))
+    const delta = (target - audio.volume) / steps
+    fadeRef.current = setInterval(() => {
+      const next = audio.volume + delta
+      const done = delta >= 0 ? next >= target : next <= target
+      audio.volume = Math.min(1, Math.max(0, done ? target : next))
+      if (done) {
+        clearFade()
+        if (pauseAtEnd && target <= 0) audio.pause()
+      }
+    }, stepMs)
+  }, [clearFade])
+
+  // Kill the sound RIGHT NOW (no fade): cancel any fade, pause, volume 0.
+  const killAudio = useCallback(() => {
+    clearFade()
+    fadingRef.current = false
+    const audio = audioRef.current
+    if (!audio) return
+    audio.pause()
+    audio.volume = 0
+  }, [clearFade])
+
+  // When an audio guide / tour narrates, the ambient music is silenced INSTANTLY
+  // (hard pause, no fade) so the voice is never overlaid, and resumed when the
+  // narration ends. Event from AudioGuidePlayer / CarcassonneTour.
   useEffect(() => {
-    let fade: ReturnType<typeof setInterval> | null = null
     const onGuideState = (e: Event) => {
       const playing = (e as CustomEvent<{ playing: boolean }>).detail?.playing
       duckedRef.current = !!playing
-      const audio = audioRef.current
-      if (!audio) return
-      if (fade) { clearInterval(fade); fade = null }
-
       if (playing) {
-        // Narration started → fade the music out and pause it.
-        if (playingRef.current) {
-          guidePausedRef.current = true
-          fade = setInterval(() => {
-            const cur = audio.volume
-            if (cur <= 0.03) {
-              audio.volume = 0
-              audio.pause()
-              if (fade) { clearInterval(fade); fade = null }
-            } else {
-              audio.volume = Math.max(0, cur - 0.04)
-            }
-          }, 40)
-        }
-      } else {
-        // Narration ended → resume only if WE paused it and the user didn't pause.
-        if (guidePausedRef.current && !userPausedRef.current) {
-          guidePausedRef.current = false
-          audio.play().then(() => {
-            let v = 0
-            fade = setInterval(() => {
-              v = Math.min(FULL_VOL, v + 0.02)
-              audio.volume = v
-              if (v >= FULL_VOL && fade) { clearInterval(fade); fade = null }
-            }, 40)
-          }).catch(() => {})
-        }
+        // Narration started → cut the music immediately.
+        killAudio()
+      } else if (wantMusicRef.current) {
+        // Narration ended → resume only if the user still wants music.
+        const audio = audioRef.current
+        if (audio) audio.play().then(() => fadeTo(FULL_VOL, 600)).catch(() => {})
       }
     }
     window.addEventListener('audioguide:state', onGuideState)
-    return () => {
-      window.removeEventListener('audioguide:state', onGuideState)
-      if (fade) clearInterval(fade)
-    }
-  }, [])
+    return () => window.removeEventListener('audioguide:state', onGuideState)
+  }, [killAudio, fadeTo])
 
   // Init audio + auto-start on first user interaction
   useEffect(() => {
@@ -100,17 +106,17 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
     const startOnInteraction = () => {
       if (autoStartedRef.current) return
       autoStartedRef.current = true
-      audio.play().then(() => {
-        let vol = 0
-        const timer = setInterval(() => {
-          vol = Math.min(0.25, vol + 0.005)
-          audio.volume = vol
-          if (vol >= 0.25) clearInterval(timer)
-        }, 80)
-        setIsPlaying(true)
-        playingRef.current = true
-        setHasInteracted(true)
-      }).catch(() => {})
+      wantMusicRef.current = true
+      setHasInteracted(true)
+      setIsPlaying(true)
+      // If a narration is already playing (e.g. the first tap WAS "Entrer dans la
+      // Cité"), stay silent — the music will start when the narration ends.
+      if (duckedRef.current) {
+        document.removeEventListener('click', startOnInteraction)
+        document.removeEventListener('touchstart', startOnInteraction)
+        return
+      }
+      audio.play().then(() => fadeTo(FULL_VOL, 800)).catch(() => {})
       document.removeEventListener('click', startOnInteraction)
       document.removeEventListener('touchstart', startOnInteraction)
     }
@@ -124,25 +130,79 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-switch track when country/place changes.
-  // Priority: place-specific track > region/era match.
-  // - If user hasn't interacted yet: just prime the audio.src so the first
-  //   play() uses the right track.
-  // - If interaction happened: switch to the desired track (fade if playing,
-  //   direct play if not).
+  // Play a track immediately (used on place select / from the tracklist).
+  const playTrackDirect = useCallback((track: MusicTrack) => {
+    const audio = audioRef.current
+    if (!audio) return
+    wantMusicRef.current = true
+    clearFade()
+    audio.src = track.file
+    audio.load()
+    if (track.startAt) audio.currentTime = track.startAt
+    audio.volume = 0
+    setCurrentTrack(track)
+    setIsPlaying(true)
+    setHasInteracted(true)
+    // Narration active → load the track but keep it silent; it resumes after.
+    if (duckedRef.current) return
+    audio.play().then(() => fadeTo(FULL_VOL, 600)).catch(() => {})
+  }, [clearFade, fadeTo])
+
+  // Cross-fade to another track (used when music is already playing).
+  const switchTrack = useCallback((track: MusicTrack) => {
+    const audio = audioRef.current
+    if (!audio) return
+    wantMusicRef.current = true
+    setCurrentTrack(track)
+
+    // Narration active → just swap the source silently, no volume changes.
+    if (duckedRef.current) {
+      audio.src = track.file
+      audio.load()
+      if (track.startAt) audio.currentTime = track.startAt
+      return
+    }
+
+    fadingRef.current = true
+    fadeTo(0, 250, true)
+    // After the fade-out timer finishes, swap + fade back in.
+    const swap = setInterval(() => {
+      if (fadeRef.current) return // fade-out still running
+      clearInterval(swap)
+      audio.src = track.file
+      audio.load()
+      if (track.startAt) audio.currentTime = track.startAt
+      audio.volume = 0
+      if (duckedRef.current) { fadingRef.current = false; return }
+      audio.play()
+        .then(() => { setIsPlaying(true); fadeTo(FULL_VOL, 500); fadingRef.current = false })
+        .catch(() => { fadingRef.current = false })
+    }, 30)
+  }, [fadeTo])
+
+  const playTrack = useCallback((track: MusicTrack) => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (wantMusicRef.current && isPlaying && track.id !== currentTrack.id) {
+      switchTrack(track)
+      return
+    }
+    playTrackDirect(track)
+  }, [currentTrack, isPlaying, switchTrack, playTrackDirect])
+
+  // Auto-switch track when country/place changes (never restarts if the user
+  // paused, never plays over a narration).
   useEffect(() => {
     if (fadingRef.current) return
     const placeTrack = getTrackForPlace(placeSlug)
     const region = getRegionFromCountry(selectedCountry)
     const best = placeTrack ?? getBestTrackForEra(region, selectedEras)
+    if (best.id === currentTrack.id) return
 
-    // Nothing to do if the desired track is already active + playing
-    if (best.id === currentTrack.id && playingRef.current) return
-
-    // No user interaction yet → just prime the src so the first play uses it
-    if (!autoStartedRef.current) {
-      const audio = audioRef.current
-      if (audio && best.id !== currentTrack.id) {
+    const audio = audioRef.current
+    // No interaction yet, or narration playing → just prime the src silently.
+    if (!autoStartedRef.current || duckedRef.current) {
+      if (audio) {
         audio.src = best.file
         audio.load()
         if (best.startAt) audio.currentTime = best.startAt
@@ -150,104 +210,24 @@ export function AmbientMusic({ selectedCountry, selectedEras = [], placeSlug, pa
       }
       return
     }
-
-    // Interaction already happened → switch (if playing) or start.
-    // Never auto-(re)start if the user paused on purpose.
-    if (playingRef.current) {
-      switchTrack(best)
-    } else if (!userPausedRef.current) {
-      playTrackDirect(best)
-    }
+    // Music on → cross-fade to the new track. Music off (user paused) → do nothing.
+    if (wantMusicRef.current) switchTrack(best)
   }, [selectedCountry, selectedEras, placeSlug]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Direct play (no fade, used for auto-start on place select)
-  const playTrackDirect = useCallback((track: MusicTrack) => {
-    const audio = audioRef.current
-    if (!audio) return
-    userPausedRef.current = false
-    audio.src = track.file
-    audio.load()
-    if (track.startAt) audio.currentTime = track.startAt
-    audio.volume = 0
-    setCurrentTrack(track)
-    audio.play().then(() => {
-      let vol = 0
-      const timer = setInterval(() => {
-        const target = duckedRef.current ? 0.08 : 0.25
-        vol = Math.min(target, vol + 0.008)
-        audio.volume = vol
-        if (vol >= target) clearInterval(timer)
-      }, 80)
-    }).catch(() => {})
-    setIsPlaying(true)
-    playingRef.current = true
-    setHasInteracted(true)
-  }, [])
-
-  const switchTrack = useCallback((track: MusicTrack) => {
-    const audio = audioRef.current
-    if (!audio) return
-    userPausedRef.current = false
-    fadingRef.current = true
-
-    let vol = audio.volume
-    const out = setInterval(() => {
-      vol = Math.max(0, vol - 0.015)
-      audio.volume = vol
-      if (vol <= 0) {
-        clearInterval(out)
-        audio.pause()
-        audio.src = track.file
-        audio.load()
-        if (track.startAt) audio.currentTime = track.startAt
-        setCurrentTrack(track)
-        // Always attempt play — autoStartedRef being true guarantees browser will allow it
-        audio.play().then(() => {
-          playingRef.current = true
-          setIsPlaying(true)
-          let v = 0
-          const inp = setInterval(() => {
-            const target = duckedRef.current ? 0.08 : 0.25
-            v = Math.min(target, v + 0.008)
-            audio.volume = v
-            if (v >= target) { clearInterval(inp); fadingRef.current = false }
-          }, 60)
-        }).catch(() => { fadingRef.current = false })
-      }
-    }, 40)
-  }, [])
-
-  const playTrack = useCallback((track: MusicTrack) => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    if (playingRef.current && track.id !== currentTrack.id) {
-      switchTrack(track)
-      return
-    }
-
-    playTrackDirect(track)
-  }, [currentTrack, switchTrack, playTrackDirect])
 
   const toggleMusic = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
-
     if (!isPlaying) {
-      userPausedRef.current = false
+      wantMusicRef.current = true
+      setIsPlaying(true)
       playTrack(currentTrack)
     } else {
-      userPausedRef.current = true
-      let vol = audio.volume
-      const timer = setInterval(() => {
-        vol = Math.max(0, vol - 0.02)
-        audio.volume = vol
-        if (vol <= 0) { audio.pause(); clearInterval(timer) }
-      }, 40)
+      // Turn OFF — immediate, no fade.
+      wantMusicRef.current = false
       setIsPlaying(false)
-      playingRef.current = false
+      killAudio()
     }
-  }, [isPlaying, currentTrack, playTrack])
+  }, [isPlaying, currentTrack, playTrack, killAudio])
 
   const region = getRegionFromCountry(selectedCountry)
   const regionTracks = getTracksForRegion(region)
