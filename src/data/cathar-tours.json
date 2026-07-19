@@ -1,0 +1,163 @@
+{
+  "tours": [
+    {
+      "id": "montsegur",
+      "placeSlug": "chateau-de-montsegur",
+      "title": { "fr": "Visite de Montségur", "en": "Tour of Montségur" },
+      "subtitle": { "fr": "Le dernier bastion cathare", "en": "The last Cathar stronghold" },
+      "stops": [
+        {
+          "id": "le-pog",
+          "title": { "fr": "Le pog", "en": "The pog" },
+          "subtitle": { "fr": "Une montagne-forteresse", "en": "A mountain-fortress" },
+          "text": {
+            "fr": "Devant vous se dresse le pog — du mot occitan « puog », la colline. Un piton rocheux de plus de mille deux cents mètres, aux flancs presque verticaux, isolé au milieu des Pyrénées ariégeoises.\n\nOn ne monte pas à Montségur, on s'y hisse. Ce chemin escarpé que vous gravissez, les Cathares, les soldats, les pèlerins l'ont foulé avant vous. En haut, le vent ne s'arrête jamais.\n\nCe lieu ne fut pas choisi par hasard : c'était un refuge, une citadelle du ciel, réputée imprenable.",
+            "en": "Before you rises the pog — from the Occitan word \"puog\", meaning hill. A rocky peak over twelve hundred metres high, with near-vertical flanks, standing alone in the Pyrenees of Ariège.\n\nYou do not climb to Montségur, you haul yourself up. This steep path you are climbing was walked before you by Cathars, soldiers and pilgrims. At the top, the wind never stops.\n\nThis place was no accident: it was a refuge, a citadel in the sky, believed to be impregnable."
+          }
+        },
+        {
+          "id": "refuge-des-parfaits",
+          "title": { "fr": "Le refuge des parfaits", "en": "The refuge of the Perfects" },
+          "subtitle": { "fr": "Une communauté de foi", "en": "A community of faith" },
+          "text": {
+            "fr": "Au sommet vivait une communauté singulière. Non pas seulement une garnison, mais un village de foi. Les « parfaits » et « parfaites » cathares — ces Bons Hommes et Bonnes Femmes qui prêchaient la pauvreté, refusaient de mentir, de tuer, de posséder.\n\nAutour d'eux, des chevaliers, des familles, des croyants venus chercher la sérénité loin de l'Inquisition. Sur ce roc battu par les vents, ils tissaient, priaient, copiaient des textes.\n\nMontségur devint le cœur spirituel du catharisme — et donc, aux yeux de Rome, la tête à abattre.",
+            "en": "At the summit lived a singular community. Not merely a garrison, but a village of faith. The Cathar \"Perfects\" — those Good Men and Good Women who preached poverty and refused to lie, to kill, to own.\n\nAround them: knights, families, believers who had come seeking peace far from the Inquisition. On this wind-battered rock they wove, prayed and copied texts.\n\nMontségur became the spiritual heart of Catharism — and therefore, in the eyes of Rome, the head that had to be cut off."
+          }
+        },
+        {
+          "id": "le-siege",
+          "title": { "fr": "Le siège", "en": "The siege" },
+          "subtitle": { "fr": "Dix mois sur le roc", "en": "Ten months on the rock" },
+          "text": {
+            "fr": "En mai 1243, une armée royale de plusieurs milliers d'hommes encercle le pog. Face à eux : à peine une centaine de combattants et deux cents habitants.\n\nPendant dix mois, l'imprenable tient. Le froid, la faim, les pierres des catapultes ne suffisent pas. Mais une nuit, des montagnards basques escaladent la face que l'on croyait infranchissable et s'emparent d'un roc avancé.\n\nDe là, le trébuchet des assiégeants peut enfin frapper le sommet. Le sort de Montségur est scellé.",
+            "en": "In May 1243, a royal army of several thousand men surrounds the pog. Facing them: barely a hundred fighters and two hundred inhabitants.\n\nFor ten months, the impregnable holds. Cold, hunger and catapult stones are not enough. But one night, Basque mountaineers scale the face thought impossible to climb and seize an outlying rock.\n\nFrom there, the besiegers' trebuchet can at last strike the summit. The fate of Montségur is sealed."
+          }
+        },
+        {
+          "id": "le-bucher",
+          "title": { "fr": "Le bûcher", "en": "The pyre" },
+          "subtitle": { "fr": "16 mars 1244", "en": "16 March 1244" },
+          "text": {
+            "fr": "La reddition est négociée. On propose la vie sauve à qui reniera sa foi. Alors se produit l'inconcevable : dans les derniers jours, une vingtaine de croyants demandent à recevoir le consolament — le baptême cathare — sachant qu'ils choisissent ainsi le bûcher.\n\nLe 16 mars 1244, plus de deux cents parfaits descendent le sentier pour la dernière fois. Au pied de la montagne, dans un enclos de pieux, ils sont brûlés vifs. Aucun ne se rétracte.\n\nCe champ porte encore un nom : le Prat dels Cremats, le pré des brûlés.",
+            "en": "The surrender is negotiated. Life is offered to any who will renounce their faith. Then the inconceivable happens: in those final days, some twenty believers ask to receive the consolamentum — the Cathar baptism — knowing that in doing so they choose the pyre.\n\nOn 16 March 1244, more than two hundred Perfects walk down the path for the last time. At the foot of the mountain, in an enclosure of stakes, they are burned alive. Not one recants.\n\nThat field still bears a name: the Prat dels Cremats, the field of the burned."
+          }
+        },
+        {
+          "id": "le-mystere",
+          "title": { "fr": "Le mystère du trésor", "en": "The mystery of the treasure" },
+          "subtitle": { "fr": "Ce que la nuit emporta", "en": "What the night carried away" },
+          "text": {
+            "fr": "Une légende tenace entoure la chute de Montségur. Quelques jours avant le bûcher, dit-on, quatre parfaits se seraient échappés par la falaise, de nuit, emportant un « trésor ».\n\nOr ? Livres sacrés ? Le Graal lui-même, selon les rêveurs ? Nul ne sait. Sept siècles plus tard, des chercheurs, des poètes, et même l'Allemagne nazie d'Otto Rahn ont fouillé ces pentes en vain.\n\nRegardez une dernière fois ces ruines nues contre le ciel. Montségur ne rendit jamais son secret — et c'est peut-être là son plus beau trésor.",
+            "en": "A stubborn legend surrounds the fall of Montségur. A few days before the pyre, it is said, four Perfects escaped down the cliff by night, carrying away a \"treasure\".\n\nGold? Sacred books? The Grail itself, according to the dreamers? No one knows. Seven centuries later, scholars, poets, and even Otto Rahn's Nazi Germany searched these slopes in vain.\n\nLook one last time at these bare ruins against the sky. Montségur never gave up its secret — and perhaps that is its finest treasure."
+          }
+        }
+      ]
+    },
+    {
+      "id": "foix",
+      "placeSlug": "chateau-de-foix",
+      "title": { "fr": "Visite du château de Foix", "en": "Tour of the Château de Foix" },
+      "subtitle": { "fr": "Les comtes qui défièrent Rome", "en": "The counts who defied Rome" },
+      "stops": [
+        {
+          "id": "trois-tours",
+          "title": { "fr": "Les trois tours", "en": "The three towers" },
+          "subtitle": { "fr": "Sentinelle de l'Ariège", "en": "Sentinel of the Ariège" },
+          "text": {
+            "fr": "Trois tours dressées sur un rocher, dominant la ville et le confluent de l'Arget et de l'Ariège. Voici le château de Foix, l'un des rares à n'avoir jamais été pris de force.\n\nSa silhouette n'a presque pas changé depuis le Moyen Âge. La tour ronde, la plus haute, veille encore sur les toits. D'ici, le regard porte jusqu'aux premières neiges des Pyrénées.\n\nCe n'est pas seulement une forteresse : c'est le berceau d'une dynastie qui tint tête au roi de France et au pape.",
+            "en": "Three towers set upon a rock, commanding the town and the meeting of the Arget and the Ariège. This is the Château de Foix, one of the few never taken by force.\n\nIts outline has barely changed since the Middle Ages. The round tower, the tallest, still watches over the rooftops. From here the eye reaches the first snows of the Pyrenees.\n\nThis is not only a fortress: it is the cradle of a dynasty that stood up to the king of France and the pope."
+          }
+        },
+        {
+          "id": "comtes-protecteurs",
+          "title": { "fr": "Les comtes protecteurs", "en": "The protector counts" },
+          "subtitle": { "fr": "Une cour tolérante", "en": "A tolerant court" },
+          "text": {
+            "fr": "Aux XIIe et XIIIe siècles, les comtes de Foix sont parmi les plus puissants seigneurs du Midi. Et parmi les plus ouverts : à leur cour, cathares et catholiques se côtoient sans drame.\n\nLa propre sœur du comte Raymond-Roger, Esclarmonde, devint parfaite cathare — figure vénérée, presque légendaire. Des Bonnes Femmes prêchaient librement dans les vallées voisines.\n\nProtéger les Bons Hommes n'était pas ici de l'hérésie : c'était défendre son peuple, sa langue, sa terre d'oc contre l'appétit du Nord.",
+            "en": "In the twelfth and thirteenth centuries, the counts of Foix are among the most powerful lords of the South. And among the most open: at their court, Cathars and Catholics mingle without drama.\n\nThe sister of Count Raymond-Roger himself, Esclarmonde, became a Cathar Perfect — a revered, almost legendary figure. Good Women preached freely in the neighbouring valleys.\n\nProtecting the Good Men was not heresy here: it was defending one's people, one's language, one's land of Oc against the appetite of the North."
+          }
+        },
+        {
+          "id": "raymond-roger",
+          "title": { "fr": "Raymond-Roger", "en": "Raymond-Roger" },
+          "subtitle": { "fr": "Le comte insoumis", "en": "The unbowed count" },
+          "text": {
+            "fr": "Quand la croisade déferle sur le Languedoc, Raymond-Roger de Foix prend les armes. Guerrier redouté, il harcèle les croisés, reprend des places fortes, venge les massacres.\n\nAu concile de Latran, en 1215, il ose défendre sa cause devant le pape lui-même, dénonçant les crimes commis au nom de la foi. Rome le condamne, mais ne le brise pas.\n\nSon château, lui, ne tombera jamais aux mains de Simon de Montfort. Foix demeure l'épine plantée dans le flanc de la croisade.",
+            "en": "When the crusade sweeps over Languedoc, Raymond-Roger of Foix takes up arms. A feared warrior, he harries the crusaders, retakes strongholds, avenges the massacres.\n\nAt the Council of the Lateran in 1215, he dares to plead his cause before the pope himself, denouncing the crimes committed in the name of faith. Rome condemns him, but does not break him.\n\nHis castle never falls into the hands of Simon de Montfort. Foix remains the thorn driven into the side of the crusade."
+          }
+        },
+        {
+          "id": "forteresse",
+          "title": { "fr": "La forteresse", "en": "The fortress" },
+          "subtitle": { "fr": "Imprenable", "en": "Impregnable" },
+          "text": {
+            "fr": "Parcourez les salles et les tours. Remarquez l'épaisseur des murs, la position du rocher qui rendait tout assaut suicidaire. Les assiégeants préféraient négocier plutôt que d'y perdre leurs hommes.\n\nEn 1272, le roi de France en personne vient soumettre le comté. Devant la seule menace d'un siège, le comte cède — mais la forteresse reste debout, jamais forcée.\n\nChaque pierre ici raconte cette obstination du Midi : plier parfois, rompre jamais.",
+            "en": "Walk through the halls and towers. Notice the thickness of the walls, the position of the rock that made any assault suicidal. Besiegers preferred to negotiate rather than lose their men here.\n\nIn 1272, the king of France comes in person to subdue the county. At the mere threat of a siege, the count yields — but the fortress remains standing, never forced.\n\nEvery stone here tells of that Southern stubbornness: bend sometimes, break never."
+          }
+        },
+        {
+          "id": "prison-symbole",
+          "title": { "fr": "De la prison au symbole", "en": "From prison to symbol" },
+          "subtitle": { "fr": "Sept siècles plus tard", "en": "Seven centuries later" },
+          "text": {
+            "fr": "Après le rattachement à la Couronne, le château perd son rôle militaire et devient garnison, puis prison. Sur les murs des cachots, des prisonniers ont gravé bateaux, croix et prières — graffiti émouvants que l'on peut encore lire.\n\nAu XIXe siècle, on songe à le démolir. Il est sauvé, restauré, classé.\n\nAujourd'hui, dominant Foix de ses trois tours, il n'est plus une menace mais une mémoire : celle d'une terre qui, un temps, osa penser autrement.",
+            "en": "After its union with the Crown, the castle loses its military role and becomes a garrison, then a prison. On the dungeon walls, prisoners carved ships, crosses and prayers — moving graffiti that can still be read.\n\nIn the nineteenth century, there is talk of demolishing it. It is saved, restored, listed.\n\nToday, towering over Foix with its three towers, it is no longer a threat but a memory: that of a land which, for a time, dared to think differently."
+          }
+        }
+      ]
+    },
+    {
+      "id": "beziers",
+      "placeSlug": "massacre-de-beziers",
+      "title": { "fr": "Béziers, 1209", "en": "Béziers, 1209" },
+      "subtitle": { "fr": "Le premier acte de la croisade", "en": "The first act of the crusade" },
+      "stops": [
+        {
+          "id": "la-ville",
+          "title": { "fr": "La ville prospère", "en": "The prosperous city" },
+          "subtitle": { "fr": "Un matin de juillet", "en": "A July morning" },
+          "text": {
+            "fr": "Imaginez Béziers en ce début d'été 1209. Une cité riche, marchande, bâtie sur sa colline au-dessus de l'Orb. Catholiques et cathares y vivent côte à côte depuis des générations.\n\nÀ l'horizon, pourtant, la poussière monte. L'armée de la croisade, des dizaines de milliers d'hommes bénis par Rome, descend la vallée. Leur cible : l'hérésie du Midi.\n\nL'évêque demande aux habitants de livrer les cathares nommés sur une liste. La ville refuse. On ne trahit pas ses voisins.",
+            "en": "Picture Béziers in that early summer of 1209. A rich merchant city, built on its hill above the Orb. Catholics and Cathars have lived side by side here for generations.\n\nOn the horizon, though, dust is rising. The crusader army — tens of thousands of men blessed by Rome — is coming down the valley. Their target: the heresy of the South.\n\nThe bishop asks the townsfolk to hand over the Cathars named on a list. The city refuses. You do not betray your neighbours."
+          }
+        },
+        {
+          "id": "tuez-les-tous",
+          "title": { "fr": "« Tuez-les tous »", "en": "\"Kill them all\"" },
+          "subtitle": { "fr": "La phrase du siècle", "en": "The phrase of the age" },
+          "text": {
+            "fr": "La légende a retenu une phrase, attribuée au légat du pape, l'abbé Arnaud Amaury. Comme on lui demandait comment distinguer les hérétiques des bons chrétiens, il aurait répondu :\n\n« Tuez-les tous, Dieu reconnaîtra les siens. »\n\nQu'elle soit exacte ou embellie, cette parole résume l'esprit du jour. Ce 22 juillet 1209, il n'y aura ni tri, ni pitié, ni distinction. La foi devient prétexte au carnage.",
+            "en": "Legend has kept a single phrase, attributed to the pope's legate, Abbot Arnaud Amaury. When asked how to tell heretics from true Christians, he is said to have replied:\n\n\"Kill them all, God will know his own.\"\n\nWhether exact or embellished, these words capture the spirit of the day. On this 22 July 1209 there will be no sorting, no mercy, no distinction. Faith becomes a pretext for slaughter."
+          }
+        },
+        {
+          "id": "le-massacre",
+          "title": { "fr": "Le massacre", "en": "The massacre" },
+          "subtitle": { "fr": "22 juillet 1209", "en": "22 July 1209" },
+          "text": {
+            "fr": "Tout s'emballe. Des valets d'armée, les « ribauds », s'engouffrent par une porte laissée ouverte lors d'une échauffourée. La ville est prise en quelques heures.\n\nAlors commence l'horreur. On tue dans les rues, dans les maisons, jusque dans les églises où la population s'est réfugiée. Hommes, femmes, enfants, catholiques comme cathares : nul n'est épargné.\n\nLes chroniqueurs parlent de milliers, jusqu'à vingt mille morts. Puis la ville est incendiée. Béziers n'est plus qu'un brasier.",
+            "en": "Everything spirals. Army servants, the \"ribauds\", pour through a gate left open during a skirmish. The city falls within hours.\n\nThen the horror begins. They kill in the streets, in the houses, even in the churches where the people have taken refuge. Men, women, children, Catholics and Cathars alike: none are spared.\n\nThe chroniclers speak of thousands, up to twenty thousand dead. Then the city is set ablaze. Béziers is nothing but a furnace."
+          }
+        },
+        {
+          "id": "la-madeleine",
+          "title": { "fr": "L'église de la Madeleine", "en": "The Madeleine church" },
+          "subtitle": { "fr": "Le lieu du drame", "en": "The scene of the tragedy" },
+          "text": {
+            "fr": "Dans l'église de la Madeleine, des milliers d'habitants s'étaient réfugiés, croyant l'asile sacré. Il n'en fut rien. Le sanctuaire devint un tombeau.\n\nL'édifice que l'on voit aujourd'hui, remanié au fil des siècles, garde en silence la mémoire de ce jour. Un demi-siècle plus tard, un roi de France y présentera même ses excuses pour un autre meurtre.\n\nPrenez un instant. Sous les dalles paisibles de Béziers dort l'un des premiers grands massacres commis au nom de la religion en Europe.",
+            "en": "In the Madeleine church, thousands of inhabitants had taken refuge, believing sanctuary sacred. It was not. The sanctuary became a tomb.\n\nThe building you see today, reshaped over the centuries, silently keeps the memory of that day. Half a century later, a king of France would even offer his apologies here for another murder.\n\nTake a moment. Beneath the peaceful flagstones of Béziers sleeps one of the first great massacres committed in the name of religion in Europe."
+          }
+        },
+        {
+          "id": "premier-acte",
+          "title": { "fr": "Le premier acte", "en": "The first act" },
+          "subtitle": { "fr": "Trente-cinq ans de guerre", "en": "Thirty-five years of war" },
+          "text": {
+            "fr": "Béziers n'était que le début. La nouvelle du massacre se répandit comme une traînée de poudre : beaucoup de villes, terrifiées, préférèrent se rendre sans combattre.\n\nLa croisade albigeoise durera trente-cinq ans. Carcassonne, Minerve, Lavaur, Toulouse, puis Montségur : partout le même chemin de sièges et de bûchers.\n\nAu bout, la civilisation occitane, sa poésie des troubadours, sa tolérance, sera brisée. Tout cela commença ici, à Béziers, un matin de juillet.",
+            "en": "Béziers was only the beginning. News of the massacre spread like wildfire: many towns, terrified, chose to surrender without a fight.\n\nThe Albigensian Crusade would last thirty-five years. Carcassonne, Minerve, Lavaur, Toulouse, then Montségur: everywhere the same road of sieges and pyres.\n\nIn the end, Occitan civilisation — its troubadour poetry, its tolerance — would be shattered. All of it began here, in Béziers, on a July morning."
+          }
+        }
+      ]
+    }
+  ]
+}

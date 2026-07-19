@@ -57,7 +57,13 @@ function buildTour(): Tour {
 
 const CARCASSONNE_TOUR = buildTour()
 
-const TOURS_BY_PLACE = new Map<string, Tour>([[CARCASSONNE_TOUR.placeSlug, CARCASSONNE_TOUR]])
+// Visites de l'épopée cathare (Montségur, Foix, Béziers…) — construites à part.
+import { CATHAR_TOURS } from './cathar-tours'
+
+const TOURS_BY_PLACE = new Map<string, Tour>([
+  [CARCASSONNE_TOUR.placeSlug, CARCASSONNE_TOUR],
+  ...CATHAR_TOURS.map((t) => [t.placeSlug, t] as [string, Tour]),
+])
 
 export function getTourForPlace(placeSlug: string): Tour | undefined {
   return TOURS_BY_PLACE.get(placeSlug)

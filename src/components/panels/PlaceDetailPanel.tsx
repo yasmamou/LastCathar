@@ -289,8 +289,12 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
                 <Footprints className="w-5 h-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold text-white">{t.enterCite}</div>
-                <div className="text-[11px] text-white/60 mt-0.5">{t.tourSub(tour.stops.length)}</div>
+                <div className="text-sm font-semibold text-white">
+                  {place.slug === 'cite-de-carcassonne' ? t.enterCite : (lang === 'fr' ? 'Commencer la visite' : 'Start the tour')}
+                </div>
+                <div className="text-[11px] text-white/60 mt-0.5">
+                  {tour.subtitle[lang]} · {tour.stops.length} {lang === 'fr' ? 'étapes' : 'stops'}
+                </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gold-400/80 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
             </motion.button>

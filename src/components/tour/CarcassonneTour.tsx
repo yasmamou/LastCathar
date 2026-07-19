@@ -83,6 +83,8 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   // puis le Pass Audioguides est requis (non-esquivable).
   const { canPlay, registerPlay } = useAudioGate()
   const [showPaywall, setShowPaywall] = useState(false)
+  // Le badge, les boutiques et l'enchaînement d'épopée sont propres à Carcassonne.
+  const isCarcassonne = tour.placeSlug === 'cite-de-carcassonne'
   const [stopIndex, setStopIndex] = useState(0)
   const [imageIndex, setImageIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -123,14 +125,14 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
     setPlaying(false)
     emitGuideState(false)
     setCompleted(true)
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && isCarcassonne) {
       fetch('/api/game/badge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ badgeSlug: TOUR_BADGE }),
       }).catch(() => {})
     }
-  }, [status])
+  }, [status, isCarcassonne])
 
   const stop = tour.stops[stopIndex]
   const track = stop.audio[lang]
@@ -684,15 +686,15 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', damping: 12 }}
                     className="w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl"
-                    style={{ background: `${BADGE_MAP[TOUR_BADGE]?.color ?? '#fbbf24'}25` }}
+                    style={{ background: `${(isCarcassonne && BADGE_MAP[TOUR_BADGE]?.color) || '#fbbf24'}25` }}
                   >
-                    {BADGE_MAP[TOUR_BADGE]?.icon ?? '🏰'}
+                    {isCarcassonne ? (BADGE_MAP[TOUR_BADGE]?.icon ?? '🏰') : '🔥'}
                   </motion.div>
                   <div className="text-[10px] uppercase tracking-widest text-amber-300/70 font-semibold mb-1">
-                    {T.badgeUnlocked}
+                    {isCarcassonne ? T.badgeUnlocked : T.completeTitle}
                   </div>
                   <h3 className="font-serif text-2xl font-semibold text-white mb-1">
-                    {BADGE_MAP[TOUR_BADGE]?.label ?? T.completeTitle}
+                    {isCarcassonne ? (BADGE_MAP[TOUR_BADGE]?.label ?? T.completeTitle) : tour.title[lang]}
                   </h3>
                   <p className="text-sm text-white/60 mb-1">{T.completeBody}</p>
                   {xp > 0 && (
@@ -701,12 +703,14 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
                     </div>
                   )}
                   <div className="flex flex-col gap-2.5">
-                    <button
-                      onClick={() => setShowShops(true)}
-                      className="w-full py-3 rounded-xl bg-white/5 border border-amber-400/20 text-sm font-semibold text-amber-300 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <ShoppingBag className="w-4 h-4" /> {T.seeShops}
-                    </button>
+                    {isCarcassonne && (
+                      <button
+                        onClick={() => setShowShops(true)}
+                        className="w-full py-3 rounded-xl bg-white/5 border border-amber-400/20 text-sm font-semibold text-amber-300 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <ShoppingBag className="w-4 h-4" /> {T.seeShops}
+                      </button>
+                    )}
                     {onContinueEpic && (
                       <button
                         onClick={() => { onContinueEpic(); onClose() }}
