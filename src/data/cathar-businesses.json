@@ -1,1 +1,67 @@
-{}
+{
+  "chateau-de-montsegur": [
+    {"name":"Château et village de Montségur","type":"visite","tagFr":"Forteresse cathare et musée","tagEn":"Cathar fortress and museum","url":"https://www.montsegur.fr/"},
+    {"name":"Office de Tourisme des Pyrénées Cathares","type":"office-tourisme","tagFr":"Tourisme au pays de Montségur","tagEn":"Tourism in Montségur country","url":"https://www.pyreneescathares.com/"}
+  ],
+  "chateau-de-foix": [
+    {"name":"Château de Foix","type":"visite","tagFr":"Forteresse des comtes de Foix","tagEn":"Fortress of the Counts of Foix","url":"https://www.sites-touristiques-ariege.fr/"},
+    {"name":"Office de Tourisme de Foix","type":"office-tourisme","tagFr":"Découvrir Foix et l'Ariège","tagEn":"Discover Foix and Ariège","url":"https://www.foix-tourisme.com/"}
+  ],
+  "massacre-de-beziers": [
+    {"name":"Cathédrale Saint-Nazaire de Béziers","type":"visite","tagFr":"Cathédrale gothique panoramique","tagEn":"Panoramic Gothic cathedral","url":"https://www.beziers-mediterranee.com/culture/patrimoine/la-cathedrale-sous-toutes-ses-coutures/"},
+    {"name":"Office de Tourisme de Béziers Méditerranée","type":"office-tourisme","tagFr":"Visiter Béziers et sa région","tagEn":"Visit Béziers and its region","url":"https://www.beziers-mediterranee.com/"}
+  ],
+  "minerve": [
+    {"name":"Minerve, Plus Beaux Villages de France","type":"visite","tagFr":"Village cathare entre deux gorges","tagEn":"Cathar village between two gorges","url":"https://www.les-plus-beaux-villages-de-france.org/fr/nos-villages/minerve/"},
+    {"name":"Office de Tourisme du Minervois au Caroux","type":"office-tourisme","tagFr":"Tourisme en Minervois","tagEn":"Minervois region tourism","url":"https://www.minervois-caroux.com/"}
+  ],
+  "chateau-de-lastours": [
+    {"name":"Les 4 Châteaux de Lastours","type":"visite","tagFr":"Quatre tours de Cabaret","tagEn":"Four towers of Cabaret","url":"https://www.commune-lastours.fr/visiter-lastours/"},
+    {"name":"Châteaux de Lastours - Citadelles du Vertige","type":"visite","tagFr":"Sentinelles de la Montagne Noire","tagEn":"Sentinels of the Montagne Noire","url":"https://citadellesduvertige.aude.fr/chateaux-de-lastours/"}
+  ],
+  "chateau-de-queribus": [
+    {"name":"Château de Quéribus","type":"visite","tagFr":"Dernier bastion cathare","tagEn":"Last Cathar bastion","url":"https://www.cucugnan.fr/"},
+    {"name":"Quéribus - Corbières Minervois Tourisme","type":"office-tourisme","tagFr":"Village de Cucugnan et son théâtre","tagEn":"Cucugnan village and its theatre","url":"https://www.tourisme-corbieres-minervois.com/explorer-nos-incontournables/les-chateaux-du-pays-cathare/le-chateau-de-queribus/"}
+  ],
+  "chateau-de-peyrepertuse": [
+    {"name":"Château de Peyrepertuse","type":"visite","tagFr":"Citadelle du vertige","tagEn":"Fortress of vertigo","url":"https://www.peyrepertuse.com/"},
+    {"name":"Village de Duilhac-sous-Peyrepertuse","type":"office-tourisme","tagFr":"Sentiers vers la forteresse","tagEn":"Trails up to the fortress","url":"https://duilhac.fr/chateau-de-peyrepertuse/"}
+  ],
+  "chateau-de-puivert": [
+    {"name":"Château de Puivert","type":"visite","tagFr":"Donjon et salle des musiciens","tagEn":"Keep and musicians' room","url":"https://chateau-de-puivert.com/"},
+    {"name":"Musée du Quercorb","type":"musee","tagFr":"Instruments médiévaux et vie locale","tagEn":"Medieval instruments and local life","url":"https://www.museequercorb.com/"}
+  ],
+  "chateau-de-termes": [
+    {"name":"Château de Termes","type":"visite","tagFr":"Un des cinq fils de Carcassonne","tagEn":"One of Carcassonne's five sons","url":"https://www.chateau-termes.com/"},
+    {"name":"Château de Termes - Citadelles du Vertige","type":"visite","tagFr":"Ruines au-dessus des gorges","tagEn":"Ruins above the gorges","url":"https://citadellesduvertige.aude.fr/chateau-de-termes/"}
+  ],
+  "chateau-de-puilaurens": [
+    {"name":"Château de Puilaurens","type":"visite","tagFr":"Sentinelle cathare en forêt","tagEn":"Cathar sentinel in the forest","url":"https://www.chateau-puilaurens.com/"},
+    {"name":"Office de Tourisme des Pyrénées Audoises","type":"office-tourisme","tagFr":"Tourisme en haute vallée de l'Aude","tagEn":"Upper Aude valley tourism","url":"https://www.pyreneesaudoises.com/"}
+  ],
+  "chateau-daguilar": [
+    {"name":"Château d'Aguilar","type":"visite","tagFr":"Forteresse des Corbières à Tuchan","tagEn":"Corbières fortress at Tuchan","url":"https://www.tourisme-corbieres-minervois.com/explorer-nos-incontournables/les-chateaux-du-pays-cathare/le-chateau-daguilar/"},
+    {"name":"Aguilar - Corbières Salanque Tourisme","type":"office-tourisme","tagFr":"Château cathare du Haut Fitou","tagEn":"Cathar castle of Haut Fitou","url":"https://www.corbieres-salanque-tourisme.com/site-culturel/chateau-daguilar/"}
+  ],
+  "abbaye-de-fontfroide": [
+    {"name":"Abbaye de Fontfroide","type":"visite","tagFr":"Abbaye cistercienne près de Narbonne","tagEn":"Cistercian abbey near Narbonne","url":"https://www.fontfroide.com/"},
+    {"name":"Restaurant de Fontfroide","type":"restaurant","tagFr":"Cuisine méditerranéenne au domaine","tagEn":"Mediterranean cuisine at the estate","url":"https://www.fontfroide.com/restaurant/"}
+  ],
+  "narbonne": [
+    {"name":"Narbo Via, musée de la Rome antique","type":"musee","tagFr":"Rome antique en trois lieux","tagEn":"Ancient Rome across three sites","url":"https://narbovia.fr/"},
+    {"name":"Palais-Musée des Archevêques","type":"visite","tagFr":"Palais gothique et cathédrale","tagEn":"Gothic palace and cathedral","url":"https://www.narbonne.fr/palais-musee-archeveques"},
+    {"name":"Office de Tourisme de la Côte du Midi","type":"office-tourisme","tagFr":"Tourisme à Narbonne","tagEn":"Narbonne tourism","url":"https://www.cotedumidi.com/"}
+  ],
+  "rennes-le-chateau": [
+    {"name":"Domaine de l'abbé Saunière","type":"visite","tagFr":"Villa Béthanie et Tour Magdala","tagEn":"Villa Bethania and Magdala Tower","url":"https://www.rennes-le-chateau.fr/"},
+    {"name":"Office de Tourisme du Limouxin","type":"office-tourisme","tagFr":"Tourisme autour de Rennes-le-Château","tagEn":"Tourism around Rennes-le-Château","url":"https://www.limouxin-tourisme.com/"}
+  ],
+  "pic-de-bugarach": [
+    {"name":"Ascension du Pic de Bugarach","type":"visite","tagFr":"Randonnée au sommet des Corbières","tagEn":"Hike to the Corbières summit","url":"https://www.audetourisme.com/fr/experiences/bugarach-ascension-dun-mythe/"},
+    {"name":"Village de Bugarach - Office de Tourisme du Limouxin","type":"office-tourisme","tagFr":"Village au pied du pic mythique","tagEn":"Village below the mythic peak","url":"https://www.limouxin-tourisme.com/"}
+  ],
+  "sentier-cathare": [
+    {"name":"Le Sentier Cathare (GR 367)","type":"visite","tagFr":"De la Méditerranée aux Pyrénées","tagEn":"From the Mediterranean to the Pyrenees","url":"https://www.lesentiercathare.com/"},
+    {"name":"Sentier Cathare - Aude Tourisme","type":"office-tourisme","tagFr":"Étapes et hébergements du GR367","tagEn":"GR367 stages and accommodation","url":"https://www.audetourisme.com/a-voir-a-faire/incontournables/sentier-cathare/"}
+  ]
+}
