@@ -370,6 +370,218 @@
           }
         }
       ]
+    },
+    {
+      "id": "puivert",
+      "placeSlug": "chateau-de-puivert",
+      "title": { "fr": "Visite de Puivert", "en": "Tour of Puivert" },
+      "subtitle": { "fr": "Le château des troubadours", "en": "The castle of the troubadours" },
+      "stops": [
+        {
+          "id": "chateau-du-lac",
+          "title": { "fr": "Le château au bord du lac", "en": "The castle by the lake" },
+          "subtitle": { "fr": "Une forteresse paisible", "en": "A peaceful fortress" },
+          "text": {
+            "fr": "Loin des nids d'aigle vertigineux des Corbières, Puivert se dresse sur une colline douce, face à un plateau verdoyant où miroitait jadis un grand lac.\n\nIci, la guerre semblait loin. Le château était un lieu de fêtes, de musique et de poésie, où la cour des seigneurs de Puivert cultivait l'art de vivre occitan.\n\nRegardez ces murs presque sereins : ils gardent le souvenir d'un temps où l'on chantait plus qu'on ne combattait.",
+            "en": "Far from the dizzying eagle's nests of the Corbières, Puivert stands on a gentle hill, facing a green plateau where a great lake once shimmered.\n\nHere, war seemed distant. The castle was a place of festivities, music and poetry, where the court of the lords of Puivert cultivated the Occitan art of living.\n\nLook at these almost serene walls: they keep the memory of a time when people sang more than they fought."
+          }
+        },
+        {
+          "id": "cour-troubadours",
+          "title": { "fr": "La cour des troubadours", "en": "The court of the troubadours" },
+          "subtitle": { "fr": "L'esprit du fin'amor", "en": "The spirit of fin'amor" },
+          "text": {
+            "fr": "Au XIIe siècle, Puivert est un haut lieu de la culture des troubadours. On y célèbre le fin'amor, l'amour courtois, on y compose en langue d'oc des chansons qui rayonneront dans toute l'Europe.\n\nLes cathares, tolérés par ces seigneurs raffinés, y côtoient poètes et musiciens.\n\nCette civilisation brillante, faite de tolérance et de beauté, c'est précisément ce que la croisade venue du Nord va broyer.",
+            "en": "In the twelfth century, Puivert is a high place of troubadour culture. Here fin'amor, courtly love, is celebrated; here songs are composed in the language of Oc that will shine across all of Europe.\n\nThe Cathars, tolerated by these refined lords, mingle here with poets and musicians.\n\nThis brilliant civilisation, made of tolerance and beauty, is precisely what the crusade from the North will crush."
+          }
+        },
+        {
+          "id": "le-siege-trois-jours",
+          "title": { "fr": "Le siège de trois jours", "en": "The three-day siege" },
+          "subtitle": { "fr": "1210", "en": "1210" },
+          "text": {
+            "fr": "En novembre 1210, la croisade atteint Puivert. Le château, moins escarpé que les forteresses de montagne, ne peut résister longtemps.\n\nEn trois jours seulement, la place tombe aux mains des croisés. La cour raffinée est dispersée, ses seigneurs dépossédés.\n\nTrois jours pour faire taire des générations de chansons. La rapidité de cette chute dit tout de la brutalité qui s'abat sur le pays d'oc.",
+            "en": "In November 1210, the crusade reaches Puivert. The castle, less steep than the mountain fortresses, cannot resist for long.\n\nIn only three days, the place falls into the hands of the crusaders. The refined court is scattered, its lords dispossessed.\n\nThree days to silence generations of song. The speed of this fall says everything about the brutality descending upon the land of Oc."
+          }
+        },
+        {
+          "id": "salle-musiciens",
+          "title": { "fr": "La salle des musiciens", "en": "The hall of musicians" },
+          "subtitle": { "fr": "La pierre qui chante", "en": "The stone that sings" },
+          "text": {
+            "fr": "Montez dans le donjon rebâti après la conquête. Au dernier étage s'ouvre la célèbre salle des musiciens.\n\nHuit culs-de-lampe sculptés y figurent des musiciens tenant chacun un instrument : luth, vielle, cornemuse, flûte, tambourin… Un orchestre de pierre, figé pour l'éternité.\n\nC'est l'un des plus précieux témoignages sur la musique médiévale. Même vaincu, l'esprit des troubadours s'est réfugié dans la pierre — pour ne jamais mourir tout à fait.",
+            "en": "Climb into the keep rebuilt after the conquest. On the top floor opens the famous hall of musicians.\n\nEight sculpted corbels depict musicians, each holding an instrument: lute, vielle, bagpipe, flute, tambourine… An orchestra of stone, frozen for eternity.\n\nIt is one of the most precious testimonies to medieval music. Even defeated, the spirit of the troubadours took refuge in the stone — never quite to die."
+          }
+        },
+        {
+          "id": "fin-art-de-vivre",
+          "title": { "fr": "La fin d'un art de vivre", "en": "The end of a way of life" },
+          "subtitle": { "fr": "Ce que la croisade emporta", "en": "What the crusade carried away" },
+          "text": {
+            "fr": "Avec la défaite des seigneurs du Midi, c'est tout un monde qui s'efface : la langue d'oc reléguée, la poésie courtoise éteinte, la tolérance remplacée par l'Inquisition.\n\nPuivert, château des fêtes et des chansons, devient une simple place forte du vainqueur.\n\nEn quittant la salle des musiciens, écoutez le silence. Il dit la disparition d'une civilisation — celle qui, à Puivert, avait choisi la beauté plutôt que la guerre.",
+            "en": "With the defeat of the Southern lords, a whole world fades: the language of Oc pushed aside, courtly poetry extinguished, tolerance replaced by the Inquisition.\n\nPuivert, castle of feasts and songs, becomes a simple stronghold of the victor.\n\nAs you leave the hall of musicians, listen to the silence. It speaks of the vanishing of a civilisation — the one that, at Puivert, had chosen beauty over war."
+          }
+        }
+      ]
+    },
+    {
+      "id": "termes",
+      "placeSlug": "chateau-de-termes",
+      "title": { "fr": "Visite de Termes", "en": "Tour of Termes" },
+      "subtitle": { "fr": "Quatre mois de siège", "en": "Four months of siege" },
+      "stops": [
+        {
+          "id": "forteresse-imprenable",
+          "title": { "fr": "La forteresse imprenable", "en": "The impregnable fortress" },
+          "subtitle": { "fr": "Sur son éperon", "en": "On its spur" },
+          "text": {
+            "fr": "Termes se dresse sur un éperon rocheux ceinturé de ravins, au cœur des Hautes-Corbières. Un site défensif exceptionnel, que l'on disait imprenable.\n\nSes murailles épousaient les gorges du Sou ; nul assaut frontal n'était possible.\n\nCe château était l'un des plus puissants du Languedoc — et son maître, Raymond de Termes, l'un des seigneurs cathares les plus déterminés à ne jamais se soumettre.",
+            "en": "Termes stands on a rocky spur ringed by ravines, in the heart of the High Corbières. An exceptional defensive site, said to be impregnable.\n\nIts walls hugged the gorges of the Sou; no frontal assault was possible.\n\nThis castle was one of the most powerful in Languedoc — and its master, Raymond of Termes, one of the Cathar lords most determined never to submit."
+          }
+        },
+        {
+          "id": "raymond-de-termes",
+          "title": { "fr": "Raymond de Termes", "en": "Raymond of Termes" },
+          "subtitle": { "fr": "Le seigneur cathare", "en": "The Cathar lord" },
+          "text": {
+            "fr": "Raymond de Termes protégeait ouvertement les parfaits. Sa famille était acquise à la foi cathare, et son château servait de refuge aux Bons Hommes des Corbières.\n\nQuand Simon de Montfort exigea sa soumission, Raymond refusa. Fort de ses murailles et de ses réserves, il se croyait à l'abri de tout.\n\nÀ l'été 1210, la croisade vint mettre cette confiance à l'épreuve.",
+            "en": "Raymond of Termes openly protected the Perfects. His family had embraced the Cathar faith, and his castle served as a refuge for the Good Men of the Corbières.\n\nWhen Simon de Montfort demanded his submission, Raymond refused. Strong in his walls and his stores, he believed himself safe from everything.\n\nIn the summer of 1210, the crusade came to put that confidence to the test."
+          }
+        },
+        {
+          "id": "siege-quatre-mois",
+          "title": { "fr": "Le siège de quatre mois", "en": "The four-month siege" },
+          "subtitle": { "fr": "L'endurance", "en": "Endurance" },
+          "text": {
+            "fr": "Le siège de Termes fut le plus long et le plus acharné de l'année 1210. Quatre mois durant, les croisés s'épuisèrent contre ces murailles.\n\nLes machines de guerre grondaient, les assauts se brisaient, l'hiver approchait. Beaucoup de croisés, leur temps de service accompli, plièrent bagage.\n\nMontfort était au bord de l'échec. Termes tenait bon. Et pourtant, la forteresse allait tomber — non par les armes, mais par un ennemi invisible.",
+            "en": "The siege of Termes was the longest and most bitter of the year 1210. For four months, the crusaders wore themselves out against these walls.\n\nThe war machines roared, the assaults shattered, winter drew near. Many crusaders, their term of service done, packed up and left.\n\nMontfort was on the brink of failure. Termes held firm. And yet the fortress was about to fall — not by arms, but by an invisible enemy."
+          }
+        },
+        {
+          "id": "ruse-de-leau",
+          "title": { "fr": "La ruse de l'eau", "en": "The trick of the water" },
+          "subtitle": { "fr": "L'ennemi invisible", "en": "The invisible enemy" },
+          "text": {
+            "fr": "Termes disposait de citernes, mais une pluie soudaine vint les remplir d'une eau croupie. La dysenterie se déclara dans la garnison.\n\nAffaiblis, malades, les assiégés tentèrent de fuir de nuit à travers les ravins. Beaucoup furent rattrapés. Raymond de Termes lui-même fut capturé et mourut prisonnier à Carcassonne.\n\nLa forteresse imprenable était tombée à cause d'une gorgée d'eau. Parfois, l'Histoire tient à peu de chose.",
+            "en": "Termes had cisterns, but a sudden rain filled them with stagnant water. Dysentery broke out among the garrison.\n\nWeakened and sick, the besieged tried to flee by night through the ravines. Many were caught. Raymond of Termes himself was captured and died a prisoner in Carcassonne.\n\nThe impregnable fortress had fallen because of a mouthful of water. Sometimes History hangs by very little."
+          }
+        },
+        {
+          "id": "ruines-vertigineuses",
+          "title": { "fr": "Les ruines vertigineuses", "en": "The dizzying ruins" },
+          "subtitle": { "fr": "Ce qu'il en reste", "en": "What remains" },
+          "text": {
+            "fr": "Aujourd'hui, Termes n'est plus qu'un grand vaisseau de ruines dominant les gorges. Démantelé au XVIIe siècle, il offre pourtant encore un spectacle saisissant.\n\nSuivez le sentier au bord du vide, longez les pans de murailles éventrées, écoutez le vent dans les ravins.\n\nDe la puissance de Raymond de Termes, il ne reste que ces pierres et cette leçon : nulle forteresse, si haute soit-elle, n'est vraiment imprenable.",
+            "en": "Today, Termes is nothing but a great vessel of ruins overlooking the gorges. Dismantled in the seventeenth century, it still offers a striking sight.\n\nFollow the path at the edge of the void, walk along the torn sections of wall, listen to the wind in the ravines.\n\nOf Raymond of Termes's power, only these stones remain, and this lesson: no fortress, however high, is truly impregnable."
+          }
+        }
+      ]
+    },
+    {
+      "id": "puilaurens",
+      "placeSlug": "chateau-de-puilaurens",
+      "title": { "fr": "Visite de Puilaurens", "en": "Tour of Puilaurens" },
+      "subtitle": { "fr": "La forteresse des nuages", "en": "The fortress of the clouds" },
+      "stops": [
+        {
+          "id": "forteresse-nuages",
+          "title": { "fr": "La forteresse des nuages", "en": "The fortress of the clouds" },
+          "subtitle": { "fr": "700 mètres au-dessus du monde", "en": "700 metres above the world" },
+          "text": {
+            "fr": "Perché à sept cents mètres, cerné de forêts profondes, Puilaurens émerge souvent d'une mer de brume. On l'appelle la forteresse des nuages.\n\nLoin des routes, difficile d'accès, il fut longtemps un bout du monde. Sa position en faisait un refuge sûr et un poste de guet imprenable.\n\nGravissez le sentier boisé : à chaque tournant, la silhouette crénelée se rapproche, suspendue entre les sapins et le ciel.",
+            "en": "Perched at seven hundred metres, ringed by deep forests, Puilaurens often emerges from a sea of mist. It is called the fortress of the clouds.\n\nFar from the roads, hard to reach, it was long an end of the world. Its position made it a safe refuge and an impregnable watchpost.\n\nClimb the wooded path: at every bend, the crenellated silhouette draws nearer, suspended between the firs and the sky."
+          }
+        },
+        {
+          "id": "refuge-puis-royal",
+          "title": { "fr": "Refuge puis place royale", "en": "Refuge then royal stronghold" },
+          "subtitle": { "fr": "Deux vies", "en": "Two lives" },
+          "text": {
+            "fr": "Aux temps de la croisade, Puilaurens servit de refuge aux cathares fuyant les vallées. Sa position reculée le protégea longtemps.\n\nMais après la défaite, il changea de camp malgré lui. Rattaché à la Couronne de France, il devint l'un des « cinq fils de Carcassonne », ces forteresses royales qui gardaient la nouvelle frontière avec l'Aragon.\n\nDe repaire de résistants, il devint verrou du vainqueur.",
+            "en": "In the days of the crusade, Puilaurens served as a refuge for Cathars fleeing the valleys. Its remote position protected it for a long time.\n\nBut after the defeat, it changed sides against its will. Attached to the Crown of France, it became one of the \"five sons of Carcassonne\", those royal fortresses guarding the new border with Aragon.\n\nFrom a den of resisters, it became a lock of the victor."
+          }
+        },
+        {
+          "id": "creneaux-echauguettes",
+          "title": { "fr": "Créneaux et échauguettes", "en": "Battlements and turrets" },
+          "subtitle": { "fr": "L'art de la défense", "en": "The art of defence" },
+          "text": {
+            "fr": "Parcourez le chemin de ronde. Puilaurens est un manuel d'architecture militaire médiévale : courtines épaisses, tours rondes, meurtrières savamment disposées.\n\nRemarquez les échauguettes en encorbellement, ces guérites de pierre suspendues aux angles, d'où les guetteurs surveillaient les pentes.\n\nUn célèbre escalier fortifié, en chicane, obligeait tout assaillant à s'exposer sous les traits des défenseurs. Ici, chaque pierre fut pensée pour tuer.",
+            "en": "Walk the wall-walk. Puilaurens is a manual of medieval military architecture: thick curtain walls, round towers, cleverly placed arrow slits.\n\nNotice the corbelled turrets, those stone sentry-boxes hanging from the corners, from which watchmen surveyed the slopes.\n\nA famous fortified staircase, set in a zigzag, forced any attacker to expose himself to the defenders' fire. Here, every stone was designed to kill."
+          }
+        },
+        {
+          "id": "dame-blanche",
+          "title": { "fr": "La tour de la Dame Blanche", "en": "The White Lady's tower" },
+          "subtitle": { "fr": "Une légende", "en": "A legend" },
+          "text": {
+            "fr": "Une des tours porte le nom de Dame Blanche. La légende raconte que le fantôme de Blanche de Bourbon, princesse liée à ces terres, y errerait encore.\n\nOn raconte aussi d'étranges phénomènes acoustiques : un « tube phonique » aménagé dans les murs permettait, dit-on, de porter la voix d'une salle à l'autre — un secret d'ingénieur devenu histoire de fantôme.\n\nEntre science et surnaturel, Puilaurens cultive son mystère.",
+            "en": "One of the towers bears the name of the White Lady. Legend says that the ghost of Blanche de Bourbon, a princess tied to these lands, still wanders there.\n\nStrange acoustic phenomena are also told of: a \"phonic tube\" built into the walls could, it is said, carry a voice from one room to another — an engineer's secret turned ghost story.\n\nBetween science and the supernatural, Puilaurens cultivates its mystery."
+          }
+        },
+        {
+          "id": "sentinelle-frontiere",
+          "title": { "fr": "Sentinelle de la frontière", "en": "Sentinel of the border" },
+          "subtitle": { "fr": "Le bord du royaume", "en": "The edge of the kingdom" },
+          "text": {
+            "fr": "Du sommet, le regard plonge sur la vallée de la Boulzane et les crêtes qui marquaient jadis la limite entre la France et l'Aragon.\n\nPendant près de quatre siècles, Puilaurens veilla sur cette frontière, jusqu'à ce que le traité des Pyrénées, en 1659, la repousse plus au sud et le rende inutile.\n\nAbandonné, il s'endormit dans ses nuages. Aujourd'hui restauré, il reste l'un des plus beaux témoins de l'épopée cathare et de ses lendemains.",
+            "en": "From the summit, the eye plunges over the Boulzane valley and the ridges that once marked the boundary between France and Aragon.\n\nFor nearly four centuries, Puilaurens watched over this border, until the Treaty of the Pyrenees, in 1659, pushed it further south and made the fortress useless.\n\nAbandoned, it fell asleep in its clouds. Restored today, it remains one of the finest witnesses to the Cathar epic and its aftermath."
+          }
+        }
+      ]
+    },
+    {
+      "id": "aguilar",
+      "placeSlug": "chateau-daguilar",
+      "title": { "fr": "Visite d'Aguilar", "en": "Tour of Aguilar" },
+      "subtitle": { "fr": "La sentinelle des Corbières", "en": "The sentinel of the Corbières" },
+      "stops": [
+        {
+          "id": "sentinelle-corbieres",
+          "title": { "fr": "La sentinelle des Corbières", "en": "The sentinel of the Corbières" },
+          "subtitle": { "fr": "Au milieu des vignes", "en": "Amid the vineyards" },
+          "text": {
+            "fr": "Contrairement à ses frères perchés sur des sommets vertigineux, Aguilar veille sur une colline basse, entourée d'une mer de vignes du côté de Tuchan.\n\nSa position plus douce en faisait la plus accessible — et donc la plus exposée — des forteresses royales des Corbières.\n\nSa silhouette dorée au soleil couchant, cernée de vignobles, offre l'une des images les plus paisibles de toute l'épopée cathare.",
+            "en": "Unlike its brothers perched on dizzying summits, Aguilar watches over a low hill, surrounded by a sea of vineyards near Tuchan.\n\nIts gentler position made it the most accessible — and therefore the most exposed — of the royal fortresses of the Corbières.\n\nIts silhouette, golden in the setting sun and ringed by vineyards, offers one of the most peaceful images in all the Cathar epic."
+          }
+        },
+        {
+          "id": "poste-avance",
+          "title": { "fr": "Le poste avancé", "en": "The advanced post" },
+          "subtitle": { "fr": "Le plus exposé des cinq fils", "en": "The most exposed of the five sons" },
+          "text": {
+            "fr": "Aguilar fut d'abord une possession des seigneurs de Termes, favorables aux cathares. Confisqué après la croisade, il rejoignit les « cinq fils de Carcassonne ».\n\nMais sa position en plaine, proche de la frontière aragonaise, en faisait le poste le plus vulnérable. C'était l'avant-garde de la France, sa vigie face au sud.\n\nQui tenait Aguilar voyait venir l'ennemi de loin — mais recevait aussi ses coups en premier.",
+            "en": "Aguilar was first a possession of the lords of Termes, favourable to the Cathars. Confiscated after the crusade, it joined the \"five sons of Carcassonne\".\n\nBut its position on the plain, close to the Aragonese border, made it the most vulnerable post. It was the vanguard of France, its lookout facing south.\n\nWhoever held Aguilar saw the enemy coming from afar — but also took his blows first."
+          }
+        },
+        {
+          "id": "double-enceinte",
+          "title": { "fr": "La double enceinte", "en": "The double wall" },
+          "subtitle": { "fr": "Deux anneaux de pierre", "en": "Two rings of stone" },
+          "text": {
+            "fr": "Pour compenser sa position exposée, on dota Aguilar d'une double enceinte. Un noyau féodal ancien, aux murs épais, fut ceinturé au XIIIe siècle d'une enceinte polygonale hérissée de tours en fer à cheval.\n\nEntre les deux murs court une lice, espace où les défenseurs pouvaient manœuvrer à l'abri.\n\nCette architecture savante, typiquement royale, transforma un modeste castrum en verrou militaire moderne.",
+            "en": "To make up for its exposed position, Aguilar was given a double wall. An old feudal core, with thick walls, was ringed in the thirteenth century by a polygonal enclosure bristling with horseshoe-shaped towers.\n\nBetween the two walls runs a lists, a space where the defenders could manoeuvre under cover.\n\nThis skilful, distinctly royal architecture turned a modest castrum into a modern military lock."
+          }
+        },
+        {
+          "id": "assauts-aragonais",
+          "title": { "fr": "Les assauts aragonais", "en": "The Aragonese assaults" },
+          "subtitle": { "fr": "En première ligne", "en": "On the front line" },
+          "text": {
+            "fr": "Tant que la frontière courut ici, Aguilar connut l'inquiétude des places de première ligne. Aux XIIIe et XIVe siècles, les incursions venues d'Aragon vinrent à plusieurs reprises éprouver ses murailles.\n\nLa garnison guettait les cols, allumait des feux pour alerter les autres forteresses, tenait bon jusqu'aux renforts.\n\nAguilar ne fut pas le théâtre d'un grand bûcher, mais celui d'une longue et sourde vigilance, année après année.",
+            "en": "As long as the border ran here, Aguilar knew the anxiety of front-line strongholds. In the thirteenth and fourteenth centuries, incursions from Aragon came again and again to test its walls.\n\nThe garrison watched the passes, lit fires to alert the other fortresses, held on until reinforcements arrived.\n\nAguilar was not the scene of a great pyre, but of a long, silent vigilance, year after year."
+          }
+        },
+        {
+          "id": "au-milieu-des-vignes",
+          "title": { "fr": "Au milieu des vignes", "en": "Amid the vineyards" },
+          "subtitle": { "fr": "Le repos du guerrier", "en": "The warrior's rest" },
+          "text": {
+            "fr": "Le traité des Pyrénées, en 1659, éloigna la frontière pour toujours. Aguilar, devenu inutile, fut peu à peu abandonné aux vignes et au vent.\n\nAsseyez-vous un instant sur ses vieilles pierres tièdes. Autour de vous s'étend le vignoble de Fitou, dont les vins sont nés sur ces coteaux.\n\nDe sentinelle de guerre, Aguilar est devenu belvédère de paix — un dernier regard doux posé sur la terre cathare.",
+            "en": "The Treaty of the Pyrenees, in 1659, moved the border away for good. Aguilar, now useless, was gradually abandoned to the vines and the wind.\n\nSit for a moment on its old warm stones. Around you stretches the Fitou vineyard, whose wines were born on these slopes.\n\nFrom a sentinel of war, Aguilar has become a belvedere of peace — a last, gentle gaze cast over the Cathar land."
+          }
+        }
+      ]
     }
   ]
 }
