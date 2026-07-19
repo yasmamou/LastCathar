@@ -16,7 +16,7 @@ const T = {
   fr: {
     kicker: 'Pass Audioguides',
     title: 'Débloquez tout l’audiobook',
-    body: 'Vous avez écouté vos 2 guides offerts. Créez votre compte et accédez à vie à tous les guides audio et parcours de Last Cathar.',
+    body: 'Vous avez profité de vos écoutes offertes. Accédez à vie à tous les guides audio et parcours de Last Cathar.',
     price: '4,90 €',
     once: 'paiement unique · accès à vie',
     unlock: 'Créer mon compte et payer 4,90 €',
@@ -27,7 +27,7 @@ const T = {
   en: {
     kicker: 'Audio Pass',
     title: 'Unlock the full audiobook',
-    body: 'You have listened to your 2 free guides. Create your account and get lifetime access to every audio guide and tour on Last Cathar.',
+    body: 'You have used your free listens. Get lifetime access to every audio guide and tour on Last Cathar.',
     price: '€4.90',
     once: 'one-time payment · lifetime access',
     unlock: 'Create account & pay €4.90',

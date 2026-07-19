@@ -44,6 +44,10 @@ export function useAudioGate() {
     return () => { cancelled = true }
   }, [])
 
+  // Nombre d'écoutes offertes : +1 pour les comptes créés (récompense
+  // d'inscription). Anonyme = FREE_AUDIO_GUIDES ; connecté = FREE_AUDIO_GUIDES + 1.
+  const freeLimit = access.authenticated ? FREE_AUDIO_GUIDES + 1 : FREE_AUDIO_GUIDES
+
   // Peut-on jouer cet audio ? On ne bloque JAMAIS tant que le pass n'est pas
   // configuré (Stripe absent) ou tant que l'état n'est pas chargé.
   const canPlay = useCallback(
@@ -51,9 +55,9 @@ export function useAudioGate() {
       if (!access.loaded || !access.configured || access.hasAccess) return true
       const plays = readPlays()
       if (plays.includes(key)) return true
-      return plays.length < FREE_AUDIO_GUIDES
+      return plays.length < freeLimit
     },
-    [access],
+    [access, freeLimit],
   )
 
   // Enregistre un audio écouté (dédupliqué).
@@ -85,5 +89,5 @@ export function useAudioGate() {
     }
   }, [])
 
-  return { access, canPlay, registerPlay, startAudioCheckout, freeLimit: FREE_AUDIO_GUIDES }
+  return { access, canPlay, registerPlay, startAudioCheckout, freeLimit }
 }
