@@ -11,6 +11,7 @@ import { useAudioGate } from '@/lib/audio-gate'
 import { AudioPaywall } from '@/components/audio/AudioPaywall'
 import { STARTER_EPIC_ID, STARTER_PLACE_SLUG, BADGE_MAP } from '@/lib/game'
 import businessesData from '@/data/carcassonne-businesses.json'
+import catharBusinessesData from '@/data/cathar-businesses.json'
 
 interface Business {
   id: string
@@ -21,6 +22,12 @@ interface Business {
   image: string
 }
 const BUSINESSES = businessesData.businesses as Business[]
+
+// Commerces réels des autres lieux cathares (name/type/tagFr/tagEn/url, sans image).
+type CatharBiz = { name: string; type: string; tagFr: string; tagEn: string; url: string }
+const CATHAR_BUSINESSES = catharBusinessesData as Record<string, CatharBiz[]>
+// Forme unifiée pour l'affichage (image facultative).
+interface Biz { name: string; tag: Record<GuideLang, string>; url: string; image?: string }
 const TOUR_BADGE = 'cite-carcassonne-guide'
 
 interface Props {
@@ -83,8 +90,16 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   // puis le Pass Audioguides est requis (non-esquivable).
   const { canPlay, registerPlay } = useAudioGate()
   const [showPaywall, setShowPaywall] = useState(false)
-  // Le badge, les boutiques et l'enchaînement d'épopée sont propres à Carcassonne.
+  // Le badge et l'enchaînement d'épopée sont propres à Carcassonne.
   const isCarcassonne = tour.placeSlug === 'cite-de-carcassonne'
+  // Commerces à mettre en avant pour CE lieu (Carcassonne = riches avec photos ;
+  // autres lieux = vrais établissements récupérés, image de secours = photo du lieu).
+  const tourBusinesses: Biz[] = isCarcassonne
+    ? BUSINESSES.map((b) => ({ name: b.name, tag: b.tag, url: b.url, image: b.image }))
+    : (CATHAR_BUSINESSES[tour.placeSlug] ?? []).map((b) => ({
+        name: b.name, tag: { fr: b.tagFr, en: b.tagEn }, url: b.url,
+      }))
+  const bizFallbackImg = tour.stops[0]?.images?.[0]?.src
   const [stopIndex, setStopIndex] = useState(0)
   const [imageIndex, setImageIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -112,8 +127,8 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   const autoAdvanceRef = useRef(autoAdvance)
   autoAdvanceRef.current = autoAdvance
 
-  const openBusiness = (b: Business) => {
-    window.open(b.url, '_blank', 'noopener,noreferrer')
+  const openBusiness = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   // Reach the end of the tour → grant the badge (if signed in) + show the
@@ -404,22 +419,23 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
       <div className="flex-1" />
 
       {/* Real local businesses — visible while listening to the audio guide */}
+      {tourBusinesses.length > 0 && (
       <div className="relative z-10 px-4 md:px-6 mb-2">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-widest text-amber-300/80">
             <ShoppingBag className="w-3 h-3" /> {T.localProducts}
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-            {BUSINESSES.map((b) => (
+            {tourBusinesses.map((b) => (
               <button
-                key={b.id}
-                onClick={() => openBusiness(b)}
+                key={b.name}
+                onClick={() => openBusiness(b.url)}
                 className="group flex-shrink-0 w-[200px] flex items-center gap-2 rounded-xl border border-amber-400/20 bg-black/50 backdrop-blur-md p-2 text-left hover:border-amber-400/50 transition-colors"
                 title={b.name}
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={b.image} alt="" className="w-full h-full object-cover" />
+                  <img src={b.image ?? bizFallbackImg} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">{b.name}</div>
@@ -431,6 +447,7 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
           </div>
         </div>
       </div>
+      )}
 
       {/* Content card */}
       <div className="relative z-10 px-4 md:px-6 pb-4 safe-bottom">
@@ -660,15 +677,15 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
                     </button>
                   </div>
                   <div className="overflow-y-auto p-3 space-y-2">
-                    {BUSINESSES.map((b) => (
+                    {tourBusinesses.map((b) => (
                       <button
-                        key={b.id}
-                        onClick={() => openBusiness(b)}
+                        key={b.name}
+                        onClick={() => openBusiness(b.url)}
                         className="group w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-amber-400/30 p-2.5 text-left transition-colors"
                       >
                         <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={b.image} alt="" className="w-full h-full object-cover" />
+                          <img src={b.image ?? bizFallbackImg} alt="" className="w-full h-full object-cover" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-medium text-white truncate group-hover:text-amber-200">{b.name}</div>
@@ -703,7 +720,7 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
                     </div>
                   )}
                   <div className="flex flex-col gap-2.5">
-                    {isCarcassonne && (
+                    {tourBusinesses.length > 0 && (
                       <button
                         onClick={() => setShowShops(true)}
                         className="w-full py-3 rounded-xl bg-white/5 border border-amber-400/20 text-sm font-semibold text-amber-300 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
