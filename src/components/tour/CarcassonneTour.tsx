@@ -7,6 +7,8 @@ import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, 
 import type { Tour } from '@/data/carcassonne-tour'
 import type { GuideLang } from '@/data/audio-guides'
 import { useLang } from '@/lib/lang'
+import { useAudioGate } from '@/lib/audio-gate'
+import { AudioPaywall } from '@/components/audio/AudioPaywall'
 import { STARTER_EPIC_ID, STARTER_PLACE_SLUG, BADGE_MAP } from '@/lib/game'
 import businessesData from '@/data/carcassonne-businesses.json'
 
@@ -77,6 +79,10 @@ function emitGuideState(playing: boolean) {
 export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   const { status } = useSession()
   const [lang, setLang] = useLang()
+  // Paywall audio : chaque étape écoutée compte dans le quota (2 gratuits),
+  // puis le Pass Audioguides est requis (non-esquivable).
+  const { canPlay, registerPlay } = useAudioGate()
+  const [showPaywall, setShowPaywall] = useState(false)
   const [stopIndex, setStopIndex] = useState(0)
   const [imageIndex, setImageIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -193,9 +199,24 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
     }
   }
 
-  const resumeAudio = () => {
-    audioRef.current?.play().then(() => { setPlaying(true); emitGuideState(true) }).catch(() => {})
-  }
+  // Lance la lecture d'une étape en respectant le paywall. Rejoue librement une
+  // étape déjà écoutée ; bloque (affiche le paywall) au-delà du quota gratuit.
+  const guardedPlay = useCallback((audio: HTMLAudioElement | null, idx: number): boolean => {
+    if (!audio) return false
+    const key = `tour:carcassonne:${idx}`
+    if (!canPlay(key)) {
+      audio.pause()
+      setPlaying(false)
+      emitGuideState(false)
+      setShowPaywall(true)
+      return false
+    }
+    registerPlay(key)
+    audio.play().then(() => { setPlaying(true); emitGuideState(true) }).catch(() => setPlaying(false))
+    return true
+  }, [canPlay, registerPlay])
+
+  const resumeAudio = () => { guardedPlay(audioRef.current, stopIndex) }
 
   const skipOnboard = () => { setShowOnboard(false); resumeAudio() }
 
@@ -241,8 +262,8 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
 
     setDuration(track.duration)
     setProgress(0)
-    // Autoplay (allowed: opening the tour is a user gesture)
-    audio.play().then(() => { setPlaying(true); emitGuideState(true) }).catch(() => setPlaying(false))
+    // Autoplay (allowed: opening the tour is a user gesture) — gated by the paywall.
+    guardedPlay(audio, stopIndex)
 
     return () => {
       audio.removeEventListener('timeupdate', onTime)
@@ -275,7 +296,7 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
     const audio = audioRef.current
     if (!audio) return
     if (playing) { audio.pause(); setPlaying(false); emitGuideState(false) }
-    else audio.play().then(() => { setPlaying(true); emitGuideState(true) }).catch(() => {})
+    else guardedPlay(audio, stopIndex)
   }
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -703,6 +724,13 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Paywall audio — au-delà du quota gratuit, le Pass Audioguides est requis. */}
+      <AudioPaywall
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        onNeedAuth={() => { setShowPaywall(false); onboardDoneRef.current = true; setShowOnboard(true) }}
+      />
     </motion.div>
   )
 }
