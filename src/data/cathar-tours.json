@@ -582,6 +582,271 @@
           }
         }
       ]
+    },
+    {
+      "id": "fontfroide",
+      "placeSlug": "abbaye-de-fontfroide",
+      "title": { "fr": "Visite de Fontfroide", "en": "Tour of Fontfroide" },
+      "subtitle": { "fr": "L'abbaye d'où partit la croisade", "en": "The abbey where the crusade began" },
+      "stops": [
+        {
+          "id": "abbaye-rouge",
+          "title": { "fr": "L'abbaye rouge", "en": "The red abbey" },
+          "subtitle": { "fr": "Au creux d'un vallon", "en": "In the hollow of a valley" },
+          "text": {
+            "fr": "Nichée au creux d'un vallon des Corbières, à l'écart du monde, l'abbaye de Fontfroide semble taillée dans la lumière. Son grès ocre et rose se teinte d'or au soleil couchant.\n\nLa « source froide » qui lui donna son nom murmure encore parmi les cyprès.\n\nCe havre de paix cache pourtant un rôle terrible : c'est d'ici que partit, sans le vouloir, l'étincelle qui embrasa tout le pays cathare.",
+            "en": "Nestled in the hollow of a Corbières valley, apart from the world, the abbey of Fontfroide seems carved out of light. Its ochre and pink sandstone turns golden at sunset.\n\nThe \"cold spring\" that gave it its name still murmurs among the cypress trees.\n\nYet this haven of peace hides a terrible role: it was from here that, unwillingly, the spark flew that set the whole Cathar land ablaze."
+          }
+        },
+        {
+          "id": "ordre-de-citeaux",
+          "title": { "fr": "L'ordre de Cîteaux", "en": "The order of Cîteaux" },
+          "subtitle": { "fr": "Prière et travail", "en": "Prayer and work" },
+          "text": {
+            "fr": "Fondée au XIe siècle et ralliée à l'ordre cistercien, Fontfroide vécut selon la règle austère de saint Benoît : prière, silence, travail des mains.\n\nLes moines défrichèrent, cultivèrent la vigne, élevèrent des troupeaux. L'abbaye devint riche et puissante, rayonnant sur tout le Languedoc.\n\nMais les cisterciens n'étaient pas que des agriculteurs et des priants : Rome en fit ses champions dans la lutte contre l'hérésie cathare.",
+            "en": "Founded in the eleventh century and joined to the Cistercian order, Fontfroide lived by the austere rule of Saint Benedict: prayer, silence, work of the hands.\n\nThe monks cleared land, cultivated the vine, raised flocks. The abbey grew rich and powerful, radiating over all of Languedoc.\n\nBut the Cistercians were not only farmers and men of prayer: Rome made them its champions in the fight against the Cathar heresy."
+          }
+        },
+        {
+          "id": "pierre-de-castelnau",
+          "title": { "fr": "Pierre de Castelnau", "en": "Pierre de Castelnau" },
+          "subtitle": { "fr": "Le légat du pape", "en": "The pope's legate" },
+          "text": {
+            "fr": "Un moine de Fontfroide devint l'un des hommes les plus redoutés du Midi : Pierre de Castelnau, légat du pape Innocent III.\n\nSa mission : ramener les hérétiques dans le droit chemin et forcer les seigneurs du Sud à combattre les cathares. Intransigeant, il excommunia le comte de Toulouse Raymond VI, jugé trop tiède.\n\nEntre le légat et le comte, la tension monta jusqu'au drame.",
+            "en": "A monk of Fontfroide became one of the most feared men in the South: Pierre de Castelnau, legate of Pope Innocent III.\n\nHis mission: to bring the heretics back to the right path and to force the lords of the South to fight the Cathars. Uncompromising, he excommunicated Count Raymond VI of Toulouse, judged too lukewarm.\n\nBetween the legate and the count, tension rose to the point of tragedy."
+          }
+        },
+        {
+          "id": "le-meurtre",
+          "title": { "fr": "Le meurtre", "en": "The murder" },
+          "subtitle": { "fr": "L'étincelle de 1208", "en": "The spark of 1208" },
+          "text": {
+            "fr": "Le 14 janvier 1208, au bord du Rhône, un écuyer du comte de Toulouse transperça Pierre de Castelnau d'un coup de lance. Le légat du pape mourut sur la berge.\n\nLa nouvelle fit l'effet d'un coup de tonnerre. Innocent III tenait son prétexte : il proclama la croisade contre les Cathares du Languedoc.\n\nUn seul meurtre venait de condamner tout un peuple. La longue nuit de la croisade albigeoise commençait.",
+            "en": "On 14 January 1208, on the banks of the Rhône, a squire of the Count of Toulouse ran Pierre de Castelnau through with a lance. The pope's legate died on the shore.\n\nThe news struck like a thunderclap. Innocent III had his pretext: he proclaimed the crusade against the Cathars of Languedoc.\n\nA single murder had just condemned an entire people. The long night of the Albigensian Crusade was beginning."
+          }
+        },
+        {
+          "id": "cloitre-roseraie",
+          "title": { "fr": "Le cloître et la roseraie", "en": "The cloister and the rose garden" },
+          "subtitle": { "fr": "La paix retrouvée", "en": "Peace regained" },
+          "text": {
+            "fr": "Franchissez le cloître aux fines colonnes, l'église abbatiale à la pureté saisissante, la salle capitulaire baignée de silence. Puis flânez dans la roseraie et les terrasses plantées de cyprès.\n\nHuit siècles après le drame, Fontfroide a retrouvé sa sérénité. On y vient aujourd'hui pour la beauté, non pour la guerre.\n\nMais souvenez-vous, en écoutant la source froide, que la plus terrible des croisades naquit ici, dans ce lieu de prière.",
+            "en": "Cross the cloister with its slender columns, the abbey church of striking purity, the chapter house bathed in silence. Then wander through the rose garden and the terraces planted with cypress.\n\nEight centuries after the tragedy, Fontfroide has recovered its serenity. People come here today for beauty, not for war.\n\nBut remember, as you listen to the cold spring, that the most terrible of crusades was born here, in this place of prayer."
+          }
+        }
+      ]
+    },
+    {
+      "id": "narbonne",
+      "placeSlug": "narbonne",
+      "title": { "fr": "Visite de Narbonne", "en": "Tour of Narbonne" },
+      "subtitle": { "fr": "La ville qui négocia sa survie", "en": "The city that bargained its survival" },
+      "stops": [
+        {
+          "id": "fille-de-rome",
+          "title": { "fr": "La fille de Rome", "en": "The daughter of Rome" },
+          "subtitle": { "fr": "Narbo Martius", "en": "Narbo Martius" },
+          "text": {
+            "fr": "Bien avant les Cathares, Narbonne était déjà une grande cité. Première colonie romaine hors d'Italie, capitale de la Narbonnaise, elle fut un port prospère ouvert sur toute la Méditerranée.\n\nÀ l'époque de la croisade, elle reste l'une des villes les plus riches et les plus peuplées du Midi.\n\nCette puissance, cette richesse et cette fierté antique vont, en 1209, lui permettre de faire ce que d'autres n'osèrent pas : négocier.",
+            "en": "Long before the Cathars, Narbonne was already a great city. The first Roman colony outside Italy, capital of Narbonensis, it was a prosperous port open onto the whole Mediterranean.\n\nAt the time of the crusade, it remains one of the richest and most populous cities of the South.\n\nThis power, this wealth and this ancient pride will, in 1209, allow it to do what others did not dare: negotiate."
+          }
+        },
+        {
+          "id": "archeveque-vicomte",
+          "title": { "fr": "L'archevêque et le vicomte", "en": "The archbishop and the viscount" },
+          "subtitle": { "fr": "Deux pouvoirs rivaux", "en": "Two rival powers" },
+          "text": {
+            "fr": "Narbonne était partagée entre deux maîtres : l'archevêque, prince de l'Église, et le vicomte, seigneur laïque. Les deux se disputaient sans cesse l'autorité sur la cité.\n\nQuand la croisade approcha, l'archevêque Bérenger et les consuls comprirent qu'une résistance serait suicidaire.\n\nPlutôt que le sort de Béziers, ils choisirent la soumission calculée. Narbonne se rallia à l'Église et livra même quelques hérétiques pour prouver sa bonne foi.",
+            "en": "Narbonne was divided between two masters: the archbishop, prince of the Church, and the viscount, a secular lord. The two ceaselessly disputed authority over the city.\n\nWhen the crusade drew near, Archbishop Bérenger and the consuls understood that resistance would be suicidal.\n\nRather than the fate of Béziers, they chose calculated submission. Narbonne rallied to the Church and even handed over a few heretics to prove its good faith."
+          }
+        },
+        {
+          "id": "epargnee-par-calcul",
+          "title": { "fr": "Épargnée par calcul", "en": "Spared by calculation" },
+          "subtitle": { "fr": "Survivre plutôt que résister", "en": "To survive rather than resist" },
+          "text": {
+            "fr": "La stratégie fut payante. Là où Béziers fut massacrée et Carcassonne prise, Narbonne fut épargnée. Pas de siège, pas de bûcher, pas d'incendie.\n\nMais cette survie eut un prix : la ville dut renier une part d'elle-même, dénoncer, se plier au vainqueur.\n\nNarbonne illustre l'autre visage de la croisade — non celui des héros et des martyrs, mais celui, plus gris, de ceux qui, pour vivre, apprirent à courber l'échine.",
+            "en": "The strategy paid off. Where Béziers was massacred and Carcassonne taken, Narbonne was spared. No siege, no pyre, no fire.\n\nBut this survival came at a price: the city had to deny part of itself, to denounce, to bend to the victor.\n\nNarbonne shows the other face of the crusade — not that of heroes and martyrs, but the greyer one of those who, in order to live, learned to bow their heads."
+          }
+        },
+        {
+          "id": "cathedrale-inachevee",
+          "title": { "fr": "La cathédrale inachevée", "en": "The unfinished cathedral" },
+          "subtitle": { "fr": "Saint-Just-et-Saint-Pasteur", "en": "Saints Just and Pasteur" },
+          "text": {
+            "fr": "Levez les yeux vers la cathédrale Saint-Just. Son chœur gothique, l'un des plus hauts de France, s'élance à près de quarante mètres.\n\nEt pourtant, elle est inachevée : la nef ne fut jamais bâtie. Prolonger l'édifice aurait exigé d'abattre les remparts de la cité — la ville refusa.\n\nCe chef-d'œuvre suspendu en plein élan raconte à sa manière l'histoire de Narbonne : la grandeur, toujours, entravée par le calcul.",
+            "en": "Look up at the cathedral of Saint-Just. Its Gothic choir, one of the tallest in France, soars to nearly forty metres.\n\nAnd yet it is unfinished: the nave was never built. To extend the building would have required tearing down the city walls — the town refused.\n\nThis masterpiece suspended in mid-flight tells, in its own way, the story of Narbonne: grandeur, always, held back by calculation."
+          }
+        },
+        {
+          "id": "palais-archeveques",
+          "title": { "fr": "Le palais des archevêques", "en": "The archbishops' palace" },
+          "subtitle": { "fr": "Pouvoir et mémoire", "en": "Power and memory" },
+          "text": {
+            "fr": "Au cœur de la ville se dresse l'imposant palais des archevêques, mêlant donjons médiévaux et façade néogothique. À ses pieds affleure encore la Via Domitia, la voie romaine qui traversait la cité.\n\nDeux mille ans d'histoire se superposent ici, sous vos pas.\n\nNarbonne ne fut pas brûlée. Elle traversa la tempête cathare et en sortit intacte — riche d'une leçon amère : parfois, survivre coûte plus cher que résister.",
+            "en": "At the heart of the city stands the imposing palace of the archbishops, mixing medieval keeps and a neo-Gothic façade. At its foot the Via Domitia, the Roman road that crossed the city, still surfaces.\n\nTwo thousand years of history overlap here, beneath your feet.\n\nNarbonne was not burned. It weathered the Cathar storm and came out intact — richer for a bitter lesson: sometimes, to survive costs more than to resist."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rennes-le-chateau",
+      "placeSlug": "rennes-le-chateau",
+      "title": { "fr": "Visite de Rennes-le-Château", "en": "Tour of Rennes-le-Château" },
+      "subtitle": { "fr": "Le mystère de l'abbé Saunière", "en": "The mystery of Abbé Saunière" },
+      "stops": [
+        {
+          "id": "village-colline",
+          "title": { "fr": "Le village sur la colline", "en": "The hilltop village" },
+          "subtitle": { "fr": "Un balcon sur le Razès", "en": "A balcony over the Razès" },
+          "text": {
+            "fr": "Perché sur une colline dominant la vallée de l'Aude, Rennes-le-Château n'est qu'un tout petit village. Quelques ruelles, une église, un panorama immense sur le pays cathare.\n\nRien ne le distinguerait des hameaux voisins… sans l'histoire extraordinaire qui s'y noua à la fin du XIXe siècle.\n\nCar ici vécut un curé de campagne dont la fortune soudaine et inexpliquée fascine encore le monde entier.",
+            "en": "Perched on a hill overlooking the valley of the Aude, Rennes-le-Château is only a tiny village. A few lanes, a church, a vast panorama over the Cathar country.\n\nNothing would set it apart from the neighbouring hamlets… but for the extraordinary story that unfolded here at the end of the nineteenth century.\n\nFor here lived a country priest whose sudden and unexplained fortune still fascinates the whole world."
+          }
+        },
+        {
+          "id": "abbe-sauniere",
+          "title": { "fr": "L'abbé Saunière", "en": "Abbé Saunière" },
+          "subtitle": { "fr": "Le curé millionnaire", "en": "The millionaire priest" },
+          "text": {
+            "fr": "En 1885, Bérenger Saunière arrive comme curé, pauvre parmi les pauvres. Puis, en quelques années, l'inexplicable se produit : il dépense des sommes colossales.\n\nIl restaure l'église, bâtit une villa, une tour, des jardins, reçoit fastueusement. D'où venait cet argent ? Un curé de campagne ne gagnait presque rien.\n\nLa rumeur enfla : Saunière aurait découvert un trésor caché dans son église. Mais lequel ?",
+            "en": "In 1885, Bérenger Saunière arrives as parish priest, poor among the poor. Then, within a few years, the inexplicable happens: he spends colossal sums.\n\nHe restores the church, builds a villa, a tower, gardens, entertains lavishly. Where did this money come from? A country priest earned almost nothing.\n\nThe rumour swelled: Saunière was said to have found a treasure hidden in his church. But which one?"
+          }
+        },
+        {
+          "id": "travaux-mysterieux",
+          "title": { "fr": "Les travaux mystérieux", "en": "The mysterious works" },
+          "subtitle": { "fr": "Une église étrange", "en": "A strange church" },
+          "text": {
+            "fr": "Entrez dans l'église Sainte-Marie-Madeleine. Au-dessus de la porte, une inscription glaçante : « Terribilis est locus iste » — ce lieu est terrible.\n\nÀ l'intérieur, un décor déroutant : un diable grimaçant soutient le bénitier, des statues aux poses énigmatiques, des symboles que les passionnés scrutent depuis un siècle.\n\nOn dit que Saunière, en déplaçant une dalle d'autel, aurait trouvé des parchemins codés. Réalité ou légende savamment entretenue ?",
+            "en": "Step into the church of Saint Mary Magdalene. Above the door, a chilling inscription: \"Terribilis est locus iste\" — this place is terrible.\n\nInside, a bewildering décor: a grimacing devil holds up the holy-water stoup, statues in enigmatic poses, symbols that enthusiasts have scrutinised for a century.\n\nIt is said that Saunière, moving an altar slab, found coded parchments. Reality, or a legend skilfully kept alive?"
+          }
+        },
+        {
+          "id": "tour-magdala",
+          "title": { "fr": "La tour Magdala", "en": "The Magdala tower" },
+          "subtitle": { "fr": "La folie de pierre", "en": "The folly of stone" },
+          "text": {
+            "fr": "Au bord de la colline, Saunière fit bâtir la tour Magdala, néogothique, dominant la vallée. Elle abritait sa bibliothèque et servait de belvédère à ses promenades.\n\nÀ côté, la villa Béthanie et un jardin d'agrément complétaient ce domaine somptueux, indigne d'un simple curé.\n\nDe la terrasse, le regard embrasse tout le Razès. C'est ici que Saunière rêvait, dépensait, et gardait son secret — qu'il emporta dans la tombe en 1917.",
+            "en": "At the edge of the hill, Saunière had the Magdala tower built, neo-Gothic, overlooking the valley. It housed his library and served as a belvedere for his walks.\n\nBeside it, the Villa Bethania and a pleasure garden completed this sumptuous estate, unworthy of a mere priest.\n\nFrom the terrace, the eye takes in the whole Razès. It was here that Saunière dreamed, spent, and kept his secret — which he carried to the grave in 1917."
+          }
+        },
+        {
+          "id": "mystere-insoluble",
+          "title": { "fr": "Le mystère insoluble", "en": "The unsolvable mystery" },
+          "subtitle": { "fr": "Trésor, légende, industrie", "en": "Treasure, legend, industry" },
+          "text": {
+            "fr": "Qu'avait donc trouvé Saunière ? Le trésor des Wisigoths ? L'or des Cathares descendu de Montségur ? Le magot des Templiers ? Un simple trafic de messes ?\n\nAu XXe siècle, écrivains et mystificateurs ont brodé sur l'affaire, y mêlant le Graal, le Prieuré de Sion, et jusqu'aux romans à succès mondiaux.\n\nLe mystère n'a jamais été résolu — et c'est peut-être mieux ainsi. Rennes-le-Château vit désormais de son énigme, ce trésor-là bien réel.",
+            "en": "So what had Saunière found? The treasure of the Visigoths? The Cathar gold brought down from Montségur? The hoard of the Templars? A simple traffic in Masses?\n\nIn the twentieth century, writers and hoaxers embroidered the affair, weaving in the Grail, the Priory of Sion, and even worldwide bestselling novels.\n\nThe mystery has never been solved — and perhaps that is for the best. Rennes-le-Château now lives off its riddle, and that treasure, at least, is very real."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bugarach",
+      "placeSlug": "pic-de-bugarach",
+      "title": { "fr": "Le pic de Bugarach", "en": "The Pic de Bugarach" },
+      "subtitle": { "fr": "La montagne des mystères", "en": "The mountain of mysteries" },
+      "stops": [
+        {
+          "id": "montagne-sacree",
+          "title": { "fr": "La montagne sacrée", "en": "The sacred mountain" },
+          "subtitle": { "fr": "Le géant des Corbières", "en": "The giant of the Corbières" },
+          "text": {
+            "fr": "Culminant à mille deux cent trente mètres, le pic de Bugarach domine tout le pays cathare. Sa masse sombre, visible de très loin, semble veiller sur les vallées.\n\nDepuis la nuit des temps, les hommes l'ont regardé avec un mélange de crainte et de fascination.\n\nMontagne isolée, souvent coiffée de nuages, elle a toujours attiré les légendes comme l'aimant attire le fer.",
+            "en": "Rising to one thousand two hundred and thirty metres, the Pic de Bugarach dominates the whole Cathar country. Its dark mass, visible from far away, seems to watch over the valleys.\n\nSince the dawn of time, people have looked upon it with a mixture of fear and fascination.\n\nAn isolated mountain, often crowned with clouds, it has always drawn legends as a magnet draws iron."
+          }
+        },
+        {
+          "id": "montagne-inversee",
+          "title": { "fr": "La montagne inversée", "en": "The upside-down mountain" },
+          "subtitle": { "fr": "Un prodige géologique", "en": "A geological marvel" },
+          "text": {
+            "fr": "Le Bugarach cache une singularité rare : son sommet est plus ancien que sa base. Lors de la formation des Pyrénées, d'antiques couches de roche furent soulevées puis renversées par-dessus des strates plus récentes.\n\nOn l'appelle pour cela « la montagne inversée ». Ce phénomène bien réel a nourri toutes les rêveries.\n\nCar une montagne qui semble défier les lois de la nature ne pouvait, aux yeux des hommes, qu'abriter des secrets.",
+            "en": "Bugarach hides a rare peculiarity: its summit is older than its base. During the formation of the Pyrenees, ancient layers of rock were lifted and then overturned on top of younger strata.\n\nFor this it is called \"the upside-down mountain\". This very real phenomenon has fed every daydream.\n\nFor a mountain that seems to defy the laws of nature could only, in people's eyes, harbour secrets."
+          }
+        },
+        {
+          "id": "legendes-cathares",
+          "title": { "fr": "Les légendes cathares", "en": "The Cathar legends" },
+          "subtitle": { "fr": "Grottes et trésors", "en": "Caves and treasures" },
+          "text": {
+            "fr": "Comme tant de lieux du Razès, le Bugarach fut aspiré dans la légende cathare. On raconta que les parfaits y auraient caché un trésor, ou que des grottes secrètes traverseraient la montagne.\n\nRien ne l'atteste. Mais la proximité de Rennes-le-Château, de Montségur et des grottes du Sabarthès fit du pic un maillon des grands mythes du trésor.\n\nSous la roche, l'imaginaire creuse toujours plus de galeries que les hommes.",
+            "en": "Like so many places of the Razès, Bugarach was drawn into the Cathar legend. It was said that the Perfects had hidden a treasure here, or that secret caves ran through the mountain.\n\nNothing proves it. But the closeness of Rennes-le-Château, of Montségur and of the caves of the Sabarthès made the peak a link in the great treasure myths.\n\nBeneath the rock, the imagination always digs more tunnels than men do."
+          }
+        },
+        {
+          "id": "fievre-2012",
+          "title": { "fr": "La fièvre de 2012", "en": "The fever of 2012" },
+          "subtitle": { "fr": "La fin du monde annoncée", "en": "The announced end of the world" },
+          "text": {
+            "fr": "En 2012, le Bugarach connut une célébrité mondiale inattendue. Selon une rumeur new age, la fin du monde annoncée par le calendrier maya épargnerait cette seule montagne, d'où un vaisseau extraterrestre viendrait sauver les élus.\n\nDes milliers de curieux affluèrent ; les autorités durent en réglementer l'accès.\n\nLa fin du monde n'eut pas lieu. Mais l'épisode dit tout du pouvoir d'attraction de ce sommet sur l'imaginaire humain.",
+            "en": "In 2012, Bugarach gained unexpected worldwide fame. According to a New Age rumour, the end of the world announced by the Mayan calendar would spare this one mountain, from which an alien craft would come to save the chosen few.\n\nThousands of curious visitors flocked in; the authorities had to regulate access.\n\nThe end of the world did not come. But the episode says everything about this summit's power over the human imagination."
+          }
+        },
+        {
+          "id": "vrai-tresor",
+          "title": { "fr": "Le vrai trésor", "en": "The true treasure" },
+          "subtitle": { "fr": "Le silence et la vue", "en": "Silence and the view" },
+          "text": {
+            "fr": "Oubliez un instant trésors et soucoupes. Le vrai prodige du Bugarach, c'est lui-même : ses hêtraies, ses vautours qui tournoient, son silence de haute montagne.\n\nDu sommet, par temps clair, on embrasse la Méditerranée, le Canigou, les Pyrénées entières et tout le pays des châteaux cathares.\n\nGrimpez, respirez, regardez. Le secret que tant cherchèrent est peut-être là, à ciel ouvert : la beauté nue de cette terre du Sud.",
+            "en": "Forget treasures and flying saucers for a moment. The true marvel of Bugarach is itself: its beech woods, its wheeling vultures, its high-mountain silence.\n\nFrom the summit, on a clear day, you take in the Mediterranean, the Canigou, the whole Pyrenees and all the country of the Cathar castles.\n\nClimb, breathe, look. The secret that so many sought may be right there, in the open air: the bare beauty of this Southern land."
+          }
+        }
+      ]
+    },
+    {
+      "id": "sentier-cathare",
+      "placeSlug": "sentier-cathare",
+      "title": { "fr": "Le Sentier cathare", "en": "The Cathar Trail" },
+      "subtitle": { "fr": "250 km sur les traces des parfaits", "en": "250 km in the footsteps of the Perfects" },
+      "stops": [
+        {
+          "id": "mer-aux-pyrenees",
+          "title": { "fr": "De la mer aux Pyrénées", "en": "From the sea to the Pyrenees" },
+          "subtitle": { "fr": "Le GR 367", "en": "The GR 367" },
+          "text": {
+            "fr": "Le Sentier cathare, c'est deux cent cinquante kilomètres de marche, de la Méditerranée aux contreforts des Pyrénées. Il relie Port-la-Nouvelle, sur la côte, à Foix, au pied des montagnes.\n\nBalisé comme le GR 367, il se parcourt en une douzaine de jours, à travers garrigues, gorges, forêts et crêtes.\n\nCe n'est pas un simple chemin de randonnée : c'est un voyage dans l'Histoire, d'un château cathare à l'autre.",
+            "en": "The Cathar Trail is two hundred and fifty kilometres of walking, from the Mediterranean to the foothills of the Pyrenees. It links Port-la-Nouvelle, on the coast, to Foix, at the foot of the mountains.\n\nWaymarked as the GR 367, it takes about twelve days, through garrigue, gorges, forests and ridges.\n\nThis is no mere hiking path: it is a journey through History, from one Cathar castle to the next."
+          }
+        },
+        {
+          "id": "pas-des-parfaits",
+          "title": { "fr": "Sur les pas des parfaits", "en": "In the footsteps of the Perfects" },
+          "subtitle": { "fr": "Marcher la mémoire", "en": "Walking the memory" },
+          "text": {
+            "fr": "Pendant la croisade, croyants, parfaits et chevaliers pourchassés empruntèrent ces mêmes vallées pour fuir d'un refuge à l'autre. Le sentier suit, en partie, ces chemins de l'exil et de la résistance.\n\nMarcher ici, c'est éprouver dans ses jambes ce que vécurent les fugitifs : la longueur des étapes, la dureté des pentes, l'immensité du pays.\n\nChaque col franchi rapproche du dernier refuge, là-haut, dans la montagne.",
+            "en": "During the crusade, believers, Perfects and hunted knights took these same valleys to flee from one refuge to another. The trail follows, in part, these paths of exile and resistance.\n\nTo walk here is to feel in your legs what the fugitives lived: the length of the stages, the harshness of the slopes, the vastness of the land.\n\nEvery pass crossed brings you nearer the last refuge, up there in the mountains."
+          }
+        },
+        {
+          "id": "fil-des-forteresses",
+          "title": { "fr": "Le fil des forteresses", "en": "The thread of fortresses" },
+          "subtitle": { "fr": "De château en château", "en": "From castle to castle" },
+          "text": {
+            "fr": "Le Sentier cathare enfile les grandes forteresses comme des perles : Quéribus et Peyrepertuse sur leurs crêtes, Puilaurens dans ses nuages, Puivert au bord de son plateau, et enfin Montségur, avant Foix.\n\nChaque étape offre une silhouette de pierre dressée à l'horizon, récompense du marcheur.\n\nEnsemble, ces châteaux racontent toute l'épopée : la résistance, la chute, puis la frontière. Le sentier en est le fil conducteur.",
+            "en": "The Cathar Trail threads the great fortresses like beads: Quéribus and Peyrepertuse on their ridges, Puilaurens in its clouds, Puivert at the edge of its plateau, and finally Montségur, before Foix.\n\nEach stage offers a silhouette of stone raised on the horizon, the walker's reward.\n\nTogether, these castles tell the whole epic: resistance, fall, then the border. The trail is its guiding thread."
+          }
+        },
+        {
+          "id": "deux-variantes",
+          "title": { "fr": "Les deux variantes", "en": "The two variants" },
+          "subtitle": { "fr": "Nord et sud", "en": "North and south" },
+          "text": {
+            "fr": "Au milieu du parcours, le sentier se dédouble. Une variante nord, plus douce, passe par Bugarach et les vallées. Une variante sud, plus sauvage et montagneuse, longe la haute frontière.\n\nLes deux se rejoignent avant Montségur. À vous de choisir votre chemin — comme les fugitifs d'autrefois choisissaient le leur selon la menace.\n\nQuel que soit l'itinéraire, la garrigue embaume le thym, et les rapaces vous accompagnent d'un sommet à l'autre.",
+            "en": "Midway along the route, the trail splits in two. A northern variant, gentler, passes through Bugarach and the valleys. A southern variant, wilder and more mountainous, follows the high border.\n\nThe two rejoin before Montségur. The choice of path is yours — as the fugitives of old chose theirs according to the danger.\n\nWhichever route you take, the garrigue is fragrant with thyme, and the birds of prey accompany you from one summit to the next."
+          }
+        },
+        {
+          "id": "chemin-memoire",
+          "title": { "fr": "Le chemin comme mémoire", "en": "The path as memory" },
+          "subtitle": { "fr": "Un pèlerinage laïque", "en": "A secular pilgrimage" },
+          "text": {
+            "fr": "Au terme des deux cent cinquante kilomètres, on arrive à Foix, sous les trois tours qui virent les comtes défier Rome. La boucle de l'épopée se referme.\n\nLe Sentier cathare n'est pas qu'une performance sportive : c'est une manière de se souvenir en marchant, de rendre hommage à un peuple, une langue, une liberté brisée.\n\nChaque pas est une page. Et vous, en le parcourant, devenez à votre tour un maillon de cette longue mémoire.",
+            "en": "At the end of the two hundred and fifty kilometres, you arrive at Foix, beneath the three towers that saw the counts defy Rome. The loop of the epic closes.\n\nThe Cathar Trail is not merely a sporting feat: it is a way of remembering by walking, of paying homage to a people, a language, a broken freedom.\n\nEvery step is a page. And you, by walking it, become in turn a link in this long memory."
+          }
+        }
+      ]
     }
   ]
 }

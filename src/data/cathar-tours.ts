@@ -12,6 +12,12 @@ import type { Tour, TourStop, TourImage } from './carcassonne-tour'
 
 const durationMap = durations as Record<string, number>
 
+// Certains lieux (ex. le Sentier cathare, itinéraire) n'ont pas d'image propre :
+// on emprunte celles d'un lieu emblématique qu'ils traversent.
+const IMAGE_FALLBACK: Record<string, string> = {
+  'sentier-cathare': 'chateau-de-montsegur',
+}
+
 function imagesForPlace(placeSlug: string): TourImage[] {
   const place = allPlaces.find((p) => p.slug === placeSlug)
   if (!place) return []
@@ -20,7 +26,11 @@ function imagesForPlace(placeSlug: string): TourImage[] {
   )
   const unique = Array.from(new Set(urls))
   const source = place.sourceLinks?.[0] ?? ''
-  return unique.map((src) => ({ src, artist: '', license: '', source }))
+  const imgs = unique.map((src) => ({ src, artist: '', license: '', source }))
+  if (imgs.length === 0 && IMAGE_FALLBACK[placeSlug]) {
+    return imagesForPlace(IMAGE_FALLBACK[placeSlug])
+  }
+  return imgs
 }
 
 function buildCatharTours(): Tour[] {
