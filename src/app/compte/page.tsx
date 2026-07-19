@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import {
   Loader2, ShoppingBag, Eye, MousePointerClick, Pencil, Trash2, ExternalLink,
-  Download, CreditCard, Plus, MapPin, X, Check, Store,
+  Download, CreditCard, Plus, MapPin, X, Check, Store, Search, ArrowRight,
 } from 'lucide-react'
+import { allPlaces } from '@/data/all-places'
+import { AddProductModal } from '@/components/marketplace/AddProductModal'
 
 interface MyProduct {
   id: string
@@ -45,6 +47,9 @@ export default function ComptePage() {
   const [sub, setSub] = useState<SubSummary | null>(null)
   const [editing, setEditing] = useState<MyProduct | null>(null)
   const [portalLoading, setPortalLoading] = useState(false)
+  // Flux « Placer mon produit » : choisir le lieu → formulaire.
+  const [picking, setPicking] = useState(false)
+  const [picked, setPicked] = useState<{ slug: string; title: string } | null>(null)
 
   const load = useCallback(() => {
     setLoading(true)
@@ -56,6 +61,16 @@ export default function ComptePage() {
   }, [])
 
   useEffect(() => { if (authStatus === 'authenticated') load() }, [authStatus, load])
+
+  // Arrivée depuis la page de succès d'abonnement (/compte?add=1) → ouvre
+  // directement le choix du lieu pour placer le produit.
+  useEffect(() => {
+    if (authStatus !== 'authenticated' || typeof window === 'undefined') return
+    if (new URLSearchParams(window.location.search).get('add') === '1') {
+      setPicking(true)
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }, [authStatus])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer ce produit ? Cela libère un emplacement.')) return
@@ -135,9 +150,6 @@ export default function ComptePage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                {sub.usedSlots < sub.totalSlots && (
-                  <a href="/pricing" className="text-[11px] text-gold-400/60 hover:text-gold-400">+ Ajouter</a>
-                )}
                 {sub.canManage && (
                   <button onClick={openPortal} disabled={portalLoading}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-white/70 transition-colors disabled:opacity-50">
@@ -160,6 +172,27 @@ export default function ComptePage() {
           )}
         </div>
 
+        {/* Action principale : placer un produit (emplacement libre) */}
+        {sub?.active && sub.usedSlots < sub.totalSlots && (
+          <button
+            onClick={() => setPicking(true)}
+            className="w-full flex items-center justify-between gap-3 rounded-xl border border-gold-400/30 bg-gold-400/[0.06] hover:bg-gold-400/[0.12] px-5 py-4 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gold-400 text-midnight-950 flex items-center justify-center flex-shrink-0">
+                <Plus className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white/90">Placer mon produit</p>
+                <p className="text-[11px] text-white/50">
+                  {sub.totalSlots - sub.usedSlots} emplacement{sub.totalSlots - sub.usedSlots > 1 ? 's' : ''} libre{sub.totalSlots - sub.usedSlots > 1 ? 's' : ''} — choisissez un lieu et publiez.
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-gold-400/70 flex-shrink-0" />
+          </button>
+        )}
+
         {/* Stats + CSV */}
         {products.length > 0 && (
           <div className="flex items-center justify-between">
@@ -180,7 +213,9 @@ export default function ComptePage() {
           <div className="text-center py-16">
             <ShoppingBag className="w-10 h-10 text-white/10 mx-auto" />
             <p className="text-sm text-white/30 mt-3">Vous n&apos;avez pas encore de produit.</p>
-            <p className="text-xs text-white/20 mt-1">Ouvrez un lieu sur le globe et cliquez « Proposer un produit ».</p>
+            {sub?.active
+              ? <p className="text-xs text-white/20 mt-1">Cliquez « Placer mon produit » ci-dessus pour publier votre première vitrine.</p>
+              : <p className="text-xs text-white/20 mt-1">Abonnez-vous pour publier votre vitrine.</p>}
           </div>
         ) : (
           <div className="space-y-3">
@@ -239,6 +274,76 @@ export default function ComptePage() {
           }}
         />
       )}
+
+      {/* Étape 1 : choisir le lieu */}
+      {picking && (
+        <PlacePicker
+          onClose={() => setPicking(false)}
+          onPick={(slug, title) => { setPicking(false); setPicked({ slug, title }) }}
+        />
+      )}
+
+      {/* Étape 2 : formulaire produit pour le lieu choisi */}
+      <AddProductModal
+        isOpen={!!picked}
+        onClose={() => { setPicked(null); load() }}
+        placeSlug={picked?.slug ?? ''}
+        placeTitle={picked?.title ?? ''}
+        onOpenAuth={() => {}}
+      />
+    </div>
+  )
+}
+
+// Sélecteur de lieu : recherche + liste, pour choisir où publier le produit.
+function PlacePicker({ onClose, onPick }: { onClose: () => void; onPick: (slug: string, title: string) => void }) {
+  const [q, setQ] = useState('')
+  const results = useMemo(() => {
+    const query = q.trim().toLowerCase()
+    const base = query
+      ? allPlaces.filter((p) =>
+          p.title.toLowerCase().includes(query) ||
+          p.country?.toLowerCase().includes(query) ||
+          p.slug.includes(query))
+      : allPlaces.filter((p) => p.isFeatured)
+    return base.slice(0, 60)
+  }, [q])
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center px-4" style={{ background: 'rgba(5,6,13,0.85)', backdropFilter: 'blur(8px)' }} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-white/10 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-6 max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-serif text-lg font-semibold text-white">Choisissez un lieu</h3>
+          <button onClick={onClose} className="text-white/40 hover:text-white/80"><X className="w-5 h-5" /></button>
+        </div>
+        <p className="text-xs text-white/40 mb-4">Où voulez-vous afficher votre produit ?</p>
+        <div className="relative mb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            autoFocus
+            placeholder="Rechercher (Carcassonne, Béziers…)"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white/90 placeholder-white/25 focus:outline-none focus:border-gold-400/40"
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto -mr-2 pr-2 space-y-1">
+          {results.map((p) => (
+            <button
+              key={p.slug}
+              onClick={() => onPick(p.slug, p.title)}
+              className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border border-white/8 hover:border-gold-400/40 bg-white/[0.02] hover:bg-white/5 transition-colors text-left"
+            >
+              <div className="min-w-0">
+                <p className="text-sm text-white/85 truncate">{p.title}</p>
+                <p className="text-[10px] text-white/35 truncate">{p.country}</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-white/30 flex-shrink-0" />
+            </button>
+          ))}
+          {results.length === 0 && <p className="text-center text-xs text-white/30 py-6">Aucun lieu trouvé.</p>}
+        </div>
+      </div>
     </div>
   )
 }

@@ -40,6 +40,21 @@ export function VitrineStrip({
   limit = 3,
 }: Props) {
   const [products, setProducts] = useState<VitrineProduct[] | null>(null)
+  // L'utilisateur connecté a-t-il un emplacement libre à remplir ? Si oui, le
+  // slot vide mène directement au dépôt (/compte) plutôt qu'à la page /pricing.
+  const [canPlace, setCanPlace] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/products/mine')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d?.subscription) return
+        setCanPlace(!!d.subscription.active && d.subscription.usedSlots < d.subscription.totalSlots)
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -141,7 +156,9 @@ export function VitrineStrip({
 
           <DesktopEmptySlot
             rowMode={!!panelOpen}
-            label={hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'}
+            href={canPlace ? '/compte?add=1' : '/pricing'}
+            label={canPlace ? 'Placer mon produit' : hasProducts ? 'Votre produit ici' : 'Soyez le premier ici'}
+            sublabel={canPlace ? 'Publier maintenant →' : 'Réserver cet emplacement →'}
           />
         </div>
       </motion.div>
@@ -200,10 +217,10 @@ function DesktopProductCard({
   )
 }
 
-function DesktopEmptySlot({ label, rowMode }: { label: string; rowMode?: boolean }) {
+function DesktopEmptySlot({ label, sublabel, href, rowMode }: { label: string; sublabel: string; href: string; rowMode?: boolean }) {
   return (
     <Link
-      href="/pricing"
+      href={href}
       className={`group flex items-center gap-2 rounded-lg border border-dashed border-amber-400/30 hover:border-amber-400/60 bg-amber-400/5 hover:bg-amber-400/10 px-2 py-1.5 transition-colors ${
         rowMode ? 'flex-shrink-0 w-[200px]' : ''
       }`}
@@ -213,7 +230,7 @@ function DesktopEmptySlot({ label, rowMode }: { label: string; rowMode?: boolean
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-[11px] font-medium text-amber-300 truncate">{label}</div>
-        <div className="text-[9px] text-white/50 truncate">Réserver cet emplacement →</div>
+        <div className="text-[9px] text-white/50 truncate">{sublabel}</div>
       </div>
     </Link>
   )

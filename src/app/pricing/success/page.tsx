@@ -94,8 +94,7 @@ function SuccessContent() {
               {sync.slots > 0 && (
                 <> — <b className="text-amber-300">{sync.slots} emplacement{sync.slots > 1 ? 's' : ''}</b> à votre disposition</>
               )}.
-              Ouvrez un lieu sur le globe puis cliquez sur «&nbsp;Proposer un produit&nbsp;»
-              pour occuper votre vitrine.
+              Cliquez ci-dessous pour choisir un lieu et publier votre produit.
             </p>
           </>
         )}
@@ -117,7 +116,7 @@ function SuccessContent() {
         {sync.phase === 'done' && (
           <div className="flex gap-3 justify-center">
             <Link
-              href="/"
+              href="/compte?add=1"
               className="inline-flex items-center gap-2 rounded-lg bg-amber-400 px-6 py-3 text-sm font-semibold text-black hover:bg-amber-300 transition"
             >
               <Store className="w-4 h-4" />
