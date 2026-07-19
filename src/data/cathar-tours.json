@@ -158,6 +158,218 @@
           }
         }
       ]
+    },
+    {
+      "id": "minerve",
+      "placeSlug": "minerve",
+      "title": { "fr": "Visite de Minerve", "en": "Tour of Minerve" },
+      "subtitle": { "fr": "Le premier bûcher de la croisade", "en": "The first pyre of the crusade" },
+      "stops": [
+        {
+          "id": "village-gorges",
+          "title": { "fr": "Le village sur les gorges", "en": "The village on the gorges" },
+          "subtitle": { "fr": "Une île de pierre", "en": "An island of stone" },
+          "text": {
+            "fr": "Minerve semble suspendue au-dessus du vide. Deux rivières, la Cesse et le Brian, ont creusé au fil des millénaires de profondes gorges qui enserrent le village de toutes parts.\n\nDe cette forteresse naturelle, on ne pouvait sortir que par d'étroits ponts de roche. C'était un refuge rêvé, une île de pierre au milieu des garrigues.\n\nRegardez ces falaises vertigineuses : elles ont fait la fierté de Minerve — et bientôt son tombeau.",
+            "en": "Minerve seems suspended over the void. Two rivers, the Cesse and the Brian, have carved deep gorges over the millennia that encircle the village on every side.\n\nFrom this natural fortress, one could leave only by narrow bridges of rock. It was a dream refuge, an island of stone amid the garrigue.\n\nLook at these dizzying cliffs: they were the pride of Minerve — and soon its tomb."
+          }
+        },
+        {
+          "id": "le-refuge",
+          "title": { "fr": "Le refuge", "en": "The refuge" },
+          "subtitle": { "fr": "Après Béziers, la fuite", "en": "After Béziers, the flight" },
+          "text": {
+            "fr": "Après la chute de Béziers et de Carcassonne en 1209, de nombreux cathares fuient vers les places réputées sûres. Minerve, imprenable, en accueille beaucoup.\n\nParfaits, croyants, chevaliers dépossédés : tous se pressent derrière ses remparts, sous la protection du vicomte Guilhem de Minerve.\n\nOn s'y croit à l'abri du monde. On ignore encore que Simon de Montfort, le chef de la croisade, a déjà tourné les yeux vers ce nid rocheux.",
+            "en": "After the fall of Béziers and Carcassonne in 1209, many Cathars flee towards places thought safe. Minerve, impregnable, takes in a great number.\n\nPerfects, believers, dispossessed knights: all crowd behind its ramparts, under the protection of Viscount Guilhem of Minerve.\n\nThey believe themselves sheltered from the world. They do not yet know that Simon de Montfort, leader of the crusade, has already turned his eyes towards this rocky nest."
+          }
+        },
+        {
+          "id": "le-siege",
+          "title": { "fr": "Le siège", "en": "The siege" },
+          "subtitle": { "fr": "L'été 1210", "en": "The summer of 1210" },
+          "text": {
+            "fr": "En juin 1210, Montfort met le siège. Le vrai maître des lieux n'est pas l'épée mais la soif : l'été brûle, et l'unique puits se trouve en contrebas, exposé.\n\nQuatre énormes machines de guerre bombardent la ville. La plus redoutable, un trébuchet surnommé « la Malvoisine » — la mauvaise voisine — pilonne l'accès au puits jour et nuit.\n\nSept semaines durant, Minerve résiste. Puis l'eau manque. Il faut se rendre.",
+            "en": "In June 1210, Montfort lays siege. The true master here is not the sword but thirst: the summer burns, and the only well lies below, exposed.\n\nFour huge war machines bombard the town. The most fearsome, a trebuchet nicknamed \"la Malvoisine\" — the bad neighbour — pounds the path to the well day and night.\n\nFor seven weeks, Minerve resists. Then the water runs out. They must surrender."
+          }
+        },
+        {
+          "id": "premier-bucher",
+          "title": { "fr": "Le premier bûcher", "en": "The first pyre" },
+          "subtitle": { "fr": "140 parfaits", "en": "140 Perfects" },
+          "text": {
+            "fr": "La reddition épargne la population. Mais aux parfaits, on impose un choix : renier leur foi, ou mourir.\n\nCent quarante d'entre eux refusent d'abjurer. On dresse un immense bûcher. Selon le chroniqueur, beaucoup s'y jettent d'eux-mêmes, sans qu'on ait à les y pousser.\n\nC'est le premier grand bûcher collectif de la croisade albigeoise. À Minerve s'invente une terrible habitude — celle qui, trente-quatre ans plus tard, s'achèvera à Montségur.",
+            "en": "The surrender spares the townsfolk. But upon the Perfects a choice is forced: renounce their faith, or die.\n\nOne hundred and forty of them refuse to recant. A vast pyre is raised. According to the chronicler, many throw themselves into it of their own accord, without needing to be pushed.\n\nThis is the first great mass burning of the Albigensian Crusade. At Minerve a terrible habit is born — the one that, thirty-four years later, will end at Montségur."
+          }
+        },
+        {
+          "id": "la-colombe",
+          "title": { "fr": "La colombe", "en": "The dove" },
+          "subtitle": { "fr": "La mémoire des brûlés", "en": "The memory of the burned" },
+          "text": {
+            "fr": "Au cœur du village, une simple stèle rappelle le drame. Elle porte une colombe gravée — symbole cathare de l'esprit et de la paix — et l'inscription occitane « Als catars », aux cathares.\n\nFlânez dans les ruelles étroites, longez les vestiges des remparts, penchez-vous sur les gorges. Le silence ici a du poids.\n\nMinerve fut le premier maillon d'une longue chaîne de feu. Souvenez-vous, en repartant, de ces cent quarante flammes de l'été 1210.",
+            "en": "At the heart of the village, a simple stele recalls the tragedy. It bears an engraved dove — the Cathar symbol of the spirit and of peace — and the Occitan inscription \"Als catars\", to the Cathars.\n\nWander the narrow lanes, follow the remains of the ramparts, lean over the gorges. The silence here carries weight.\n\nMinerve was the first link in a long chain of fire. Remember, as you leave, those one hundred and forty flames of the summer of 1210."
+          }
+        }
+      ]
+    },
+    {
+      "id": "lastours",
+      "placeSlug": "chateau-de-lastours",
+      "title": { "fr": "Visite de Lastours", "en": "Tour of Lastours" },
+      "subtitle": { "fr": "Les quatre châteaux de Cabaret", "en": "The four castles of Cabaret" },
+      "stops": [
+        {
+          "id": "quatre-chateaux",
+          "title": { "fr": "Les quatre châteaux", "en": "The four castles" },
+          "subtitle": { "fr": "Une crête hérissée de tours", "en": "A ridge bristling with towers" },
+          "text": {
+            "fr": "Sur une étroite crête dominant deux rivières se dressent quatre châteaux : Cabaret, Surdespine, Quertinheux et la Tour Régine.\n\nDe loin, ils semblent former une seule forteresse, mais chacun a sa propre histoire. Ensemble, ils gardaient les routes du fer et de l'argent des montagnes de la Montagne Noire.\n\nCe verrou de pierre, on l'appelait alors Cabaret. Il fut l'un des plus obstinés foyers de résistance à la croisade.",
+            "en": "On a narrow ridge overlooking two rivers stand four castles: Cabaret, Surdespine, Quertinheux and the Tour Régine.\n\nFrom afar they seem to form a single fortress, but each has its own story. Together they guarded the iron and silver roads of the Montagne Noire.\n\nThis lock of stone was then called Cabaret. It was one of the most stubborn strongholds of resistance to the crusade."
+          }
+        },
+        {
+          "id": "foyer-resistance",
+          "title": { "fr": "Le foyer de résistance", "en": "The stronghold of resistance" },
+          "subtitle": { "fr": "Pierre-Roger de Cabaret", "en": "Pierre-Roger of Cabaret" },
+          "text": {
+            "fr": "Le seigneur des lieux, Pierre-Roger de Cabaret, est un chevalier fin et rusé. Sa cour accueille cathares et troubadours ; on y parle poésie autant que guerre.\n\nQuand la croisade déferle, Cabaret ne se soumet pas. Pierre-Roger fait de ses châteaux un refuge pour les parfaits et une base d'où frapper l'envahisseur.\n\nPendant des années, ce petit seigneur tiendra tête à la plus grande armée du temps.",
+            "en": "The lord of the place, Pierre-Roger of Cabaret, is a shrewd and subtle knight. His court welcomes Cathars and troubadours; poetry is spoken there as much as war.\n\nWhen the crusade sweeps in, Cabaret does not submit. Pierre-Roger turns his castles into a refuge for the Perfects and a base from which to strike the invader.\n\nFor years, this small lord will stand up to the greatest army of the age."
+          }
+        },
+        {
+          "id": "la-guerilla",
+          "title": { "fr": "La guérilla", "en": "The guerrilla war" },
+          "subtitle": { "fr": "L'épine dans le pied", "en": "The thorn in the foot" },
+          "text": {
+            "fr": "De ces hauteurs, les hommes de Cabaret surveillent les vallées et fondent sur les convois croisés. Ils libèrent des prisonniers, coupent les routes, disparaissent dans la montagne.\n\nUn épisode reste célèbre : un chevalier croisé aveuglé et mutilé lors d'un raid, Bouchard de Marly, fut retenu captif ici — puis rendu, signe de l'étrange courtoisie de cette guerre.\n\nCabaret harcèle sans relâche. Montfort, occupé ailleurs, ne parvient pas à en venir à bout.",
+            "en": "From these heights, the men of Cabaret watch the valleys and swoop down on the crusader convoys. They free prisoners, cut the roads, vanish into the mountains.\n\nOne episode remains famous: a crusader knight blinded and maimed in a raid, Bouchard de Marly, was held captive here — then returned, a sign of the strange courtesy of this war.\n\nCabaret harries relentlessly. Montfort, busy elsewhere, cannot bring it down."
+          }
+        },
+        {
+          "id": "la-reddition",
+          "title": { "fr": "La reddition", "en": "The surrender" },
+          "subtitle": { "fr": "1211, sans un combat", "en": "1211, without a fight" },
+          "text": {
+            "fr": "En 1211, après la chute d'autres places et le massacre de Lavaur, la résistance s'épuise. Plutôt que de voir Cabaret réduit en cendres, Pierre-Roger négocie.\n\nIl rend ses châteaux en échange de la vie sauve et de terres ailleurs. Cabaret tombe sans assaut, par lassitude et calcul.\n\nPlus tard, la royauté française rebâtira ces forteresses en pierre neuve — celles dont vous foulez aujourd'hui les vestiges.",
+            "en": "In 1211, after the fall of other strongholds and the massacre of Lavaur, resistance runs dry. Rather than see Cabaret reduced to ashes, Pierre-Roger negotiates.\n\nHe surrenders his castles in exchange for his life and lands elsewhere. Cabaret falls without an assault, through weariness and calculation.\n\nLater, the French crown will rebuild these fortresses in fresh stone — the ones whose ruins you walk among today."
+          }
+        },
+        {
+          "id": "les-ruines",
+          "title": { "fr": "Les ruines et la vallée", "en": "The ruins and the valley" },
+          "subtitle": { "fr": "Le vaisseau de la Montagne Noire", "en": "The ship of the Montagne Noire" },
+          "text": {
+            "fr": "Gravissez le sentier jusqu'aux quatre tours. À chaque palier, le paysage s'ouvre : la vallée de l'Orbiel, les pentes boisées, l'ancienne mine d'où l'on tirait l'or et l'argent.\n\nLe soir, quand le site est illuminé, les silhouettes des châteaux semblent flotter dans la nuit.\n\nLastours n'est pas une forteresse, mais quatre — quatre sentinelles de pierre qui, un temps, tinrent en échec la croisade tout entière.",
+            "en": "Climb the path up to the four towers. At each level the landscape opens: the Orbiel valley, the wooded slopes, the old mine from which gold and silver were drawn.\n\nIn the evening, when the site is lit, the silhouettes of the castles seem to float in the night.\n\nLastours is not one fortress but four — four sentinels of stone that, for a time, held the whole crusade in check."
+          }
+        }
+      ]
+    },
+    {
+      "id": "queribus",
+      "placeSlug": "chateau-de-queribus",
+      "title": { "fr": "Visite de Quéribus", "en": "Tour of Quéribus" },
+      "subtitle": { "fr": "La dernière forteresse cathare", "en": "The last Cathar fortress" },
+      "stops": [
+        {
+          "id": "le-vertige",
+          "title": { "fr": "Le vertige", "en": "The vertigo" },
+          "subtitle": { "fr": "Un nid d'aigle", "en": "An eagle's nest" },
+          "text": {
+            "fr": "À plus de sept cents mètres, Quéribus s'agrippe à un piton si étroit que le château semble prolonger le rocher lui-même.\n\nLe vent y souffle en rafales ; par temps clair, le regard embrasse la plaine du Roussillon, la Méditerranée, et jusqu'aux Pyrénées enneigées.\n\nOn comprend, en levant les yeux vers ce donjon accroché au ciel, pourquoi les derniers résistants cathares choisirent ce refuge extrême.",
+            "en": "At more than seven hundred metres, Quéribus clings to a peak so narrow that the castle seems to continue the rock itself.\n\nThe wind blows in gusts; on a clear day the eye takes in the plain of Roussillon, the Mediterranean, and as far as the snowy Pyrenees.\n\nLooking up at this keep hung against the sky, one understands why the last Cathar resisters chose this extreme refuge."
+          }
+        },
+        {
+          "id": "dernier-refuge",
+          "title": { "fr": "Le dernier refuge", "en": "The last refuge" },
+          "subtitle": { "fr": "Après Montségur", "en": "After Montségur" },
+          "text": {
+            "fr": "Après le bûcher de Montségur en 1244, quelques irréductibles refusent encore de disparaître. Chevaliers dépossédés, parfaits en fuite, ils gagnent ces confins montagneux.\n\nQuéribus, à la lisière du royaume d'Aragon, offre un ultime abri. On y protège encore un évêque cathare, dit-on.\n\nMais la France avance ses frontières. La forteresse solitaire devient le tout dernier symbole d'une foi que l'on veut éteindre.",
+            "en": "After the pyre of Montségur in 1244, a few diehards still refuse to vanish. Dispossessed knights, Perfects in flight, they reach these mountain edges.\n\nQuéribus, on the border of the kingdom of Aragon, offers a final shelter. A Cathar bishop is said to have still been protected here.\n\nBut France is pushing its borders forward. The lonely fortress becomes the very last symbol of a faith they mean to extinguish."
+          }
+        },
+        {
+          "id": "la-chute",
+          "title": { "fr": "La chute", "en": "The fall" },
+          "subtitle": { "fr": "1255", "en": "1255" },
+          "text": {
+            "fr": "En 1255, onze ans après Montségur, l'armée royale marche sur Quéribus. Le siège est bref : la position est magnifique, mais la garnison est trop faible pour tenir longtemps.\n\nLe seigneur Chabert de Barbaira, dernier grand capitaine de la résistance, est capturé puis contraint de livrer la place.\n\nAvec Quéribus tombe la dernière forteresse cathare. La croisade, commencée à Béziers en 1209, s'achève ici, sur ce roc balayé par les vents.",
+            "en": "In 1255, eleven years after Montségur, the royal army marches on Quéribus. The siege is brief: the position is magnificent, but the garrison is too weak to hold for long.\n\nThe lord Chabert de Barbaira, last great captain of the resistance, is captured and then forced to hand over the place.\n\nWith Quéribus falls the last Cathar fortress. The crusade, begun at Béziers in 1209, ends here, on this wind-swept rock."
+          }
+        },
+        {
+          "id": "le-donjon",
+          "title": { "fr": "Le donjon", "en": "The keep" },
+          "subtitle": { "fr": "La salle du pilier", "en": "The pillar hall" },
+          "text": {
+            "fr": "Pénétrez dans le donjon. Au cœur de la tour maîtresse s'ouvre une salle gothique étonnante : une voûte en palmier retombe sur un unique pilier central.\n\nUne étroite fenêtre y laisse entrer, à certaines heures, un rayon de lumière que les amateurs de mystère associent aux cultes solaires.\n\nEscaliers taillés dans le roc, salles emboîtées, chemins de ronde suspendus : tout ici épouse la pierre. Le château et la montagne ne font qu'un.",
+            "en": "Step into the keep. At the heart of the master tower opens a surprising Gothic hall: a palm vault falls onto a single central pillar.\n\nA narrow window lets in, at certain hours, a ray of light that lovers of mystery link to solar cults.\n\nStairs cut into the rock, nested rooms, hanging wall-walks: everything here weds the stone. The castle and the mountain are one."
+          }
+        },
+        {
+          "id": "sentinelle",
+          "title": { "fr": "La sentinelle du Roussillon", "en": "The sentinel of Roussillon" },
+          "subtitle": { "fr": "Gardien de la frontière", "en": "Guardian of the border" },
+          "text": {
+            "fr": "Une fois la paix imposée, Quéribus ne fut pas abandonné. Devenu forteresse royale, il surveilla pendant des siècles la frontière avec l'Aragon, aux côtés de Peyrepertuse et d'Aguilar.\n\nCes places qu'on nomma « les cinq fils de Carcassonne » formaient un rideau de citadelles au bord du royaume de France.\n\nContemplez une dernière fois l'horizon. Quéribus ne fut pas seulement la fin d'une histoire cathare : il fut aussi le commencement d'une frontière.",
+            "en": "Once peace was imposed, Quéribus was not abandoned. Turned into a royal fortress, it watched over the border with Aragon for centuries, alongside Peyrepertuse and Aguilar.\n\nThese strongholds, called \"the five sons of Carcassonne\", formed a curtain of citadels at the edge of the kingdom of France.\n\nGaze one last time at the horizon. Quéribus was not only the end of a Cathar story: it was also the beginning of a border."
+          }
+        }
+      ]
+    },
+    {
+      "id": "peyrepertuse",
+      "placeSlug": "chateau-de-peyrepertuse",
+      "title": { "fr": "Visite de Peyrepertuse", "en": "Tour of Peyrepertuse" },
+      "subtitle": { "fr": "La Carcassonne céleste", "en": "The celestial Carcassonne" },
+      "stops": [
+        {
+          "id": "carcassonne-celeste",
+          "title": { "fr": "La Carcassonne céleste", "en": "The celestial Carcassonne" },
+          "subtitle": { "fr": "Un vaisseau de pierre", "en": "A ship of stone" },
+          "text": {
+            "fr": "Sur une crête calcaire de trois cents mètres de long, épousant chaque saillie du rocher, Peyrepertuse déploie ses murailles à perte de vue.\n\nSon nom vient de l'occitan « pèire pertusada », la pierre percée. Vue d'en bas, la forteresse se confond avec la montagne ; on l'a surnommée la Carcassonne céleste.\n\nC'est l'une des plus vastes forteresses de tout le Languedoc — un vaisseau de pierre échoué entre ciel et garrigue.",
+            "en": "On a limestone ridge three hundred metres long, hugging every jut of the rock, Peyrepertuse spreads its walls as far as the eye can see.\n\nIts name comes from the Occitan \"pèire pertusada\", the pierced stone. Seen from below, the fortress merges with the mountain; it has been nicknamed the celestial Carcassonne.\n\nIt is one of the largest fortresses in all of Languedoc — a ship of stone run aground between sky and garrigue."
+          }
+        },
+        {
+          "id": "deux-chateaux",
+          "title": { "fr": "Deux châteaux en un", "en": "Two castles in one" },
+          "subtitle": { "fr": "Du bas vers le ciel", "en": "From the low ward to the sky" },
+          "text": {
+            "fr": "Peyrepertuse est en réalité double. Le château bas, le plus ancien, occupe l'extrémité de la crête. Puis, tout en haut, couronnant le point culminant, veille le château Saint-Jordi.\n\nEntre les deux, il faut monter, monter encore, par des rampes et des escaliers accrochés au vide.\n\nCette montée n'est pas qu'un effort : c'est une expérience. À mesure que l'on s'élève, le monde d'en bas rétrécit et le silence grandit.",
+            "en": "Peyrepertuse is in fact double. The lower castle, the oldest, occupies the end of the ridge. Then, right at the top, crowning the highest point, watches the Saint-Jordi castle.\n\nBetween the two, one must climb, and climb again, up ramps and stairs clinging to the void.\n\nThis ascent is not merely an effort: it is an experience. As you rise, the world below shrinks and the silence grows."
+          }
+        },
+        {
+          "id": "forteresse-royale",
+          "title": { "fr": "La forteresse royale", "en": "The royal fortress" },
+          "subtitle": { "fr": "Le verrou de la frontière", "en": "The lock of the border" },
+          "text": {
+            "fr": "Contrairement à Montségur ou Minerve, Peyrepertuse ne connut pas de grand siège cathare. En 1240, son seigneur préféra se soumettre au roi de France plutôt que de combattre.\n\nLa Couronne en fit aussitôt une pièce maîtresse : on agrandit, on renforça, on hissa des matériaux au sommet à dos d'homme.\n\nDésormais forteresse royale, Peyrepertuse verrouilla la frontière face à l'Aragon, aux côtés de Quéribus. La foi cathare n'y brûla pas — mais elle en dessina le destin.",
+            "en": "Unlike Montségur or Minerve, Peyrepertuse knew no great Cathar siege. In 1240, its lord chose to submit to the king of France rather than fight.\n\nThe Crown at once made it a key piece: they enlarged it, reinforced it, hauled materials to the summit on men's backs.\n\nNow a royal fortress, Peyrepertuse locked the border against Aragon, alongside Quéribus. The Cathar faith did not burn here — but it shaped its destiny."
+          }
+        },
+        {
+          "id": "escalier-saint-louis",
+          "title": { "fr": "L'escalier Saint-Louis", "en": "The Saint-Louis stairway" },
+          "subtitle": { "fr": "Taillé dans le roc", "en": "Cut into the rock" },
+          "text": {
+            "fr": "Pour relier le château bas au château haut, on tailla à même la falaise un escalier vertigineux : l'escalier Saint-Louis. Sans garde-corps d'origine, battu par le vent, il n'est pas pour les cœurs fragiles.\n\nChaque marche fut arrachée à la pierre par des hommes suspendus au-dessus du vide.\n\nGravissez-le avec prudence. En haut vous attend le château Saint-Jordi, et l'un des plus beaux panoramas des Corbières.",
+            "en": "To link the lower castle to the upper one, a dizzying stairway was cut straight into the cliff: the Saint-Louis stairway. Without its original railing, battered by the wind, it is not for the faint of heart.\n\nEach step was torn from the stone by men hanging over the void.\n\nClimb it with care. At the top awaits the Saint-Jordi castle, and one of the finest panoramas of the Corbières."
+          }
+        },
+        {
+          "id": "panorama",
+          "title": { "fr": "Le panorama", "en": "The panorama" },
+          "subtitle": { "fr": "La démesure", "en": "The immensity" },
+          "text": {
+            "fr": "Du sommet, la démesure du lieu éclate enfin. Trois cents mètres de remparts ondulent sous vos pieds, épousant la roche. Au loin se dresse la silhouette jumelle de Quéribus.\n\nQuand les nuages montent des vallées, la forteresse semble voguer au-dessus d'une mer de brume.\n\nPeyrepertuse ne raconte pas un bûcher, mais la puissance d'un royaume qui, après avoir brisé les cathares, se tailla ici une frontière de pierre face au ciel.",
+            "en": "From the summit, the sheer scale of the place finally bursts forth. Three hundred metres of ramparts ripple beneath your feet, following the rock. In the distance rises the twin silhouette of Quéribus.\n\nWhen clouds climb from the valleys, the fortress seems to sail above a sea of mist.\n\nPeyrepertuse tells not of a pyre, but of the power of a kingdom that, having broken the Cathars, carved here a border of stone against the sky."
+          }
+        }
+      ]
     }
   ]
 }
