@@ -208,6 +208,10 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
       audio.pause()
       setPlaying(false)
       emitGuideState(false)
+      // Mémorise le contexte pour rouvrir la visite après le paiement.
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('audio:resume', JSON.stringify({ placeSlug: STARTER_PLACE_SLUG, tour: true }))
+      }
       setShowPaywall(true)
       return false
     }

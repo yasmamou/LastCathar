@@ -105,6 +105,10 @@ export function AudioGuidePlayer({ placeSlug, onOpenAuth }: Props) {
     } else {
       // Paywall : au-delà des guides gratuits, demander le Pass Audioguides.
       if (!canPlay(gateKey)) {
+        // Mémorise le lieu pour y revenir après le paiement.
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('audio:resume', JSON.stringify({ placeSlug, tour: false }))
+        }
         setShowPaywall(true)
         return
       }

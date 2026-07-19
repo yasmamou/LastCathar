@@ -52,6 +52,8 @@ export default function Home() {
   const [showEpicPanel, setShowEpicPanel] = useState(false)
   const [nearbyMode, setNearbyMode] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+  // Reprise après paiement du Pass Audioguides : rouvrir le lieu (et la visite).
+  const [autoOpenTour, setAutoOpenTour] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [interactionFilter, setInteractionFilter] = useState<'VISITED' | 'WISHLIST' | 'FAVORITE' | null>(null)
   const [interactionSlugs, setInteractionSlugs] = useState<string[]>([])
@@ -177,8 +179,29 @@ export default function Home() {
     }
   }, [chercheur])
 
+  // Retour depuis la page de succès du paiement audio (/?resume=audio) : on
+  // rouvre le lieu où l'utilisateur écoutait, et sa visite le cas échéant.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('resume') !== 'audio') return
+    let ctx: { placeSlug?: string; tour?: boolean } = {}
+    try { ctx = JSON.parse(localStorage.getItem('audio:resume') || '{}') } catch {}
+    localStorage.removeItem('audio:resume')
+    // Nettoie l'URL (retire ?resume=audio)
+    window.history.replaceState(null, '', window.location.pathname)
+    const place = ctx.placeSlug ? allPlaces.find((p) => p.slug === ctx.placeSlug) : null
+    if (!place) return
+    setShowIntro(false)
+    setUiVisible(true)
+    setSelectedPlace(place)
+    setFlyToTrigger((n) => n + 1)
+    if (ctx.tour) setAutoOpenTour(true)
+  }, [])
+
   const handleClosePanel = useCallback(() => {
     setSelectedPlace(null)
+    setAutoOpenTour(false)
     // If we came from an epic, go back to epic panel
     if (activeEpic) {
       setShowEpicPanel(true)
@@ -568,6 +591,7 @@ export default function Home() {
             onPlaceSelect={handlePlaceSelect}
             highlightedProductId={highlightedProductId}
             onContinueCatharEpic={handleContinueCatharEpic}
+            autoOpenTour={autoOpenTour}
           />
         )}
       </AnimatePresence>

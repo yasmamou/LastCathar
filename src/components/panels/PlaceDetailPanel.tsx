@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp, Footprints } from 'lucide-react'
 import { AnimatePresence } from 'framer-motion'
@@ -48,9 +48,11 @@ interface PlaceDetailPanelProps {
   highlightedProductId?: string | null
   // Continuer l'épopée cathare depuis la fin de la visite guidée (→ Béziers)
   onContinueCatharEpic?: () => void
+  // Rouvrir automatiquement la visite (retour depuis le paiement audio).
+  autoOpenTour?: boolean
 }
 
-export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId, onContinueCatharEpic }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId, onContinueCatharEpic, autoOpenTour }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -63,6 +65,15 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   const [placeStats, setPlaceStats] = useState<{ totalViews: number; todayViews: number } | null>(null)
   const [tourOpen, setTourOpen] = useState(false)
   const tour = getTourForPlace(place.slug)
+
+  // Retour depuis le paiement audio → rouvre la visite une seule fois.
+  const autoOpenedRef = useRef(false)
+  useEffect(() => {
+    if (autoOpenTour && tour && !autoOpenedRef.current) {
+      autoOpenedRef.current = true
+      setTourOpen(true)
+    }
+  }, [autoOpenTour, tour])
   const [lang, setLang] = useLang()
   const t = PANEL_T[lang]
 

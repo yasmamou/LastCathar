@@ -100,7 +100,21 @@ function SuccessContent() {
           </>
         )}
 
-        {sync.phase !== 'syncing' && (
+        {/* CTA spécifiques au parcours : l'audio renvoie à l'écoute, l'abonnement
+            marchand renvoie à la vitrine / l'espace marchand. */}
+        {sync.phase === 'audio' && (
+          <div className="flex justify-center">
+            <Link
+              href="/?resume=audio"
+              className="inline-flex items-center gap-2 rounded-lg bg-amber-400 px-6 py-3 text-sm font-semibold text-black hover:bg-amber-300 transition"
+            >
+              <Headphones className="w-4 h-4" />
+              Reprendre l&apos;écoute
+            </Link>
+          </div>
+        )}
+
+        {sync.phase === 'done' && (
           <div className="flex gap-3 justify-center">
             <Link
               href="/"
@@ -110,10 +124,21 @@ function SuccessContent() {
               Placer mon produit
             </Link>
             <Link
-              href="/pricing"
+              href="/compte"
               className="rounded-lg border border-white/20 px-6 py-3 text-sm font-semibold hover:bg-white/10 transition"
             >
-              Mes plans
+              Mon espace marchand
+            </Link>
+          </div>
+        )}
+
+        {sync.phase === 'error' && (
+          <div className="flex justify-center">
+            <Link
+              href="/"
+              className="rounded-lg border border-white/20 px-6 py-3 text-sm font-semibold hover:bg-white/10 transition"
+            >
+              Retour au globe
             </Link>
           </div>
         )}
