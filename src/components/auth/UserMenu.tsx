@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signOut } from 'next-auth/react'
-import { User, LogOut, Map, Heart, Star, Loader2 } from 'lucide-react'
+import { User, LogOut, Map, Heart, Star, Loader2, Store, Sparkles } from 'lucide-react'
 
 type InteractionFilter = 'VISITED' | 'WISHLIST' | 'FAVORITE' | null
 
@@ -115,7 +115,7 @@ export function UserMenu({ onOpenAuth, onFilterInteractions, activeInteractionFi
                 {session.user.email}
               </p>
               <span className="inline-block mt-1 text-[9px] tracking-wider uppercase px-1.5 py-0.5 rounded-full bg-gold-400/10 text-gold-400/60">
-                Explorateur
+                {session.user.role === 'SELLER' ? 'Marchand' : session.user.role === 'ADMIN' ? 'Admin' : 'Explorateur'}
               </span>
             </div>
 
@@ -152,6 +152,26 @@ export function UserMenu({ onOpenAuth, onFilterInteractions, activeInteractionFi
                     onClick={() => handleFilterClick('FAVORITE')}
                   />
                 </>
+              )}
+            </div>
+
+            {/* Merchant space + partner CTA */}
+            <div className="border-t border-white/5 py-1">
+              <a
+                href="/compte"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-white/50 hover:text-white/80 hover:bg-white/5 transition-colors"
+              >
+                <Store className="w-3.5 h-3.5" />
+                Espace marchand
+              </a>
+              {session.user.role !== 'SELLER' && (
+                <a
+                  href="/pricing"
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-gold-400/60 hover:text-gold-400 hover:bg-white/5 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Devenir partenaire
+                </a>
               )}
             </div>
 

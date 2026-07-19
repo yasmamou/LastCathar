@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession } from 'next-auth/react'
-import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick, Plus } from 'lucide-react'
+import { ExternalLink, ShoppingBag, X, Eye, MousePointerClick, Plus, MapPin } from 'lucide-react'
 import { AddProductModal } from './AddProductModal'
 import { getBusinessesForPlace } from '@/data/local-businesses'
 import { useLang } from '@/lib/lang'
@@ -15,6 +15,8 @@ interface Product {
   price: string | null
   imageUrls: string[]
   externalUrl: string | null
+  latitude: number | null
+  longitude: number | null
   views: number
   clicks: number
 }
@@ -147,8 +149,15 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
           </div>
         )}
 
-        {/* Marketplace demo/paid products — only when no curated businesses */}
-        {businesses.length === 0 && products.length > 0 && (
+        {/* Paid partner products — shown ALONGSIDE curated businesses (previously
+            hidden whenever a place had editorial data, e.g. Carcassonne). */}
+        {products.length > 0 && (
+          <>
+          {businesses.length > 0 && (
+            <p className="text-[10px] tracking-widest uppercase text-gold-400/40 font-medium pt-1">
+              {lang === 'en' ? 'Last Cathar partners' : 'Nos partenaires'}
+            </p>
+          )}
           <div className="grid grid-cols-2 gap-2">
             {products.map((product, index) => {
               const isHighlighted = highlightedProductId === product.id
@@ -197,6 +206,7 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
               )
             })}
           </div>
+          </>
         )}
 
         {/* Add product button */}
@@ -290,6 +300,18 @@ export function ProductCards({ placeSlug, placeTitle, onOpenAuth, highlightedPro
                     <ExternalLink className="w-4 h-4" />
                     Voir sur le site
                   </button>
+                )}
+
+                {selectedProduct.latitude != null && selectedProduct.longitude != null && (
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${selectedProduct.latitude}&mlon=${selectedProduct.longitude}#map=18/${selectedProduct.latitude}/${selectedProduct.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 rounded-xl border border-white/10 hover:border-gold-400/30 text-white/60 hover:text-white/90 text-xs flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    {lang === 'en' ? 'View on map' : 'Voir sur la carte'}
+                  </a>
                 )}
 
                 {selectedProduct.imageUrls.length > 1 && (

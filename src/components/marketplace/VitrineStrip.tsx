@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ExternalLink, Store, Plus } from 'lucide-react'
+import { ExternalLink, Store, Plus, Star } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import type { PlaceEntry } from '@/types/places'
@@ -13,6 +13,7 @@ export interface VitrineProduct {
   thumbnail: string | null
   externalUrl: string | null
   placeSlug: string
+  featured?: boolean
 }
 
 interface Props {
@@ -78,6 +79,10 @@ export function VitrineStrip({
           ),
       )
     }
+
+    // Pack Marchand (featured) products bubble to the top — stable sort keeps the
+    // proximity order within each group ("placement mis en avant dans la sidebar").
+    withPlace.sort((a, b) => Number(b.product.featured) - Number(a.product.featured))
 
     return withPlace.slice(0, limit)
   }, [products, allPlaces, referenceLat, referenceLng, limit])
@@ -164,9 +169,11 @@ function DesktopProductCard({
   return (
     <button
       onClick={onClick}
-      className={`group flex items-center gap-2 glass rounded-lg border border-amber-400/15 hover:border-amber-400/40 bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left ${
-        rowMode ? 'flex-shrink-0 w-[200px]' : ''
-      }`}
+      className={`group flex items-center gap-2 glass rounded-lg border bg-black/40 backdrop-blur-md px-2 py-1.5 transition-colors text-left ${
+        product.featured
+          ? 'border-amber-400/50 ring-1 ring-amber-400/30 hover:border-amber-400/70'
+          : 'border-amber-400/15 hover:border-amber-400/40'
+      } ${rowMode ? 'flex-shrink-0 w-[200px]' : ''}`}
       title={`${product.title} — ${place.title}`}
     >
       <div className="w-8 h-8 rounded overflow-hidden bg-white/5 flex-shrink-0">
@@ -180,8 +187,9 @@ function DesktopProductCard({
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors">
-          {product.title}
+        <div className="text-[11px] font-medium text-white truncate group-hover:text-amber-200 transition-colors flex items-center gap-1">
+          {product.featured && <Star className="w-2.5 h-2.5 text-amber-300 fill-amber-300 flex-shrink-0" />}
+          <span className="truncate">{product.title}</span>
         </div>
         <div className="text-[9px] text-white/40 truncate">
           {product.price ? <span className="text-amber-300/80">{product.price}</span> : place.title}
