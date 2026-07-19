@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Headphones, Loader2, X, Sparkles } from 'lucide-react'
+import { Headphones, Loader2, Sparkles } from 'lucide-react'
 import { useLang } from '@/lib/lang'
 import { useAudioGate } from '@/lib/audio-gate'
 
@@ -15,24 +15,24 @@ interface Props {
 const T = {
   fr: {
     kicker: 'Pass Audioguides',
-    title: 'Continuez à écouter',
-    body: 'Vous avez profité de vos guides audio gratuits. Débloquez tous les guides et parcours audio de Last Cathar.',
-    price: '5 €',
-    once: 'paiement unique',
-    unlock: 'Débloquer pour 5 €',
-    login: 'Se connecter pour débloquer',
-    later: 'Plus tard',
+    title: 'Débloquez tout l’audiobook',
+    body: 'Vous avez écouté vos 2 guides offerts. Créez votre compte et accédez à vie à tous les guides audio et parcours de Last Cathar.',
+    price: '4,90 €',
+    once: 'paiement unique · accès à vie',
+    unlock: 'Créer mon compte et payer 4,90 €',
+    login: 'Créer mon compte pour débloquer',
+    back: 'Revenir à la carte',
     err: 'Une erreur est survenue',
   },
   en: {
     kicker: 'Audio Pass',
-    title: 'Keep listening',
-    body: 'You have enjoyed your free audio guides. Unlock every audio guide and tour on Last Cathar.',
-    price: '€5',
-    once: 'one-time payment',
-    unlock: 'Unlock for €5',
-    login: 'Sign in to unlock',
-    later: 'Later',
+    title: 'Unlock the full audiobook',
+    body: 'You have listened to your 2 free guides. Create your account and get lifetime access to every audio guide and tour on Last Cathar.',
+    price: '€4.90',
+    once: 'one-time payment · lifetime access',
+    unlock: 'Create account & pay €4.90',
+    login: 'Create account to unlock',
+    back: 'Back to the map',
     err: 'Something went wrong',
   },
 } as const
@@ -68,24 +68,14 @@ export function AudioPaywall({ open, onClose, onNeedAuth }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[120] flex items-center justify-center px-4"
-          style={{ background: 'rgba(5,6,13,0.85)', backdropFilter: 'blur(8px)' }}
-          onClick={onClose}
+          style={{ background: 'rgba(5,6,13,0.92)', backdropFilter: 'blur(10px)' }}
         >
           <motion.div
             initial={{ scale: 0.94, y: 16, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}
-            onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-sm rounded-2xl border border-amber-400/25 bg-gradient-to-b from-[#0f1120] to-[#05060d] p-6 shadow-[0_0_70px_-15px_rgba(251,191,36,0.6)]"
           >
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition"
-              aria-label={t.later}
-            >
-              <X className="w-5 h-5" />
-            </button>
-
             <div className="w-14 h-14 rounded-2xl bg-amber-400/15 flex items-center justify-center mb-4">
               <Headphones className="w-7 h-7 text-amber-300" />
             </div>
@@ -112,9 +102,9 @@ export function AudioPaywall({ open, onClose, onNeedAuth }: Props) {
             </button>
             <button
               onClick={onClose}
-              className="mt-3 w-full text-center text-[11px] text-white/40 hover:text-white/70 transition-colors"
+              className="mt-4 w-full text-center text-[10px] text-white/25 hover:text-white/45 transition-colors"
             >
-              {t.later}
+              {t.back}
             </button>
           </motion.div>
         </motion.div>

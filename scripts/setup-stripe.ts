@@ -91,9 +91,9 @@ async function main() {
     env = setEnvValue(env, plan.envKey, priceId)
   }
 
-  // ─── Pass Audioguides — paiement unique 5 € ───
+  // ─── Pass Audioguides — paiement unique 4,90 € (accès à vie) ───
   {
-    const lookupKey = 'lastcathar_audio_pass'
+    const lookupKey = 'lastcathar_audio_pass_490'
     const existing = await stripe.prices.list({ lookup_keys: [lookupKey], limit: 1 })
     let priceId: string
     if (existing.data.length > 0) {
@@ -102,16 +102,16 @@ async function main() {
     } else {
       const product = await stripe.products.create({
         name: 'Pass Audioguides — Last Cathar',
-        description: 'Accès illimité à tous les guides audio (paiement unique)',
+        description: 'Accès à vie à tous les guides audio et parcours (paiement unique)',
       })
       const price = await stripe.prices.create({
         product: product.id,
-        unit_amount: 500,
+        unit_amount: 490,
         currency: 'eur',
         lookup_key: lookupKey,
       })
       priceId = price.id
-      console.log(`✓ Pass Audioguides — créé (5 € → ${priceId})`)
+      console.log(`✓ Pass Audioguides — créé (4,90 € → ${priceId})`)
     }
     env = setEnvValue(env, 'STRIPE_PRICE_AUDIO', priceId)
   }
