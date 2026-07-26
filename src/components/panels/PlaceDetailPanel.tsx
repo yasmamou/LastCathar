@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { X, MapPin, Calendar, Shield, ExternalLink, Compass, Camera, ChevronLeft, ChevronRight, ArrowLeft, Eye, TrendingUp, Footprints } from 'lucide-react'
 import { AnimatePresence } from 'framer-motion'
@@ -50,9 +50,11 @@ interface PlaceDetailPanelProps {
   onContinueCatharEpic?: () => void
   // Rouvrir automatiquement la visite (retour depuis le paiement audio).
   autoOpenTour?: boolean
+  // Épopée active en cours (pour proposer « Continuer → étape suivante »).
+  activeEpic?: Epic | null
 }
 
-export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId, onContinueCatharEpic, autoOpenTour }: PlaceDetailPanelProps) {
+export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, allPlaces = [], onPlaceSelect, highlightedProductId, onContinueCatharEpic, autoOpenTour, activeEpic }: PlaceDetailPanelProps) {
   const categoryColor = getCategoryColor(place.categoryPrimary)
   const placeEpics = getEpicsForPlace(place.slug)
   const confidenceColor = getConfidenceColor(place.confidenceLevel)
@@ -76,6 +78,16 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
   }, [autoOpenTour, tour])
   const [lang, setLang] = useLang()
   const t = PANEL_T[lang]
+
+  // Étape suivante de l'épopée active (si ce lieu en fait partie) → bouton
+  // « Continuer l'épopée », utile surtout sur mobile où l'on reste en side-bar.
+  const nextEpicPlace = useMemo(() => {
+    if (!activeEpic) return null
+    const ordered = [...activeEpic.places].sort((a, b) => a.order - b.order)
+    const idx = ordered.findIndex((p) => p.slug === place.slug)
+    if (idx === -1 || idx >= ordered.length - 1) return null
+    return allPlaces.find((p) => p.slug === ordered[idx + 1].slug) ?? null
+  }, [activeEpic, place.slug, allPlaces])
 
   // Reset to the first image when switching place (component is reused, not
   // remounted, when navigating via "À proximité") — otherwise a stale index can
@@ -121,7 +133,13 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
           <CarcassonneTour
             tour={tour}
             onClose={() => setTourOpen(false)}
-            onContinueEpic={onContinueCatharEpic}
+            onContinueEpic={
+              nextEpicPlace
+                ? () => { setTourOpen(false); onPlaceSelect?.(nextEpicPlace) }
+                : place.slug === 'cite-de-carcassonne'
+                ? onContinueCatharEpic
+                : undefined
+            }
           />
         )}
       </AnimatePresence>
@@ -133,8 +151,9 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
       className="absolute inset-0 md:left-auto md:w-full md:max-w-md z-40"
     >
-      {/* Language switcher (flags) — fixed top-right of the panel */}
-      <div className="absolute top-3 right-3 z-50">
+      {/* Language switcher (flags) — top-right, décalé à gauche du bouton fermer
+          sur desktop pour ne plus le chevaucher. */}
+      <div className="absolute top-3 right-3 md:right-16 z-50">
         <LangToggle lang={lang} onChange={setLang} />
       </div>
 
@@ -305,6 +324,28 @@ export function PlaceDetailPanel({ place, onClose, onEpicSelect, onOpenAuth, all
         <div className="mt-3">
           <AudioGuidePlayer placeSlug={place.slug} onOpenAuth={onOpenAuth} />
         </div>
+
+        {/* Continuer l'épopée → étape suivante (surtout utile sur mobile en side-bar) */}
+        {nextEpicPlace && activeEpic && (
+          <div className="mx-6 mt-3">
+            <button
+              onClick={() => onPlaceSelect?.(nextEpicPlace)}
+              className="group w-full rounded-xl overflow-hidden border p-3.5 flex items-center gap-3 text-left transition-colors hover:brightness-125"
+              style={{ borderColor: `${activeEpic.color}66`, background: `${activeEpic.color}14` }}
+            >
+              <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg" style={{ background: `${activeEpic.color}25` }}>
+                {activeEpic.icon}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: activeEpic.color }}>
+                  {lang === 'fr' ? "Continuer l'épopée" : 'Continue the epic'}
+                </div>
+                <div className="text-sm font-medium text-white truncate">{nextEpicPlace.title}</div>
+              </div>
+              <ChevronRight className="w-5 h-5 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" style={{ color: activeEpic.color }} />
+            </button>
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-6 space-y-6">

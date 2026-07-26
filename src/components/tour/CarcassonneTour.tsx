@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useSession, signIn } from 'next-auth/react'
 import { X, Play, Pause, ChevronLeft, ChevronRight, FileText, MapPin, Sparkles, Loader2, Mail, Lock, ShoppingBag, ExternalLink } from 'lucide-react'
@@ -154,6 +154,16 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
   const T = UI[lang]
   const isLast = stopIndex === tour.stops.length - 1
   const xp = maxStopReached * XP_PER_STOP
+  // Étape verrouillée par le paywall (au-delà du quota, sans accès) → on empêche
+  // d'avancer tant que l'utilisateur n'a pas payé / créé son compte.
+  const locked = !canPlay(`tour:carcassonne:${stopIndex}`)
+  // Sous-titres synchronisés : on découpe le texte en phrases et on affiche
+  // celle qui correspond à la progression de l'audio.
+  const sentences = useMemo(
+    () => (stop.text[lang].replace(/\n+/g, ' ').match(/[^.!?…]+[.!?…]*/g) || [stop.text[lang]]).map((s) => s.trim()).filter(Boolean),
+    [stop, lang],
+  )
+  const subIdx = duration > 0 ? Math.min(sentences.length - 1, Math.floor((progress / duration) * sentences.length)) : 0
 
   // Track furthest stop reached (for XP) and trigger the onboarding prompt the
   // first time an anonymous visitor reaches stop 2 (index 1).
@@ -501,6 +511,13 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
             </div>
           </div>
 
+          {/* Sous-titres synchronisés — toujours lisibles pendant la lecture */}
+          <div className="mt-4 rounded-xl bg-black/45 border border-white/8 px-4 py-3.5 min-h-[4.75rem] flex items-center justify-center">
+            <p className="text-base md:text-lg text-white/95 leading-snug text-center">
+              {sentences[subIdx]}
+            </p>
+          </div>
+
           {/* Transcript */}
           <AnimatePresence>
             {showTranscript && (
@@ -551,10 +568,12 @@ export function CarcassonneTour({ tour, onClose, onContinueEpic }: Props) {
               </button>
             ) : (
               <button
-                onClick={() => goToStop(stopIndex + 1)}
-                className="flex items-center gap-1 text-xs font-semibold text-gold-400 hover:text-gold-300 transition-colors"
+                onClick={() => { if (locked) setShowPaywall(true); else goToStop(stopIndex + 1) }}
+                className={`flex items-center gap-1 text-xs font-semibold transition-colors ${
+                  locked ? 'text-white/30 hover:text-white/50' : 'text-gold-400 hover:text-gold-300'
+                }`}
               >
-                {T.next} <ChevronRight className="w-4 h-4" />
+                {locked && <Lock className="w-3.5 h-3.5" />}{T.next} <ChevronRight className="w-4 h-4" />
               </button>
             )}
           </div>

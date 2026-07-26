@@ -592,6 +592,7 @@ export default function Home() {
             highlightedProductId={highlightedProductId}
             onContinueCatharEpic={handleContinueCatharEpic}
             autoOpenTour={autoOpenTour}
+            activeEpic={activeEpic}
           />
         )}
       </AnimatePresence>

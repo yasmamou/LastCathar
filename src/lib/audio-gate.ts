@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 // Paywall audio : les FREE_AUDIO_GUIDES premiers guides sont gratuits, ensuite
 // (dès la 3ᵉ lecture) l'accès payant à l'audiobook est requis.
@@ -26,6 +27,10 @@ function readPlays(): string[] {
 }
 
 export function useAudioGate() {
+  // Le statut de session change quand l'utilisateur crée son compte / se
+  // connecte : on doit alors re-vérifier l'accès (sinon le paywall reste bloqué
+  // sur « créer un compte » après l'inscription).
+  const { status } = useSession()
   const [access, setAccess] = useState<AccessState>({
     loaded: false,
     authenticated: false,
@@ -33,16 +38,18 @@ export function useAudioGate() {
     configured: false,
   })
 
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/audio/access')
+  const refreshAccess = useCallback(() => {
+    return fetch('/api/audio/access')
       .then((r) => r.json())
       .then((d) => {
-        if (!cancelled) setAccess({ loaded: true, authenticated: !!d.authenticated, hasAccess: !!d.hasAccess, configured: !!d.configured })
+        setAccess({ loaded: true, authenticated: !!d.authenticated, hasAccess: !!d.hasAccess, configured: !!d.configured })
+        return !!d.hasAccess
       })
-      .catch(() => { if (!cancelled) setAccess((a) => ({ ...a, loaded: true })) })
-    return () => { cancelled = true }
+      .catch(() => { setAccess((a) => ({ ...a, loaded: true })); return false })
   }, [])
+
+  // Re-fetch au montage ET à chaque changement de session (connexion/inscription).
+  useEffect(() => { refreshAccess() }, [status, refreshAccess])
 
   // Nombre d'écoutes offertes : +1 pour les comptes créés (récompense
   // d'inscription). Anonyme = FREE_AUDIO_GUIDES ; connecté = FREE_AUDIO_GUIDES + 1.
@@ -89,5 +96,5 @@ export function useAudioGate() {
     }
   }, [])
 
-  return { access, canPlay, registerPlay, startAudioCheckout, freeLimit }
+  return { access, canPlay, registerPlay, startAudioCheckout, refreshAccess, freeLimit }
 }

@@ -15,10 +15,10 @@ interface Props {
 const T = {
   fr: {
     kicker: 'Pass Audioguides',
-    title: 'Débloquez tout l’audiobook',
-    body: 'Vous avez profité de vos écoutes offertes. Accédez à vie à tous les guides audio et parcours de Last Cathar.',
+    title: 'Débloquez toute l’épopée cathare',
+    body: 'Un seul paiement débloque à vie l’audioguide de TOUTES les citadelles de l’épopée cathare — Carcassonne, Montségur, Quéribus, Peyrepertuse, Foix, Béziers… et tous les parcours de Last Cathar.',
     price: '4,90 €',
-    once: 'paiement unique · accès à vie',
+    once: 'paiement unique · toutes les citadelles · à vie',
     unlock: 'Créer mon compte et payer 4,90 €',
     login: 'Créer mon compte pour débloquer',
     back: 'Revenir à la carte',
@@ -26,10 +26,10 @@ const T = {
   },
   en: {
     kicker: 'Audio Pass',
-    title: 'Unlock the full audiobook',
-    body: 'You have used your free listens. Get lifetime access to every audio guide and tour on Last Cathar.',
+    title: 'Unlock the whole Cathar epic',
+    body: 'A single payment unlocks lifetime access to the audioguide of EVERY citadel of the Cathar epic — Carcassonne, Montségur, Quéribus, Peyrepertuse, Foix, Béziers… and all Last Cathar tours.',
     price: '€4.90',
-    once: 'one-time payment · lifetime access',
+    once: 'one-time payment · all citadels · lifetime',
     unlock: 'Create account & pay €4.90',
     login: 'Create account to unlock',
     back: 'Back to the map',
