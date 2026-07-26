@@ -23,8 +23,10 @@ OUT_DIR = os.path.join(ROOT, "public", "tour", "carcassonne", "audio")
 DURATIONS = os.path.join(DATA, "carcassonne-tour-durations.json")
 
 LANGS = {
-    "fr": {"model": os.path.join(VOICES, "fr_FR-tom-medium.onnx"), "length": "1.12"},
-    "en": {"model": os.path.join(VOICES, "en_US-ryan-high.onnx"), "length": "1.05"},
+    # FR : UPMC voix 0 (masculine, grave, moins robotique) + prosodie expressive.
+    "fr": {"model": os.path.join(VOICES, "fr_FR-upmc-medium.onnx"), "length": "1.05",
+           "extra": ["--noise-scale", "0.7", "--noise-w", "0.9", "--speaker", "0"]},
+    "en": {"model": os.path.join(VOICES, "en_US-ryan-high.onnx"), "length": "1.05", "extra": []},
 }
 PAUSE_SEC = "0.5"
 
@@ -67,7 +69,7 @@ def main():
                 for i, para in enumerate(paras):
                     w = os.path.join(tmp, f"{sid}_{lang}_{i}.wav")
                     run([sys.executable, "-m", "piper", "--model", cfg["model"],
-                         "--length-scale", cfg["length"], "--output-file", w],
+                         "--length-scale", cfg["length"], *cfg.get("extra", []), "--output-file", w],
                         input=para.encode("utf-8"))
                     parts.append(w)
                     if i < len(paras) - 1:

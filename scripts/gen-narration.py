@@ -16,8 +16,14 @@ if not text:
     print('ERR empty text', file=sys.stderr); sys.exit(1)
 
 VOICES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voices')
-model = os.path.join(VOICES, 'fr_FR-tom-medium.onnx' if lang == 'fr' else 'en_US-ryan-high.onnx')
-length = '1.12' if lang == 'fr' else '1.05'
+# Voix FR : UPMC voix 0 (masculine, grave, moins robotique) avec prosodie plus
+# expressive. Voix EN : ryan.
+if lang == 'fr':
+    model = os.path.join(VOICES, 'fr_FR-upmc-medium.onnx')
+    extra = ['--length-scale', '1.05', '--noise-scale', '0.7', '--noise-w', '0.9', '--speaker', '0']
+else:
+    model = os.path.join(VOICES, 'en_US-ryan-high.onnx')
+    extra = ['--length-scale', '1.05']
 
 if not os.path.exists(model):
     print(f'ERR voice model missing: {model}', file=sys.stderr); sys.exit(2)
@@ -25,7 +31,7 @@ if not os.path.exists(model):
 with tempfile.TemporaryDirectory() as tmp:
     wav = os.path.join(tmp, 'n.wav')
     p = subprocess.run(
-        [sys.executable, '-m', 'piper', '--model', model, '--length-scale', length, '--output-file', wav],
+        [sys.executable, '-m', 'piper', '--model', model, *extra, '--output-file', wav],
         input=text.encode('utf-8'), capture_output=True,
     )
     if p.returncode != 0 or not os.path.exists(wav):

@@ -36,9 +36,11 @@ LANGS = [
     {
         "code": "fr",
         "content": os.path.join(DATA, "audio-guides-content.json"),
-        "model": os.environ.get("VOICE_MODEL_FR", os.path.join(VOICES, "fr_FR-tom-medium.onnx")),
+        # FR : UPMC voix 0 (masculine, grave, moins robotique) + prosodie expressive.
+        "model": os.environ.get("VOICE_MODEL_FR", os.path.join(VOICES, "fr_FR-upmc-medium.onnx")),
         "suffix": "",            # <slug>.m4a
-        "length": os.environ.get("LENGTH_SCALE", "1.12"),
+        "length": os.environ.get("LENGTH_SCALE", "1.05"),
+        "extra": ["--noise-scale", "0.7", "--noise-w", "0.9", "--speaker", "0"],
     },
     {
         "code": "en",
@@ -46,6 +48,7 @@ LANGS = [
         "model": os.environ.get("VOICE_MODEL_EN", os.path.join(VOICES, "en_US-ryan-high.onnx")),
         "suffix": ".en",         # <slug>.en.m4a
         "length": os.environ.get("LENGTH_SCALE_EN", "1.05"),
+        "extra": [],
     },
 ]
 
@@ -67,11 +70,12 @@ def ffprobe_duration(path: str) -> int:
         return 0
 
 
-def synth_paragraph(model: str, length: str, text: str, out_wav: str):
+def synth_paragraph(model: str, length: str, text: str, out_wav: str, extra=None):
     run([
         sys.executable, "-m", "piper",
         "--model", model,
         "--length-scale", length,
+        *(extra or []),
         "--output-file", out_wav,
     ], input=text.encode("utf-8"))
 
@@ -96,7 +100,7 @@ def generate_lang(lang, sil_wav, tmp, durations):
         parts = []
         for i, para in enumerate(paras):
             w = os.path.join(tmp, f"{lang['code']}_{slug}_{i}.wav")
-            synth_paragraph(lang["model"], lang["length"], para, w)
+            synth_paragraph(lang["model"], lang["length"], para, w, lang.get("extra"))
             parts.append(w)
             if i < len(paras) - 1:
                 parts.append(sil_wav)
